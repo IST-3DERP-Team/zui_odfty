@@ -1,0 +1,10 @@
+/* Enter your custom styles here */
+
+.activeRow {
+    background-color: #e1ebf3 !important;
+}
+
+.requiredField {
+    color: red !important;
+}
+/* Enter your custom styles here */

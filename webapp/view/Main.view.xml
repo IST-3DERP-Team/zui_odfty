@@ -1,0 +1,134 @@
+<mvc:View controllerName="zuiodfty.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc" 
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:uiL="sap.ui.layout"
+    xmlns:uiT="sap.ui.table"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:sfb="sap.ui.comp.smartfilterbar"
+    xmlns:core="sap.ui.core"
+    height="100%">
+    <Page id="page" enableScrolling="false" class="sapUiNoContentPadding" showHeader="false">
+        <dependents>
+            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute=".onAdd" />
+            <core:CommandExecution id="CE_EDIT" command="Edit" enabled="true" execute=".onEdit" />
+            <core:CommandExecution id="CE_REFRESH" command="Refresh" enabled="true" execute=".onRefresh" />
+        </dependents>
+        <content>
+            <VBox id="vbODFty" fitContainer="true">
+                <sfb:SmartFilterBar id="sfbODFty" entitySet="ZVB_3DERP_ODFTY_FILTER" enableBasicSearch="true" search="onSearch" 
+                    persistencyKey="3DERP_ODFtyKey" filterContainerWidth="14rem" useToolbar="true" showClearOnFB="true" initialise="onSFBInitialise">
+                    <sfb:controlConfiguration>
+                        <sfb:ControlConfiguration id="filterSbu" key="SBU" groupId="_BASIC" label="{caption>/SBU}" controlType="dropDownList" filterType="single"
+                            displayBehaviour="idOnly" mandatory="mandatory" index="0">
+                        </sfb:ControlConfiguration>
+                    </sfb:controlConfiguration>
+                    <sfb:controlConfiguration>
+                        <sfb:ControlConfiguration id="filterDlvType" key="DLVTYPE" groupId="_BASIC" label="{caption>/DLVTYPE}" controlType="dropDownList" 
+                            displayBehaviour="idAndDescription" mandatory="notMandatory" index="1">
+                        </sfb:ControlConfiguration>
+                    </sfb:controlConfiguration>
+                    <sfb:controlConfiguration>
+                        <sfb:ControlConfiguration id="filterDlvNo" key="DLVNO" groupId="_BASIC" label="{caption>/DLVNO}" controlType="dropDownList" 
+                            displayBehaviour="idOnly" mandatory="notMandatory" index="2">
+                        </sfb:ControlConfiguration>
+                    </sfb:controlConfiguration>
+                    <sfb:controlConfiguration>
+                        <sfb:ControlConfiguration id="filterIssPlant" key="ISSPLANT" groupId="_BASIC" label="{caption>/ISSPLANT}" controlType="dropDownList" 
+                            displayBehaviour="idOnly" mandatory="notMandatory" index="3">
+                        </sfb:ControlConfiguration>
+                    </sfb:controlConfiguration>
+                    <sfb:controlConfiguration>
+                        <sfb:ControlConfiguration id="filterRcvPlant" key="RCVPLANT" groupId="_BASIC" label="{caption>/RCVPLANT}" controlType="dropDownList" 
+                            displayBehaviour="idOnly" mandatory="notMandatory" index="4">
+                        </sfb:ControlConfiguration>
+                    </sfb:controlConfiguration>
+                    <sfb:controlConfiguration>
+                        <sfb:ControlConfiguration id="filterRefDlvNo" key="REFDLVNO" groupId="_BASIC" label="{caption>/REFDLVNO}" controlType="dropDownList" 
+                            displayBehaviour="idOnly" mandatory="notMandatory" index="5">
+                        </sfb:ControlConfiguration>
+                    </sfb:controlConfiguration>
+                    <sfb:layoutData>
+                        <FlexItemData shrinkFactor="0"/>
+                    </sfb:layoutData>
+                </sfb:SmartFilterBar>
+
+                <uiT:Table id="odFtyHdrTab"
+                    class="tablePadding"
+                    rows="{odFtyHdr>/results}"
+                    visibleRowCountMode="Auto"
+                    showColumnVisibilityMenu="true"
+                    enableColumnFreeze="true"
+                    enableCellFilter="true"
+                    selectionMode="Single"
+                    firstVisibleRowChanged="onFirstVisibleRowChanged"
+                    cellClick="onCellClickODFtyHdr"
+                    sort="onSorted"
+                    filter="onFilter"
+                    columnFreeze="onColumnUpdated"
+                    columnMove="onColumnUpdated"
+                    columnResize="onColumnUpdated"
+                    columnSelect="onColumnUpdated"
+                    columnVisibility="onColumnUpdated"
+                    rowSelectionChange="onRowSelectionChangeODFtyHdr">
+                    <uiT:extension>
+                        <Toolbar>
+                            <Text text="{ui>/rowCountMrpHdr} {caption>/ROWS}" />
+                            <ToolbarSpacer/>
+                            <Button id="btnAddODFtyHdr" 
+                                icon="sap-icon://add"
+                                press="onAddODFtyHdr"
+                                visible="true"/>
+                            <Button id="btnEditODFtyHdr" 
+                                icon="sap-icon://edit"
+                                press="onEditODFtyHdr"
+                                visible="true"/>
+                            <Button id="btnRefreshODFtyHdr" 
+                                icon="sap-icon://refresh"
+                                press="onRefreshODFtyHdr" 
+                                visible="true" />
+                        </Toolbar>
+                    </uiT:extension>
+                    <uiT:layoutData>
+                        <FlexItemData growFactor="1" baseSize="0%"/>
+                    </uiT:layoutData>
+                </uiT:Table>
+                
+                <uiT:Table id="odFtyDtlTab"
+                    class="tablePadding"
+                    rows="{odFtyDtl>/results}"
+                    visibleRowCountMode="Auto"
+                    showColumnVisibilityMenu="true"
+                    enableColumnFreeze="true"
+                    enableCellFilter="true"
+                    selectionMode="Single"
+                    firstVisibleRowChanged="onFirstVisibleRowChanged"
+                    cellClick="onCellClick"
+                    sort="onSorted"
+                    filter="onFilter"
+                    columnFreeze="onColumnUpdated"
+                    columnMove="onColumnUpdated"
+                    columnResize="onColumnUpdated"
+                    columnSelect="onColumnUpdated"
+                    columnVisibility="onColumnUpdated"
+                    rowSelectionChange="onRowSelectionChangeODFtyDtl">
+                    <uiT:extension>
+                        <Toolbar>
+                            <Text text="{caption>/DLVDTL}" />
+                            <Text text="{ui>/rowCountMrpDtl} {caption>/ROWS}" />
+                            <ToolbarSpacer/>
+                            <Button id="btnRefreshODFtyDtl" 
+                                icon="sap-icon://refresh"
+                                press="onRefreshODFtyDtl" 
+                                visible="true" />
+                        </Toolbar>
+                    </uiT:extension>
+                    <uiT:layoutData>
+                        <FlexItemData growFactor="1" baseSize="0%"/>
+                    </uiT:layoutData>
+                </uiT:Table>
+
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>
