@@ -85,6 +85,26 @@
                 "sap.ushell": {}
             }
         },
+        "commands": {
+            "New": {
+                "shortcut": "Ctrl+I"
+            },
+            "Edit": {
+                "shortcut": "Ctrl+E"
+            },
+            "Delete": {
+                "shortcut": "Ctrl+D"
+            },
+            "Save": {
+                "shortcut": "Ctrl+S"
+            },
+            "Cancel": {
+                "shortcut": "Ctrl+X"
+            },
+            "Refresh": {
+                "shortcut": "Ctrl+R"
+            }
+        },
         "contentDensities": {
             "compact": true,
             "cozy": true
@@ -148,6 +168,14 @@
                     "target": [
                         "TargetMain"
                     ]
+                },
+                {
+                    "name": "RouteReservation",
+                    "pattern": "Reservation/{sbu},{mvtType},{srcTbl}",
+                    "greedy": false,
+                    "target": [
+                        "TargetReservation"
+                    ]
                 }
             ],
             "targets": {
@@ -157,6 +185,13 @@
                     "clearControlAggregation": false,
                     "viewId": "Main",
                     "viewName": "Main"
+                },
+                "TargetReservation": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "Reservation",
+                    "viewName": "Reservation"
                 }
             }
         },
@@ -165,6 +200,9 @@
             "type": "XML",
             "async": true,
             "id": "App"
+        },
+        "config": {
+            "fullWidth": true
         }
     }
 }

@@ -88,7 +88,7 @@ sap.ui.define([
                 _this.closeLoadingDialog();
             },
 
-            onAfterTableRender(pTableId) {
+            onAfterTableRender(pTableId, pTableProps) {
                 //console.log("onAfterTableRendering", pTableId)
             },
 
@@ -279,8 +279,26 @@ sap.ui.define([
                 })
             },
 
-            onProceedDlvtype() {
+            onProceedDlvType() {
+                _this.showLoadingDialog("Loading...");
 
+                var oTable = this.byId("dlvTypeTab");
+                var aSelIdx = oTable.getSelectedIndices();
+
+                if (aSelIdx.length === 0) {
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
+                    _this.closeLoadingDialog();
+                    return;
+                }
+                
+                var oData = _this.getView().getModel("dlvType").getData().results[aSelIdx[0]];
+                _this._router.navTo("RouteReservation", {
+                    sbu: _this.getView().getModel("ui").getData().sbu,
+                    mvtType: oData.MVTTYPE,
+                    srcTbl: oData.SRCTBL
+                });
+
+                _this.closeLoadingDialog();
             },
 
             onCancelDlvType() {
@@ -355,6 +373,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "CANCEL"});
 
                 // MessageBox
+                oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

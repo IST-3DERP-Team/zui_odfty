@@ -30,6 +30,8 @@ sap.ui.define([
             _sSbu = pSbu;
 
             this._aColumns = {};
+            this._aFilterableColumns = {};
+            this._aSortableColumns = {};
         },
    
         getColumns: async function(pTableList) {
@@ -73,11 +75,17 @@ sap.ui.define([
                     if (oData.results.length > 0) {
                         var aColumns = _this.setTableColumns(oColumns[tblModel], oData.results);   
                         _this._aColumns[tblModel] = aColumns["columns"];
+                        _this._aFilterableColumns[tblModel] = aColumns["filterableColumns"]; 
+                        _this._aSortableColumns[tblModel] = aColumns["sortableColumns"]; 
                         if (_this.byId(tblId).getColumns().length == 0) {
                             _this.addColumns(_this.byId(tblId), aColumns["columns"], tblModel);
                         }
 
-                        _this.onAfterTableRender(tblId);
+                        var tblProps = {
+                            aFilterableColumns: _this._aFilterableColumns[tblModel],
+                            aSortableColumns: _this._aSortableColumns[tblModel]
+                        };
+                        _this.onAfterTableRender(tblId, tblProps);
                     }
                 },
                 error: function (err) {
@@ -91,6 +99,8 @@ sap.ui.define([
             var oColumn = pColumn;
             
             var aColumns = [];
+            var aFilterableColumns = [];
+            var aSortableColumns = [];
 
             oColumn.forEach((prop, idx) => {
                 var vCreatable = prop.Creatable;
@@ -103,6 +113,30 @@ sap.ui.define([
                 var oColumnLocalProp = oColumnLocal.filter(col => col.name.toUpperCase() === prop.ColumnName);
                 var vShowable = true;
                 var vOrder = prop.Order;
+
+                if (vShowable) {
+                    //sortable
+                    if (vSortable) {
+                        aSortableColumns.push({
+                            name: prop.ColumnName, 
+                            label: vName, 
+                            position: +vOrder, 
+                            sorted: vSorted,
+                            sortOrder: vSortOrder
+                        });
+                    }
+
+                    //filterable
+                    if (vFilterable) {
+                        aFilterableColumns.push({
+                            name: prop.ColumnName, 
+                            label: vName, 
+                            position: +vOrder,
+                            value: "",
+                            connector: "Contains"
+                        });
+                    }
+                }
 
                 //columns
                 aColumns.push({
@@ -131,7 +165,7 @@ sap.ui.define([
             aColumns.sort((a,b) => (a.position > b.position ? 1 : -1));
             var aColumnProp = aColumns.filter(item => item.showable === true);
 
-            return { columns: aColumns };
+            return { columns: aColumns, sortableColumns: aSortableColumns, filterableColumns: aFilterableColumns };
         },
 
         addColumns(pTable, pColumn, pModel) {
@@ -332,6 +366,26 @@ sap.ui.define([
                         item.oValue1);
                 });
             }
+        },
+
+        onFilterByGlobal(oEvent) {
+            var oTable = oEvent.getSource().oParent.oParent;
+            var sTable = oTable.getBindingInfo("rows").model;
+            var sQuery = oEvent.getParameter("query");
+            var oFilter = null;
+            var aFilter = [];
+
+            if (sQuery) {
+                this._aFilterableColumns[sTable].forEach(item => {
+                    var sDataType = this._aColumns[sTable].filter(col => col.name === item.name)[0].type;
+                    if (sDataType === "BOOLEAN") aFilter.push(new Filter(item.name, FilterOperator.EQ, sQuery));
+                    else aFilter.push(new Filter(item.name, FilterOperator.Contains, sQuery));
+                })
+
+                oFilter = new Filter(aFilter, false);
+            }
+
+            this.byId(sTable + "Tab").getBinding("rows").filter(oFilter, "Application");
         },
 
         clearSortFilter(pTable) {
