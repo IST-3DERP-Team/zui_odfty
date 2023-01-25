@@ -176,6 +176,22 @@
                     "target": [
                         "TargetReservation"
                     ]
+                },
+                {
+                    "name": "RouteDeliveryInfo",
+                    "pattern": "DeliveryInfo/{sbu},{dlvNo},{plant}",
+                    "greedy": false,
+                    "target": [
+                        "TargetDeliveryInfo"
+                    ]
+                },
+                {
+                    "name": "RoutePicking",
+                    "pattern": "DeliveryInfo/{sbu},{dlvNo}",
+                    "greedy": false,
+                    "target": [
+                        "TargetPicking"
+                    ]
                 }
             ],
             "targets": {
@@ -192,6 +208,20 @@
                     "clearControlAggregation": false,
                     "viewId": "Reservation",
                     "viewName": "Reservation"
+                },
+                "TargetDeliveryInfo": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "DeliveryInfo",
+                    "viewName": "DeliveryInfo"
+                },
+                "TargetPicking": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "Picking",
+                    "viewName": "Picking"
                 }
             }
         },

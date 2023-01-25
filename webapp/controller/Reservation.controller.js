@@ -127,7 +127,11 @@ sap.ui.define([
             },
 
             onAdd() {
-
+                _this._router.navTo("RouteDeliveryInfo", {
+                    sbu: _this.getView().getModel("ui").getData().sbu,
+                    dlvNo: "empty",
+                    plant: "empty"
+                });
             },
 
             onCancel() {

@@ -1,0 +1,114 @@
+<mvc:View controllerName="zuiodfty.controller.Picking"
+    xmlns:mvc="sap.ui.core.mvc" 
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:uiL="sap.ui.layout"
+    xmlns:uiT="sap.ui.table"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:sfb="sap.ui.comp.smartfilterbar"
+    xmlns:core="sap.ui.core"
+    height="100%">
+    <Page id="page" enableScrolling="false" class="sapUiNoContentPadding" showHeader="false">
+        <dependents>
+            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute=".onAdd" />
+            <core:CommandExecution id="CE_EDIT" command="Edit" enabled="true" execute=".onEdit" />
+            <core:CommandExecution id="CE_REFRESH" command="Refresh" enabled="true" execute=".onRefresh" />
+        </dependents>
+        <content>
+            <VBox id="vbODFty" fitContainer="true">
+                <uiT:Table id="pickHdrTab"
+                    class="tablePadding"
+                    rows="{pickHdr>/results}"
+                    visibleRowCountMode="Auto"
+                    showColumnVisibilityMenu="true"
+                    enableColumnFreeze="true"
+                    enableCellFilter="true"
+                    selectionMode="Single"
+                    firstVisibleRowChanged="onFirstVisibleRowChanged"
+                    cellClick="onCellClick"
+                    sort="onSorted"
+                    filter="onFilter"
+                    columnFreeze="onColumnUpdated"
+                    columnMove="onColumnUpdated"
+                    columnResize="onColumnUpdated"
+                    columnSelect="onColumnUpdated"
+                    columnVisibility="onColumnUpdated"
+                    rowSelectionChange="onRowSelectionChange">
+                    <uiT:extension>
+                        <Toolbar>
+                            <ToolbarSpacer/>
+                            <Button id="btnAutoPickHdr" 
+                                icon="sap-icon://flag"
+                                press="onAutoPickHdr"
+                                visible="true"/>
+                            <Button id="btnAddPickHdr" 
+                                icon="sap-icon://add"
+                                press="onAddPickHdr"
+                                visible="true"/>
+                            <Button id="btnRefreshPickHdr" 
+                                icon="sap-icon://refresh"
+                                press="onRefreshPickHdr" 
+                                visible="true" />
+                            <Button id="btnCancelPickHdr" 
+                                icon="sap-icon://sys-cancel"
+                                press="onCancelPickHdr"
+                                visible="true"/>
+                        </Toolbar>
+                    </uiT:extension>
+                    <uiT:layoutData>
+                        <FlexItemData growFactor="1" baseSize="0%"/>
+                    </uiT:layoutData>
+                </uiT:Table>
+                
+                <uiT:Table id="pickDtlTab"
+                    class="tablePadding"
+                    rows="{pickDtl>/results}"
+                    visibleRowCountMode="Auto"
+                    showColumnVisibilityMenu="true"
+                    enableColumnFreeze="true"
+                    enableCellFilter="true"
+                    selectionMode="Single"
+                    firstVisibleRowChanged="onFirstVisibleRowChanged"
+                    cellClick="onCellClick"
+                    sort="onSorted"
+                    filter="onFilter"
+                    columnFreeze="onColumnUpdated"
+                    columnMove="onColumnUpdated"
+                    columnResize="onColumnUpdated"
+                    columnSelect="onColumnUpdated"
+                    columnVisibility="onColumnUpdated"
+                    rowSelectionChange="onRowSelectionChange">
+                    <uiT:extension>
+                        <Toolbar>
+                            <ToolbarSpacer/>
+                            <Button id="btnAutoPickDtl" 
+                                icon="sap-icon://flag"
+                                press="onAutoPickDtl"
+                                visible="true"/>
+                            <Button id="btnEditPickDtl" 
+                                icon="sap-icon://edit"
+                                press="onEditPickDtl"
+                                visible="true"/>
+                            <Button id="btnRefreshPickDtl" 
+                                icon="sap-icon://refresh"
+                                press="onRefreshPickDtl" 
+                                visible="true" />
+                            <Button id="btnSavePickDtl" 
+                                icon="sap-icon://save"
+                                press="onSave('pickDtl')" 
+                                visible="false" />
+                            <Button id="btnCancelPickDtl" 
+                                icon="sap-icon://sys-cancel"
+                                press="onCancelPickDtl"
+                                visible="false"/>
+                        </Toolbar>
+                    </uiT:extension>
+                    <uiT:layoutData>
+                        <FlexItemData growFactor="1" baseSize="0%"/>
+                    </uiT:layoutData>
+                </uiT:Table>
+
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>
