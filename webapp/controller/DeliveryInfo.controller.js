@@ -34,8 +34,7 @@ sap.ui.define([
             _routePatternMatched: function (oEvent) {
                 this.getView().setModel(new JSONModel({
                     sbu: oEvent.getParameter("arguments").sbu,
-                    dlvNo: oEvent.getParameter("arguments").dlvNo,
-                    plant: oEvent.getParameter("arguments").plant
+                    dlvNo: oEvent.getParameter("arguments").dlvNo
                 }), "ui");
 
                 _this.initializeComponent();
@@ -83,18 +82,22 @@ sap.ui.define([
 
                 _this.getColumns(aTableList);
 
-                // this._tableRendered = "";
-                // var oTableEventDelegate = {
-                //     onkeyup: function(oEvent){
-                //         _this.onKeyUp(oEvent);
-                //     },
+                this._tableRendered = "";
+                var oTableEventDelegate = {
+                    onkeyup: function(oEvent){
+                        _this.onKeyUp(oEvent);
+                    },
 
-                //     onAfterRendering: function(oEvent) {
-                //         _this.onAfterTableRendering(oEvent);
-                //     }
-                // };
+                    onAfterRendering: function(oEvent) {
+                        _this.onAfterTableRendering(oEvent);
+                    }
+                };
 
-                // this.byId("rsvTab").addEventDelegate(oTableEventDelegate);
+                this.byId("huTab").addEventDelegate(oTableEventDelegate);
+                this.byId("dtlTab").addEventDelegate(oTableEventDelegate);
+                this.byId("shipTab").addEventDelegate(oTableEventDelegate);
+                this.byId("statTab").addEventDelegate(oTableEventDelegate);
+                this.byId("matDocTab").addEventDelegate(oTableEventDelegate);
 
                 _this.closeLoadingDialog();
             },
@@ -103,6 +106,13 @@ sap.ui.define([
                 // if (pTableId == "rsvTab") {
                 //     _this.getRsv();
                 // }
+            },
+
+            onAddDtl() {
+                _this._router.navTo("RoutePicking", {
+                    sbu: _this.getView().getModel("ui").getData().sbu,
+                    dlvNo: "empty"
+                });
             },
 
             onKeyUp(oEvent) {

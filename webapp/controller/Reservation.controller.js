@@ -34,6 +34,7 @@ sap.ui.define([
             _routePatternMatched: function (oEvent) {
                 this.getView().setModel(new JSONModel({
                     sbu: oEvent.getParameter("arguments").sbu,
+                    dlvType: oEvent.getParameter("arguments").dlvType,
                     mvtType: oEvent.getParameter("arguments").mvtType,
                     srcTbl: oEvent.getParameter("arguments").srcTbl
                 }), "ui");

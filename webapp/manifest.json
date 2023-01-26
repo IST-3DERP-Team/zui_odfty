@@ -51,6 +51,15 @@
                     "annotations": [],
                     "localUri": "localService/ZGW_3DERP_COMMON_SRV/metadata.xml"
                 }
+            },
+            "ZGW_3DERP_RFC_SRV": {
+                "uri": "/sap/opu/odata/sap/ZGW_3DERP_RFC_SRV/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "2.0",
+                    "annotations": [],
+                    "localUri": "localService/ZGW_3DERP_RFC_SRV/metadata.xml"
+                }
             }
         }
     },
@@ -142,6 +151,15 @@
                     "defaultCountMode": "Inline",
                     "refreshAfterChange": false
                 }
+            },
+            "ZGW_3DERP_RFC_SRV": {
+                "dataSource": "ZGW_3DERP_RFC_SRV",
+                "preload": true,
+                "settings": {
+                    "defaultBindingMode": "TwoWay",
+                    "defaultCountMode": "Inline",
+                    "refreshAfterChange": false
+                }
             }
         },
         "resources": {
@@ -171,7 +189,7 @@
                 },
                 {
                     "name": "RouteReservation",
-                    "pattern": "Reservation/{sbu},{mvtType},{srcTbl}",
+                    "pattern": "Reservation/{sbu},{dlvType},{mvtType},{srcTbl}",
                     "greedy": false,
                     "target": [
                         "TargetReservation"
@@ -179,7 +197,7 @@
                 },
                 {
                     "name": "RouteDeliveryInfo",
-                    "pattern": "DeliveryInfo/{sbu},{dlvNo},{plant}",
+                    "pattern": "DeliveryInfo/{sbu},{dlvNo}",
                     "greedy": false,
                     "target": [
                         "TargetDeliveryInfo"

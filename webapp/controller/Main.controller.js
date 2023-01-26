@@ -279,6 +279,18 @@ sap.ui.define([
                 })
             },
 
+            onEditODFtyHdr() {
+                if (this.getView().getModel("ui").getData().dlvNo) {
+                    var sDlvNo = this.getView().getModel("ui").getData().dlvNo;
+                    this._router.navTo("RouteDeliveryInfo", {
+                        sbu: _this.getView().getModel("ui").getData().sbu,
+                        dlvNo: sDlvNo
+                    });
+                } else {
+                    MessageBox.information(_oCaption.INFO_NO_SELECTED);
+                }
+            },
+
             onProceedDlvType() {
                 _this.showLoadingDialog("Loading...");
 
@@ -294,6 +306,7 @@ sap.ui.define([
                 var oData = _this.getView().getModel("dlvType").getData().results[aSelIdx[0]];
                 _this._router.navTo("RouteReservation", {
                     sbu: _this.getView().getModel("ui").getData().sbu,
+                    dlvType: oData.DLVTYPE,
                     mvtType: oData.MVTTYPE,
                     srcTbl: oData.SRCTBL
                 });

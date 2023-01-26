@@ -332,8 +332,8 @@
                     <PropertyRef Name="EReturnno"/>
                 </Key>
                 <Property Name="EReturnno" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Char20" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <NavigationProperty Name="N_GetNumberReturn" Relationship="ZGW_3DERP_RFC_SRV.A_GetNumberReturn" FromRole="FromRole_A_GetNumberReturn" ToRole="ToRole_A_GetNumberReturn"/>
                 <NavigationProperty Name="N_GetNumberParam" Relationship="ZGW_3DERP_RFC_SRV.A_GetNumberParam" FromRole="FromRole_A_GetNumberParam" ToRole="ToRole_A_GetNumberParam"/>
+                <NavigationProperty Name="N_GetNumberReturn" Relationship="ZGW_3DERP_RFC_SRV.A_GetNumberReturn" FromRole="FromRole_A_GetNumberReturn" ToRole="ToRole_A_GetNumberReturn"/>
             </EntityType>
             <EntityType Name="GetNumberParam" sap:content-version="1">
                 <Key>
@@ -852,8 +852,8 @@
                     <PropertyRef Name="PurchPlant"/>
                 </Key>
                 <Property Name="PurchPlant" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Flag" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <NavigationProperty Name="N_GetFtyCalDateReturn" Relationship="ZGW_3DERP_RFC_SRV.A_GetFtyCalDateReturn" FromRole="FromRole_A_GetFtyCalDateReturn" ToRole="ToRole_A_GetFtyCalDateReturn"/>
                 <NavigationProperty Name="N_GetFtyCalDateParam" Relationship="ZGW_3DERP_RFC_SRV.A_GetFtyCalDateParam" FromRole="FromRole_A_GetFtyCalDateParam" ToRole="ToRole_A_GetFtyCalDateParam"/>
+                <NavigationProperty Name="N_GetFtyCalDateReturn" Relationship="ZGW_3DERP_RFC_SRV.A_GetFtyCalDateReturn" FromRole="FromRole_A_GetFtyCalDateReturn" ToRole="ToRole_A_GetFtyCalDateReturn"/>
             </EntityType>
             <EntityType Name="GetFtyCalDateParam" sap:content-version="1">
                 <Key>
@@ -889,12 +889,12 @@
                 <NavigationProperty Name="N_ChangePOCondHdrParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOCondHdr" FromRole="FromRole_A_ChangePOCondHdr" ToRole="ToRole_A_ChangePOCondHdr"/>
                 <NavigationProperty Name="N_ChangePOCondParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOCond" FromRole="FromRole_A_ChangePOCond" ToRole="ToRole_A_ChangePOCond"/>
                 <NavigationProperty Name="N_ChangePOClosePRParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOClosePR" FromRole="FromRole_A_ChangePOClosePR" ToRole="ToRole_A_ChangePOClosePR"/>
-                <NavigationProperty Name="N_ChangePOReturn" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOReturn" FromRole="FromRole_A_ChangePOReturn" ToRole="ToRole_A_ChangePOReturn"/>
-                <NavigationProperty Name="N_ChangePOAddtlDtlsParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOAddtlDtlsParam" FromRole="FromRole_A_ChangePOAddtlDtlsParam" ToRole="ToRole_A_ChangePOAddtlDtlsParam"/>
-                <NavigationProperty Name="N_ChangePOItemTextParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOItemText" FromRole="FromRole_A_ChangePOItemText" ToRole="ToRole_A_ChangePOItemText"/>
-                <NavigationProperty Name="N_ChangePOHdrTextParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOHdrText" FromRole="FromRole_A_ChangePOHdrText" ToRole="ToRole_A_ChangePOHdrText"/>
-                <NavigationProperty Name="N_ChangePOItemSchedParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOItemSched" FromRole="FromRole_A_ChangePOItemSched" ToRole="ToRole_A_ChangePOItemSched"/>
                 <NavigationProperty Name="N_ChangePOItemParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOItemParam" FromRole="FromRole_A_ChangePOItemParam" ToRole="ToRole_A_ChangePOItemParam"/>
+                <NavigationProperty Name="N_ChangePOItemSchedParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOItemSched" FromRole="FromRole_A_ChangePOItemSched" ToRole="ToRole_A_ChangePOItemSched"/>
+                <NavigationProperty Name="N_ChangePOReturn" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOReturn" FromRole="FromRole_A_ChangePOReturn" ToRole="ToRole_A_ChangePOReturn"/>
+                <NavigationProperty Name="N_ChangePOHdrTextParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOHdrText" FromRole="FromRole_A_ChangePOHdrText" ToRole="ToRole_A_ChangePOHdrText"/>
+                <NavigationProperty Name="N_ChangePOItemTextParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOItemText" FromRole="FromRole_A_ChangePOItemText" ToRole="ToRole_A_ChangePOItemText"/>
+                <NavigationProperty Name="N_ChangePOAddtlDtlsParam" Relationship="ZGW_3DERP_RFC_SRV.A_ChangePOAddtlDtlsParam" FromRole="FromRole_A_ChangePOAddtlDtlsParam" ToRole="ToRole_A_ChangePOAddtlDtlsParam"/>
             </EntityType>
             <EntityType Name="InTable" sap:content-version="1">
                 <Key>
@@ -992,11 +992,13 @@
             </EntityType>
             <EntityType Name="ExtendMaterial" sap:content-version="1">
                 <Key>
-                    <PropertyRef Name="IWERKS"/>
+                    <PropertyRef Name="IWERKSFROM"/>
+                    <PropertyRef Name="IWERKSTO"/>
                     <PropertyRef Name="IMATNR"/>
                 </Key>
                 <Property Name="ERETCODE" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="IWERKS" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="IWERKSFROM" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="IWERKSTO" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="IMATNR" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <NavigationProperty Name="N_ExtendMaterialReturn" Relationship="ZGW_3DERP_RFC_SRV.A_ExtendMaterialReturn" FromRole="FromRole_A_ExtendMaterialReturn" ToRole="ToRole_A_ExtendMaterialReturn"/>
             </EntityType>
@@ -1025,6 +1027,7 @@
                     <PropertyRef Name="Iono"/>
                     <PropertyRef Name="Matno"/>
                 </Key>
+                <Property Name="Purplant" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Mrptyp" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Character Field with Length 10" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Plantcd" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Iono" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="IO Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -1045,6 +1048,7 @@
                     <PropertyRef Name="Transno"/>
                     <PropertyRef Name="Transitm"/>
                 </Key>
+                <Property Name="Purplant" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Mandt" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Client" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Transno" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Transaction No." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Transitm" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Transaction Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -1089,11 +1093,21 @@
             </EntityType>
             <EntityType Name="GetIOPrefix" sap:content-version="1">
                 <Key>
-                    <PropertyRef Name="Sbu"/>
+                    <PropertyRef Name="SBU"/>
+                    <PropertyRef Name="SOLDTOCUST"/>
+                    <PropertyRef Name="PRODSCEN"/>
+                    <PropertyRef Name="PRODPLANT"/>
+                    <PropertyRef Name="SALESORG"/>
+                    <PropertyRef Name="PLANMONTH"/>
                 </Key>
-                <Property Name="Sbu" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="SBU" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="Iodesc" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="IO Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="Ioprefix" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="IO Prefix" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SBU" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="SBU" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SOLDTOCUST" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Sold-To-Cust" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PRODSCEN" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Prod Scenario" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PRODPLANT" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Prod. Plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SALESORG" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Sales Org" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PLANMONTH" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Plan Month" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="IODESC" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="IO Desc" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="IOPREFIX" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="IO Prefix" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
             </EntityType>
             <EntityType Name="Internal_Create" sap:content-version="1">
                 <Key>
@@ -1835,18 +1849,18 @@
                 <End Type="ZGW_3DERP_RFC_SRV.GetInfoRecordReturn" Multiplicity="*" Role="ToRole_A_GetInfoRecReturn"/>
                 <ReferentialConstraint>
                     <Principal Role="FromRole_A_GetInfoRecReturn">
-                        <PropertyRef Name="PurGroup"/>
-                        <PropertyRef Name="Plant"/>
-                        <PropertyRef Name="PurchOrg"/>
-                        <PropertyRef Name="Material"/>
                         <PropertyRef Name="Vendor"/>
+                        <PropertyRef Name="Material"/>
+                        <PropertyRef Name="PurchOrg"/>
+                        <PropertyRef Name="Plant"/>
+                        <PropertyRef Name="PurGroup"/>
                     </Principal>
                     <Dependent Role="ToRole_A_GetInfoRecReturn">
-                        <PropertyRef Name="PurGroup"/>
-                        <PropertyRef Name="Plant"/>
-                        <PropertyRef Name="PurchOrg"/>
-                        <PropertyRef Name="Material"/>
                         <PropertyRef Name="Vendor"/>
+                        <PropertyRef Name="Material"/>
+                        <PropertyRef Name="PurchOrg"/>
+                        <PropertyRef Name="Plant"/>
+                        <PropertyRef Name="PurGroup"/>
                     </Dependent>
                 </ReferentialConstraint>
             </Association>
@@ -1855,18 +1869,18 @@
                 <End Type="ZGW_3DERP_RFC_SRV.GetInfoRecord" Multiplicity="*" Role="ToRole_A_GetInfoRecMatParam"/>
                 <ReferentialConstraint>
                     <Principal Role="FromRole_A_GetInfoRecMatParam">
-                        <PropertyRef Name="Vendor"/>
-                        <PropertyRef Name="Material"/>
-                        <PropertyRef Name="PurchOrg"/>
-                        <PropertyRef Name="Plant"/>
                         <PropertyRef Name="PurGroup"/>
+                        <PropertyRef Name="Plant"/>
+                        <PropertyRef Name="PurchOrg"/>
+                        <PropertyRef Name="Material"/>
+                        <PropertyRef Name="Vendor"/>
                     </Principal>
                     <Dependent Role="ToRole_A_GetInfoRecMatParam">
-                        <PropertyRef Name="Vendor"/>
-                        <PropertyRef Name="Material"/>
-                        <PropertyRef Name="PurchOrg"/>
-                        <PropertyRef Name="Plant"/>
                         <PropertyRef Name="PurGroup"/>
+                        <PropertyRef Name="Plant"/>
+                        <PropertyRef Name="PurchOrg"/>
+                        <PropertyRef Name="Material"/>
+                        <PropertyRef Name="Vendor"/>
                     </Dependent>
                 </ReferentialConstraint>
             </Association>
@@ -2031,12 +2045,12 @@
                 <End Type="ZGW_3DERP_RFC_SRV.ChangePR" Multiplicity="*" Role="ToRole_A_ChangePRParam"/>
                 <ReferentialConstraint>
                     <Principal Role="FromRole_A_ChangePRParam">
-                        <PropertyRef Name="PreqNo"/>
                         <PropertyRef Name="PreqItem"/>
+                        <PropertyRef Name="PreqNo"/>
                     </Principal>
                     <Dependent Role="ToRole_A_ChangePRParam">
-                        <PropertyRef Name="PreqNo"/>
                         <PropertyRef Name="PreqItem"/>
+                        <PropertyRef Name="PreqNo"/>
                     </Dependent>
                 </ReferentialConstraint>
             </Association>
