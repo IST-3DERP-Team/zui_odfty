@@ -34,7 +34,8 @@ sap.ui.define([
             _routePatternMatched: function (oEvent) {
                 this.getView().setModel(new JSONModel({
                     sbu: oEvent.getParameter("arguments").sbu,
-                    dlvNo: oEvent.getParameter("arguments").dlvNo
+                    dlvNo: oEvent.getParameter("arguments").dlvNo,
+                    editModeHeader: false
                 }), "ui");
 
                 _this.initializeComponent();
@@ -99,13 +100,240 @@ sap.ui.define([
                 this.byId("statTab").addEventDelegate(oTableEventDelegate);
                 this.byId("matDocTab").addEventDelegate(oTableEventDelegate);
 
+                _this.getHdr();
+
                 _this.closeLoadingDialog();
             },
 
             onAfterTableRender(pTableId, pTableProps) {
-                // if (pTableId == "rsvTab") {
-                //     _this.getRsv();
-                // }
+                console.log(pTableId, pTableProps)
+            },
+
+            getHdr() {
+                _this.showLoadingDialog("Loading...");
+
+                var oModel = this.getOwnerComponent().getModel();
+                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+                var sFilter = "DLVNO eq '" + sDlvNo + "'";
+
+                oModel.read("/InfoHeaderSet", {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("InfoHeaderSet read", data);
+
+                        data.results.forEach(item => {
+                            if (item.DOCDT !== null)
+                                item.DOCDT = _this.formatDate(item.DOCDT);
+
+                            if (item.REQDT !== null)
+                                item.REQDT = _this.formatDate(item.REQDT);
+
+                            if (item.POSTDT !== null)
+                                item.POSTDT = _this.formatDate(item.POSTDT);
+
+                            if (item.ACTISSDT !== null)
+                                item.ACTISSDT = _this.formatDate(item.ACTISSDT);
+
+                            if (item.REFDOCDT !== null)
+                                item.REFDOCDT = _this.formatDate(item.REFDOCDT);
+
+                            if (item.CREATEDDT !== null)
+                                item.CREATEDDT = _this.formatDate(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+
+                            if (item.UPDATEDDT !== null)
+                                item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                        });
+
+                        var oJSONModel = new JSONModel();
+                        oJSONModel.setData(data);
+                        _this.getView().setModel(oJSONModel, "hdr");
+
+                        _this.setHeaderValue();
+
+                        _this.getHu();
+                        _this.getDtl();
+                        _this.getShip();
+                        _this.getStat();
+                        _this.getMatDoc();
+
+                        _this.closeLoadingDialog();
+                    },
+                    error: function (err) {
+                        _this.closeLoadingDialog();
+                    }
+                })
+            },
+
+            getHu() {
+                var oModel = this.getOwnerComponent().getModel();
+                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+                var sFilter = "DLVNO eq '" + sDlvNo + "'";
+
+                oModel.read('/InfoHUSet', {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("InfoHUSet", data)
+
+                        data.results.forEach(item => {
+                            if (item.CREATEDDT !== null)
+                                item.CREATEDDT = _this.formatDate(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+
+                            if (item.UPDATEDDT !== null)
+                                item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                        })
+
+                        var oJSONModel = new sap.ui.model.json.JSONModel();
+                        oJSONModel.setData(data);
+                        _this.getView().setModel(oJSONModel, "hu");
+
+                        _this.setRowReadMode("hu");
+
+                        _this.closeLoadingDialog();
+                    },
+                    error: function (err) { 
+                        console.log("error", err)
+                        _this.closeLoadingDialog();
+                    }
+                })
+            },
+
+            getDtl() {
+                var oModel = this.getOwnerComponent().getModel();
+                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+                var sFilter = "DLVNO eq '" + sDlvNo + "'";
+
+                oModel.read('/InfoDetailSet', {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("InfoDetailSet", data)
+
+                        data.results.forEach(item => {
+                            if (item.CREATEDDT !== null)
+                                item.CREATEDDT = _this.formatDate(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+
+                            if (item.UPDATEDDT !== null)
+                                item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                        })
+
+                        var oJSONModel = new sap.ui.model.json.JSONModel();
+                        oJSONModel.setData(data);
+                        _this.getView().setModel(oJSONModel, "dtl");
+
+                        _this.setRowReadMode("dtl");
+
+                        _this.closeLoadingDialog();
+                    },
+                    error: function (err) { 
+                        console.log("error", err)
+                        _this.closeLoadingDialog();
+                    }
+                })
+            },
+
+            getShip() {
+                var oModel = this.getOwnerComponent().getModel();
+                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+                var sFilter = "DLVNO eq '" + sDlvNo + "'";
+
+                oModel.read('/InfoShipSet', {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("InfoShipSet", data)
+
+                        var oJSONModel = new sap.ui.model.json.JSONModel();
+                        oJSONModel.setData(data);
+                        _this.getView().setModel(oJSONModel, "ship");
+
+                        _this.setRowReadMode("ship");
+
+                        _this.closeLoadingDialog();
+                    },
+                    error: function (err) { 
+                        console.log("error", err)
+                        _this.closeLoadingDialog();
+                    }
+                })
+            },
+
+            getStat() {
+                var oModel = this.getOwnerComponent().getModel();
+                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+                var sFilter = "DLVNO eq '" + sDlvNo + "'";
+
+                oModel.read('/InfoStatusSet', {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("InfoStatusSet", data)
+
+                        data.results.forEach(item => {
+                            if (item.STARTDT !== null)
+                                item.STARTDT = _this.formatDate(item.STARTDT) + " " + _this.formatTime(item.STARTTM);
+
+                            if (item.ENDDT !== null)
+                                item.ENDDT = _this.formatDate(item.ENDDT) + " " + _this.formatTime(item.ENDTM);
+
+                            if (item.UPDATEDDT !== null)
+                                item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                        })
+
+                        var oJSONModel = new sap.ui.model.json.JSONModel();
+                        oJSONModel.setData(data);
+                        _this.getView().setModel(oJSONModel, "stat");
+
+                        _this.setRowReadMode("stat");
+
+                        _this.closeLoadingDialog();
+                    },
+                    error: function (err) { 
+                        console.log("error", err)
+                        _this.closeLoadingDialog();
+                    }
+                })
+            },
+
+            getMatDoc() {
+                var oModel = this.getOwnerComponent().getModel();
+                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+                var sFilter = "DLVNO eq '" + sDlvNo + "'";
+
+                oModel.read('/InfoMatDocSet', {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("InfoMatDocSet", data)
+
+                        data.results.forEach(item => {
+                            if (item.DOCDT !== null)
+                                item.DOCDT = _this.formatDate(item.DOCDT);
+
+                            if (item.POSTDT !== null)
+                                item.POSTDT = _this.formatDate(item.POSTDT);
+                        })
+
+                        var oJSONModel = new sap.ui.model.json.JSONModel();
+                        oJSONModel.setData(data);
+                        _this.getView().setModel(oJSONModel, "matDoc");
+
+                        _this.setRowReadMode("matDoc");
+
+                        _this.closeLoadingDialog();
+                    },
+                    error: function (err) { 
+                        console.log("error", err)
+                        _this.closeLoadingDialog();
+                    }
+                })
             },
 
             onAddDtl() {
@@ -113,6 +341,34 @@ sap.ui.define([
                     sbu: _this.getView().getModel("ui").getData().sbu,
                     dlvNo: "empty"
                 });
+            },
+
+            setHeaderValue() {
+                var oHeader = _this.getView().getModel("hdr").getData().results[0];
+
+                _this.byId("iptDlvNo").setValue(oHeader.DLVNO);
+                _this.byId("iptMvtType").setValue(oHeader.MVTTYPE);
+                _this.byId("iptStatus").setValue(oHeader.STATUS);
+                _this.byId("dpDocDt").setValue(oHeader.DOCDT);
+                _this.byId("iptReqDt").setValue(oHeader.REQDT);
+
+                _this.byId("iptWarehouse").setValue(oHeader.WAREHOUSE);
+                _this.byId("iptIssPlant").setValue(oHeader.ISSPLANT);
+                _this.byId("iptIssSloc").setValue(oHeader.ISSSLOC);
+                _this.byId("iptRcvPlant").setValue(oHeader.RCVPLANT);
+                _this.byId("iptRcvSloc").setValue(oHeader.RCVSLOC);
+
+                _this.byId("dpPostDt").setValue(oHeader.POSTDT);
+                _this.byId("dpActIssDt").setValue(oHeader.ACTISSDT);
+                _this.byId("iptRefDocNo").setValue(oHeader.REFDOCNO);
+                _this.byId("dpRefDocDt").setValue(oHeader.REFDOCDT);
+                _this.byId("iptHdrText").setValue(oHeader.HDRTEXT);
+
+                _this.byId("chkDeleted").setSelected(oHeader.DELETED);
+                _this.byId("iptCreatedBy").setValue(oHeader.CREATEDBY);
+                _this.byId("iptCreatedDt").setValue(oHeader.CREATEDDT);
+                _this.byId("iptUpdatedBy").setValue(oHeader.UPDATEDBY);
+                _this.byId("iptUpdatedDt").setValue(oHeader.UPDATEDDT);
             },
 
             onKeyUp(oEvent) {

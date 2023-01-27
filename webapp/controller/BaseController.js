@@ -73,6 +73,11 @@ sap.ui.define([
                     oJSONColumnsModel.setData(oData);
 
                     if (oData.results.length > 0) {
+                        oData.results.forEach(col => {
+                            if (col.ColumnName == "COMPLETE")
+                            col.DataType =  "BOOLEAN";
+                        })
+                        
                         var aColumns = _this.setTableColumns(oColumns[tblModel], oData.results);   
                         _this._aColumns[tblModel] = aColumns["columns"];
                         _this._aFilterableColumns[tblModel] = aColumns["filterableColumns"]; 
@@ -82,6 +87,7 @@ sap.ui.define([
                         }
 
                         var tblProps = {
+                            aColumns: _this._aColumns[tblModel],
                             aFilterableColumns: _this._aFilterableColumns[tblModel],
                             aSortableColumns: _this._aSortableColumns[tblModel]
                         };
