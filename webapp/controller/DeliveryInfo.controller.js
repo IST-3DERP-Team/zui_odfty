@@ -35,7 +35,7 @@ sap.ui.define([
                 this.getView().setModel(new JSONModel({
                     sbu: oEvent.getParameter("arguments").sbu,
                     dlvNo: oEvent.getParameter("arguments").dlvNo,
-                    editModeHeader: false
+                    editModeHdr: false
                 }), "ui");
 
                 _this.initializeComponent();
@@ -106,7 +106,7 @@ sap.ui.define([
             },
 
             onAfterTableRender(pTableId, pTableProps) {
-                console.log(pTableId, pTableProps)
+                //console.log(pTableId, pTableProps)
             },
 
             getHdr() {
@@ -115,7 +115,7 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
                 var sFilter = "DLVNO eq '" + sDlvNo + "'";
-
+                
                 oModel.read("/InfoHeaderSet", {
                     urlParameters: {
                         "$filter": sFilter
@@ -164,6 +164,16 @@ sap.ui.define([
                         _this.closeLoadingDialog();
                     }
                 })
+            },
+
+            onEditHdr() {
+                var oData = _this.getView().getModel("hdr").getProperty("/results/0");
+                if (oData.STATUS == "54") {
+                    MessageBox.warning(_oCaption.WARN_EDIT_NOT_ALLOW);
+                    return;
+                }
+
+                _this.setControlEditMode("hdr", true);
             },
 
             getHu() {
@@ -234,6 +244,13 @@ sap.ui.define([
                         _this.closeLoadingDialog();
                     }
                 })
+            },
+
+            onAddDtl() {
+                _this._router.navTo("RoutePicking", {
+                    sbu: _this.getView().getModel("ui").getData().sbu,
+                    dlvNo: "empty"
+                });
             },
 
             getShip() {
@@ -336,13 +353,6 @@ sap.ui.define([
                 })
             },
 
-            onAddDtl() {
-                _this._router.navTo("RoutePicking", {
-                    sbu: _this.getView().getModel("ui").getData().sbu,
-                    dlvNo: "empty"
-                });
-            },
-
             setHeaderValue() {
                 var oHeader = _this.getView().getModel("hdr").getData().results[0];
 
@@ -369,6 +379,76 @@ sap.ui.define([
                 _this.byId("iptCreatedDt").setValue(oHeader.CREATEDDT);
                 _this.byId("iptUpdatedBy").setValue(oHeader.UPDATEDBY);
                 _this.byId("iptUpdatedDt").setValue(oHeader.UPDATEDDT);
+            },
+
+            setControlEditMode(pType, pEditable) {
+
+                if (pType == "hdr") {
+
+                    // Header
+                    this.byId("btnEditHdr").setVisible(!pEditable);
+                    this.byId("btnDeleteHdr").setVisible(!pEditable);
+                    this.byId("btnPostHdr").setVisible(!pEditable);
+                    this.byId("btnRefreshHdr").setVisible(!pEditable);
+                    this.byId("btnPrintHdr").setVisible(!pEditable);
+                    this.byId("btnSaveHdr").setVisible(pEditable);
+                    this.byId("btnCancelHdr").setVisible(pEditable);
+
+                    this.setReqField("hdr", pEditable);
+                    this.getView().getModel("ui").setProperty("/editModeHdr", pEditable);
+
+                    // HU
+                    this.byId("btnEditHu").setEnabled(!pEditable);
+                    this.byId("btnDeleteHu").setEnabled(!pEditable);
+                    this.byId("btnRefreshHu").setEnabled(!pEditable);
+
+                    // Detail
+                    this.byId("btnAddDtl").setEnabled(!pEditable);
+                    this.byId("btnPickDtl").setEnabled(!pEditable);
+                    this.byId("btnDeleteDtl").setEnabled(!pEditable);
+                    this.byId("btnRefreshDtl").setEnabled(!pEditable);
+
+                    // Shipment
+                    this.byId("btnEditShip").setEnabled(!pEditable);
+                    this.byId("btnRefreshShip").setEnabled(!pEditable);
+                    
+                    // Status
+                    this.byId("btnRefreshStat").setEnabled(!pEditable);
+
+                    // Material Document
+                    this.byId("btnRefreshMatDoc").setEnabled(!pEditable);
+                }
+            },
+
+            setReqField(pType, pEditable) {
+                // if (pType == "header") {
+                //     var fields = ["feDocDt", "feReqDt", "feIssPlant", "feIssSloc", "feRcvPlant", "feRcvSloc", "feShipMode"];
+
+                //     fields.forEach(id => {
+                //         if (pEditable) {
+                //             this.byId(id).setLabel("*" + this.byId(id).getLabel());
+                //             this.byId(id)._oLabel.addStyleClass("requiredField");
+                //         } else {
+                //             this.byId(id).setLabel(this.byId(id).getLabel().replaceAll("*", ""));
+                //             this.byId(id)._oLabel.removeStyleClass("requiredField");
+                //         }
+                //     })
+                // } else {
+                //     var oTable = this.byId(pType + "Tab");
+
+                //     oTable.getColumns().forEach((col, idx) => {
+                //         if (col.getLabel().getText().includes("*")) {
+                //             col.getLabel().setText(col.getLabel().getText().replaceAll("*", ""));
+                //         }
+
+                //         this._aColumns[pType].filter(item => item.label === col.getLabel().getText())
+                //             .forEach(ci => {
+                //                 if (ci.required) {
+                //                     col.getLabel().removeStyleClass("requiredField");
+                //                 }
+                //             })
+                //     })
+                // }
             },
 
             onKeyUp(oEvent) {
@@ -425,6 +505,7 @@ sap.ui.define([
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
                 oCaptionParam.push({CODE: "CONFIRM_PROCEED_CLOSE"});
+                oCaptionParam.push({CODE: "WARN_EDIT_NOT_ALLOW"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

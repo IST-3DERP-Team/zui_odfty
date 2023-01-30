@@ -15,13 +15,13 @@
             <VBox id="vbMain" fitContainer="true">
                 <Toolbar id="TB1" style="Clear">
                     <ToolbarSpacer />
-                    <Button id="btnEditHeader" type="Ghost" icon="sap-icon://edit" press="onEditHeader" visible="true"/>
-                    <Button id="btnDeleteHeader" type="Ghost" icon="sap-icon://delete" press="onDeleteHeader" visible="true"/> 
-                    <Button id="btnPostHeader" type="Ghost" icon="sap-icon://settings" press="onSetStatusHeader" visible="true" tooltip="{caption>/SETSTATUS}"/> 
-                    <Button id="btnRefreshHeader" type="Ghost" icon="sap-icon://refresh" press="onRefreshHeader" visible="true"/> 
-                    <Button id="btnPrintHeader" type="Ghost" icon="sap-icon://print" press="onPrintHeader" visible="true"/> 
-                    <Button id="btnSaveHeader" type="Ghost" icon="sap-icon://save" press="onSaveHeader" visible="false"/> 
-                    <Button id="btnCancelHeader" type="Ghost" icon="sap-icon://sys-cancel" press="onCancelHeader" visible="false"/> 
+                    <Button id="btnEditHdr" type="Ghost" icon="sap-icon://edit" press="onEditHdr" visible="true"/>
+                    <Button id="btnDeleteHdr" type="Ghost" icon="sap-icon://delete" press="onDeleteHdr" visible="true"/> 
+                    <Button id="btnPostHdr" type="Ghost" icon="sap-icon://settings" press="onSetStatusHdr" visible="true" tooltip="{caption>/SETSTATUS}"/> 
+                    <Button id="btnRefreshHdr" type="Ghost" icon="sap-icon://refresh" press="onRefreshHdr" visible="true"/> 
+                    <Button id="btnPrintHdr" type="Ghost" icon="sap-icon://print" press="onPrintHdr" visible="true"/> 
+                    <Button id="btnSaveHdr" type="Ghost" icon="sap-icon://save" press="onSaveHdr" visible="false"/> 
+                    <Button id="btnCancelHdr" type="Ghost" icon="sap-icon://sys-cancel" press="onCancelHdr" visible="false"/> 
                 </Toolbar>
                     <f:Form id="frmHeader" editable="true" class="sapUiNoContentPadding" width="100%">
                         <f:layout>
@@ -49,7 +49,7 @@
                                         <f:fields>
                                             <DatePicker
                                                 id="dpDocDt"
-                                                editable="{ui>/editModeHeader}"/>
+                                                editable="{ui>/editModeHdr}"/>
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement id="feReqDt" label="{caption>/REQDT}">  
@@ -94,31 +94,31 @@
                                         <f:fields>
                                             <DatePicker
                                                 id="dpPostDt"
-                                                editable="{ui>/editModeHeader}"/>
+                                                editable="{ui>/editModeHdr}"/>
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement label="{caption>/ACTISSDT}">  
                                         <f:fields>
                                             <DatePicker
                                                 id="dpActIssDt"
-                                                editable="{ui>/editModeHeader}"/>
+                                                editable="{ui>/editModeHdr}"/>
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement label="{caption>/REFDOCNO}">  
                                         <f:fields>
-                                            <Input id="iptRefDocNo" editable="{ui>/editModeHeader}" />
+                                            <Input id="iptRefDocNo" editable="{ui>/editModeHdr}" />
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement label="{caption>/REFDOCDT}">  
                                         <f:fields>
                                             <DatePicker
                                                 id="dpRefDocDt"
-                                                editable="{ui>/editModeHeader}"/>
+                                                editable="{ui>/editModeHdr}"/>
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement label="{caption>/HDRTEXT}">  
                                         <f:fields>
-                                            <Input id="iptHdrText" editable="{ui>/editModeHeader}" />
+                                            <Input id="iptHdrText" editable="{ui>/editModeHdr}" />
                                         </f:fields>
                                     </f:FormElement>
                                 </f:formElements>
