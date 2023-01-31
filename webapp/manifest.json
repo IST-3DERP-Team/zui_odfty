@@ -189,7 +189,7 @@
                 },
                 {
                     "name": "RouteReservation",
-                    "pattern": "Reservation/{sbu},{dlvType},{mvtType},{srcTbl}",
+                    "pattern": "Reservation/{sbu},{dlvType},{mvtType},{srcTbl},{noRangeCd}",
                     "greedy": false,
                     "target": [
                         "TargetReservation"

@@ -168,12 +168,113 @@ sap.ui.define([
 
             onEditHdr() {
                 var oData = _this.getView().getModel("hdr").getProperty("/results/0");
-                if (oData.STATUS == "54") {
+                if (oData.STATUS == "54" || oData.DELETED == true) {
                     MessageBox.warning(_oCaption.WARN_EDIT_NOT_ALLOW);
                     return;
                 }
 
                 _this.setControlEditMode("hdr", true);
+            },
+
+            onDeleteHdr() {
+                var oData = _this.getView().getModel("hdr").getProperty("/results/0");
+
+                if (oData.DELETED) {
+                    MessageBox.warning(_oCaption.WARN_ALREADY_DELETED);
+                    return;
+                }
+
+                if (oData.STATUS != "50") {
+                    MessageBox.warning(_oCaption.WARN_DELETE_NOT_ALLOW);
+                    return;
+                }
+
+                MessageBox.confirm(_oCaption.INFO_PROCEED_DELETE, {
+                    actions: ["Yes", "No"],
+                    onClose: function (sAction) {
+                        if (sAction === "Yes") {
+                            _this.showLoadingDialog("Deleting...");
+
+                            var sEntitySet = "/InfoHeaderTblSet(DLVNO='" + oData.DLVNO + "')";
+                            var param = {
+                                DELETED: "X"
+                            };
+
+                            var oModel = _this.getOwnerComponent().getModel();
+                            console.log("onDeleteHeader param", sEntitySet, param)
+                            oModel.update(sEntitySet, param, {
+                                method: "PUT",
+                                success: function(data, oResponse) {
+                                    console.log(sEntitySet, data, oResponse);
+                                    MessageBox.information(oData.DLVNO + " is now deleted.")
+                                    _this.onRefreshHdr();
+                                },
+                                error: function(err) {
+                                    console.log("error", err)
+                                    _this.closeLoadingDialog();
+                                }
+                            });
+                        }
+                    }
+                });
+            },
+
+            onPostHdr() {
+
+            },
+
+            onRefreshHdr() {
+                _this.getHdr();
+            },
+
+            onSaveHdr() {
+                var oData = _this.getView().getModel("hdr").getProperty("/results/0");
+                var oModel = this.getOwnerComponent().getModel();
+
+                var param = {};
+                if (_this.byId("dpDocDt").getValue()) 
+                    param.DOCDT = _this.formatDate(new Date(_this.byId("dpDocDt").getValue())) + "T00:00:00";
+
+                if (_this.byId("dpPostDt").getValue()) 
+                    param.POSTDT = _this.formatDate(new Date(_this.byId("dpPostDt").getValue())) + "T00:00:00";
+
+                if (_this.byId("dpActIssDt").getValue()) 
+                    param.ACTDLVDT = _this.formatDate(new Date(_this.byId("dpActIssDt").getValue())) + "T00:00:00";
+
+                param.REFDOC = _this.byId("iptRefDocNo").getValue();
+
+                if (_this.byId("dpRefDocDt").getValue()) 
+                    param.REFDOCDT = _this.formatDate(new Date(_this.byId("dpRefDocDt").getValue())) + "T00:00:00";
+
+                param.HDRTEXT = _this.byId("iptHdrText").getValue();
+
+                var sEntitySet = "/InfoHeaderTblSet(DLVNO='" + oData.DLVNO + "')";
+
+                console.log("InfoHeaderTblSet param", sEntitySet, param)
+                oModel.update(sEntitySet, param, {
+                    method: "PUT",
+                    success: function(data, oResponse) {
+                        console.log(sEntitySet, data, oResponse);
+                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                        _this.setControlEditMode("hdr", false);
+                        _this.onRefreshHdr();
+                    },
+                    error: function(err) {
+                        console.log("error", err)
+                        _this.closeLoadingDialog();
+                    }
+                });
+            },
+
+            onCancelHdr() {
+                MessageBox.confirm(_oCaption.CONFIRM_DISREGARD_CHANGE, {
+                    actions: ["Yes", "No"],
+                    onClose: function (sAction) {
+                        if (sAction == "Yes") {
+                            _this.setControlEditMode("hdr", false);
+                        }
+                    }
+                });
             },
 
             getHu() {
@@ -209,6 +310,10 @@ sap.ui.define([
                         _this.closeLoadingDialog();
                     }
                 })
+            },
+
+            onRefreshHu() {
+                _this.getHu();
             },
 
             getDtl() {
@@ -253,6 +358,10 @@ sap.ui.define([
                 });
             },
 
+            onRefreshDtl() {
+                _this.getDtl();
+            },
+
             getShip() {
                 var oModel = this.getOwnerComponent().getModel();
                 var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
@@ -278,6 +387,10 @@ sap.ui.define([
                         _this.closeLoadingDialog();
                     }
                 })
+            },
+
+            onRefreshShip() {
+                _this.getShip();
             },
 
             getStat() {
@@ -318,6 +431,10 @@ sap.ui.define([
                 })
             },
 
+            onRefreshStat() {
+                _this.getStat();
+            },
+
             getMatDoc() {
                 var oModel = this.getOwnerComponent().getModel();
                 var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
@@ -351,6 +468,10 @@ sap.ui.define([
                         _this.closeLoadingDialog();
                     }
                 })
+            },
+
+            onRefreshMatDoc() {
+                _this.getMatDoc();
             },
 
             setHeaderValue() {
@@ -506,6 +627,11 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
                 oCaptionParam.push({CODE: "CONFIRM_PROCEED_CLOSE"});
                 oCaptionParam.push({CODE: "WARN_EDIT_NOT_ALLOW"});
+                oCaptionParam.push({CODE: "CONFIRM_DISREGARD_CHANGE"});
+                oCaptionParam.push({CODE: "WARN_ALREADY_DELETED"});
+                oCaptionParam.push({CODE: "WARN_DELETE_NOT_ALLOW"});
+                oCaptionParam.push({CODE: "INFO_PROCEED_DELETE"});
+                oCaptionParam.push({CODE: "INFO_SAVE_SUCCESS"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

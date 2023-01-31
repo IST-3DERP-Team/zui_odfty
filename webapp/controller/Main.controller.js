@@ -308,7 +308,8 @@ sap.ui.define([
                     sbu: _this.getView().getModel("ui").getData().sbu,
                     dlvType: oData.DLVTYPE,
                     mvtType: oData.MVTTYPE,
-                    srcTbl: oData.SRCTBL
+                    srcTbl: oData.SRCTBL,
+                    noRangeCd: oData.NORANGECD
                 });
 
                 _this.closeLoadingDialog();

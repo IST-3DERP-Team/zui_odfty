@@ -19,6 +19,7 @@ sap.ui.define([
 
         var _this;
         var _oCaption = {};
+        var _startUpInfo;
 
         return BaseController.extend("zuiodfty.controller.Reservation", {
             onInit: function () {
@@ -36,7 +37,9 @@ sap.ui.define([
                     sbu: oEvent.getParameter("arguments").sbu,
                     dlvType: oEvent.getParameter("arguments").dlvType,
                     mvtType: oEvent.getParameter("arguments").mvtType,
-                    srcTbl: oEvent.getParameter("arguments").srcTbl
+                    srcTbl: oEvent.getParameter("arguments").srcTbl,
+                    noRangeCd: oEvent.getParameter("arguments").noRangeCd,
+                    dlvNo: ""
                 }), "ui");
 
                 _this.initializeComponent();
@@ -45,6 +48,12 @@ sap.ui.define([
             initializeComponent() {
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
                 _this.showLoadingDialog("Loading...");
+
+                var oModelStartUp= new sap.ui.model.json.JSONModel();
+                oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
+                    _startUpInfo = oModelStartUp.oData
+                    console.log(oModelStartUp, oModelStartUp.oData);
+                });
 
                 var aTableList = [];
                 aTableList.push({
@@ -128,10 +137,92 @@ sap.ui.define([
             },
 
             onAdd() {
-                _this._router.navTo("RouteDeliveryInfo", {
-                    sbu: _this.getView().getModel("ui").getData().sbu,
-                    dlvNo: "empty",
-                    plant: "empty"
+                var oTable = this.byId("rsvTab");
+                var aSelIdx = oTable.getSelectedIndices();
+
+                if (aSelIdx.length === 0) {
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
+                    return;
+                }
+
+                var aOrigSelIdx = [];
+                aSelIdx.forEach(i => {
+                    aOrigSelIdx.push(oTable.getBinding("rows").aIndices[i]);
+                })
+
+                var aData = _this.getView().getModel("rsv").getData().results;
+                var aDataSel = [];
+                var aPlant = [];
+                var isError = false;
+                aOrigSelIdx.forEach(i => {
+                    var oData = aData[i];
+                    aDataSel.push(oData);
+
+                    if (!aPlant.includes(oData.ISSPLANT)) aPlant.push(oData.ISSPLANT);
+                    if (aPlant.length > 1) isError = true;
+                });
+
+                if (isError) {
+                    MessageBox.warning(_oCaption.ISSPLANT + " " + _oCaption.INFO_SHOULD_BE_SAME);
+                    return;
+                }
+
+                var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
+                var oParamGetNumber = {};
+
+                oParamGetNumber["N_GetNumberParam"] = [{
+                    IUserid: _startUpInfo.id,
+                    INorangecd: _this.getView().getModel("ui").getProperty("/noRangeCd"),
+                    IKeycd: ""
+                }];
+                oParamGetNumber["N_GetNumberReturn"] = [];
+
+                oModelRFC.create("/GetNumberSet", oParamGetNumber, {
+                    method: "POST",
+                    success: function(oResult, oResponse) {
+                        console.log("GetNumberSet", oResult, oResponse);
+
+                        if (oResult.EReturnno.length > 0) {
+                            _this.getView().getModel("ui").setProperty("/dlvNo", oResult.EReturnno);
+                            _this.onPopulateDlv(aDataSel);
+                            
+                        } else {
+                            var sMessage = oResult.N_GetNumberReturn.results[0].Type + ' - ' + oResult.N_GetNumberReturn.results[0].Message;
+                            sap.m.MessageBox.error(sMessage);
+                        }
+                    },
+                    error: function(err) {
+                        sap.m.MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
+                        _this.closeLoadingDialog();
+                    }
+                });
+
+                // _this._router.navTo("RouteDeliveryInfo", {
+                //     sbu: _this.getView().getModel("ui").getData().sbu,
+                //     dlvNo: "empty",
+                //     plant: "empty"
+                // });
+            },
+
+            onPopulateDlv(pData) {
+                var oModel = this.getOwnerComponent().getModel();
+                var oDataUI = _this.getView().getModel("ui").getData();
+
+                var param = {
+                    DLVNO: oDataUI.dlvNo,
+                    DLVTYP: oDataUI.dlvType
+                };
+                
+                oModel.create("/InfoHeaderTblSet", param, {
+                    method: "POST",
+                    success: function(data, oResponse) {
+                        console.log("InfoHeaderTblSet create", data)
+                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                    },
+                    error: function(err) {
+                        console.log("error", err)
+                        _this.closeLoadingDialog();
+                    }
                 });
             },
 
@@ -172,9 +263,13 @@ sap.ui.define([
                 var oCaptionResult = {};
                 var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
 
+                // Label
+                oCaptionParam.push({CODE: "ISSPLANT"});
+
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
                 oCaptionParam.push({CODE: "CONFIRM_PROCEED_CLOSE"});
+                oCaptionParam.push({CODE: "INFO_SHOULD_BE_SAME"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

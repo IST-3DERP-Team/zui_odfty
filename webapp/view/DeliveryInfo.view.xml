@@ -198,11 +198,11 @@
                                                 visible="true" />
                                             <Button id="btnRefreshHu" 
                                                 icon="sap-icon://refresh"
-                                                press="onRefresh('hu')" 
+                                                press="onRefreshHu" 
                                                 visible="true" />
                                             <Button id="btnSaveHu" 
                                                 icon="sap-icon://save"
-                                                press="onSave('hu')" 
+                                                press="onSaveHu" 
                                                 visible="false" />
                                             <Button id="btnCancelHu" 
                                                 icon="sap-icon://sys-cancel"
@@ -250,7 +250,7 @@
                                                 visible="true" />
                                             <Button id="btnRefreshDtl" 
                                                 icon="sap-icon://refresh"
-                                                press="onRefresh('dtl')" 
+                                                press="onRefreshDtl" 
                                                 visible="true" />
                                         </Toolbar>
                                     </uiT:extension>
@@ -286,11 +286,11 @@
                                                 visible="true"/>
                                             <Button id="btnRefreshShip" 
                                                 icon="sap-icon://refresh"
-                                                press="onRefresh('ship')" 
+                                                press="onRefreshShip" 
                                                 visible="true" />
                                             <Button id="btnSaveShip" 
                                                 icon="sap-icon://save"
-                                                press="onSave('ship')" 
+                                                press="onSaveShip" 
                                                 visible="false" />
                                             <Button id="btnCancelShip" 
                                                 icon="sap-icon://sys-cancel"
@@ -326,7 +326,7 @@
                                             <ToolbarSpacer/>
                                             <Button id="btnRefreshStat" 
                                                 icon="sap-icon://refresh"
-                                                press="onRefresh('stat')" 
+                                                press="onRefreshStat" 
                                                 visible="true" />
                                         </Toolbar>
                                     </uiT:extension>
@@ -358,7 +358,7 @@
                                             <ToolbarSpacer/>
                                             <Button id="btnRefreshMatDoc" 
                                                 icon="sap-icon://refresh"
-                                                press="onRefresh('matDoc')" 
+                                                press="onRefreshMatDoc" 
                                                 visible="true" />
                                         </Toolbar>
                                     </uiT:extension>
