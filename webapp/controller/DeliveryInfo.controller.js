@@ -32,6 +32,7 @@ sap.ui.define([
             },
 
             _routePatternMatched: function (oEvent) {
+                console.log("_routePatternMatched", oEvent)
                 this.getView().setModel(new JSONModel({
                     sbu: oEvent.getParameter("arguments").sbu,
                     dlvNo: oEvent.getParameter("arguments").dlvNo,
@@ -356,6 +357,18 @@ sap.ui.define([
                     sbu: _this.getView().getModel("ui").getData().sbu,
                     dlvNo: "empty"
                 });
+            },
+
+            onPickDtl() {
+                var oData = _this.getView().getModel("hdr").getData().results[0];
+                
+                if (oData.STATUS == "50") {
+                    _this._router.navTo("RoutePicking", {
+                        sbu: _this.getView().getModel("ui").getData().sbu,
+                        dlvNo: oData.DLVNO,
+                        mvtType: oData.MVTTYPE
+                    });
+                }
             },
 
             onRefreshDtl() {

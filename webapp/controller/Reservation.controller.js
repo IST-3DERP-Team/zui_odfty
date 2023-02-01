@@ -196,28 +196,68 @@ sap.ui.define([
                         _this.closeLoadingDialog();
                     }
                 });
-
-                // _this._router.navTo("RouteDeliveryInfo", {
-                //     sbu: _this.getView().getModel("ui").getData().sbu,
-                //     dlvNo: "empty",
-                //     plant: "empty"
-                // });
             },
 
             onPopulateDlv(pData) {
                 var oModel = this.getOwnerComponent().getModel();
                 var oDataUI = _this.getView().getModel("ui").getData();
+                var sCurrentDate = _this.formatDate(new Date());
 
+                // Populate Header
                 var param = {
                     DLVNO: oDataUI.dlvNo,
-                    DLVTYP: oDataUI.dlvType
+                    DLVTYP: oDataUI.dlvType,
+                    PLANDLVDT: sCurrentDate + "T00:00:00",
+                    ISSPLNT: pData[0].ISSPLANT,
+                    RCVPLNT: pData[0].RCVPLANT,
+                    RCVSLOC: pData[0].RCVSLOC,
+                    POSTDT: sCurrentDate + "T00:00:00",
+                    DOCDT: sCurrentDate + "T00:00:00",
+                    BWART: oDataUI.mvtType
                 };
                 
+                console.log("InfoHeaderTblSet param", param);
                 oModel.create("/InfoHeaderTblSet", param, {
                     method: "POST",
                     success: function(data, oResponse) {
-                        console.log("InfoHeaderTblSet create", data)
-                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                        console.log("InfoHeaderTblSet create", data);
+
+                        // Populate Details
+                        pData.forEach((item, idx) => {
+                            var paramDet = {
+                                DLVNO: oDataUI.dlvNo,
+                                DLVITEM: (idx + 1).toString(),
+                                PLANTCD: item.ISSPLANT,
+                                SLOC: item.ISSSLOC,
+                                MATNO: item.ISSMATNO,
+                                BATCH: item.ISSBATCH,
+                                DLVQTYORD: item.REQQTY,
+                                DLVQTYBSE: item.REQQTY,
+                                ORDUOM: item.UOM,
+                                BASEUOM: item.UOM,
+                                RSVNO: item.RSVNO,
+                                RSNUM: item.RSVNO,
+                                RSPOS: item.RSVITEM
+                            };
+
+                            console.log("InfoDetailTblSet param", paramDet);
+                            oModel.create("/InfoDetailTblSet", paramDet, {
+                                method: "POST",
+                                success: function(data, oResponse) {
+                                    console.log("InfoDetailTblSet create", data)
+                                    //MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+
+                                    _this._router.navTo("RouteDeliveryInfo", {
+                                        sbu: _this.getView().getModel("ui").getData().sbu,
+                                        dlvNo: _this.getView().getModel("ui").getData().dlvNo
+                                    });
+                                },
+                                error: function(err) {
+                                    console.log("error", err)
+                                    _this.closeLoadingDialog();
+                                }
+                            });
+                        })
                     },
                     error: function(err) {
                         console.log("error", err)

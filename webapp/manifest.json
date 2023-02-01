@@ -205,7 +205,7 @@
                 },
                 {
                     "name": "RoutePicking",
-                    "pattern": "DeliveryInfo/{sbu},{dlvNo}",
+                    "pattern": "Picking/{sbu},{dlvNo},{mvtType}",
                     "greedy": false,
                     "target": [
                         "TargetPicking"
