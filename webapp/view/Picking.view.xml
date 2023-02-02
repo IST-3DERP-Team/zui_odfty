@@ -68,6 +68,7 @@
                     enableColumnFreeze="true"
                     enableCellFilter="true"
                     selectionMode="Single"
+                    selectionBehavior="RowOnly"
                     firstVisibleRowChanged="onFirstVisibleRowChanged"
                     cellClick="onCellClick"
                     sort="onSorted"
@@ -95,7 +96,7 @@
                                 visible="true" />
                             <Button id="btnSavePickDtl" 
                                 icon="sap-icon://save"
-                                press="onSave('pickDtl')" 
+                                press="onSavePickDtl" 
                                 visible="false" />
                             <Button id="btnCancelPickDtl" 
                                 icon="sap-icon://sys-cancel"

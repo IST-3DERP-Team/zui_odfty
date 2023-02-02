@@ -221,7 +221,7 @@ sap.ui.define([
         setRowReadMode(pModel) {
             var oTable = this.byId(pModel + "Tab");
             oTable.getColumns().forEach((col, idx) => {     
-                this._aColumns[pModel].filter(item => item.label === col.getLabel().getText())
+                _this._aColumns[pModel].filter(item => item.label === col.getLabel().getText())
                     .forEach(ci => {
                         if (ci.type === "STRING" || ci.type === "NUMBER") {
                             col.setTemplate(new sap.m.Text({

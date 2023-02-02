@@ -163,15 +163,94 @@ sap.ui.define([
                         var iToQty = parseFloat(item.QTY) - iQty;
                         var iBalDtl = parseFloat(item.QTY) - iToQty;
 
-                        //_this.getView().getModel("pickDtl").setProperty("/results/" + idx.toString() + "/QTY", iQty);
-                        _this.getView().getModel("pickDtl").setProperty("/results/" + idx.toString() + "/TOQTY", iToQty);
-                        _this.getView().getModel("pickDtl").setProperty("/results/" + idx.toString() + "/BALANCE", iBalDtl);
+                        _this.getView().getModel("pickDtl").setProperty("/results/" + idx.toString() + "/TOQTY", iToQty.toString());
+                        _this.getView().getModel("pickDtl").setProperty("/results/" + idx.toString() + "/BALANCE", iBalDtl).toString();
 
                         iBalHdr -= iToQty;
                     }
                 })
 
                 _this.setPickDtl();
+            },
+
+            onAddPickHdr() {
+                if (_aPickDtl.length > 0) {
+                    var oModel = this.getOwnerComponent().getModel();
+
+                    _aPickDtl.forEach((item, idx) => {
+                        var oDataHdr = _this.getView().getModel("pickHdr").getData().results.filter(x => 
+                                x.ISSPLANT == item.plantCd && x.ISSMATNO == item.matNo && 
+                                x.ISSBATCH == item.batch && x.ISSSLOC == item.sloc
+                            )[0];
+
+                        var oDataDtl = _this.getView().getModel("pickDtl").getData().results.filter(x => 
+                            x.HUID == item.huId && x.HUITEM == item.huItem
+                        )[0];
+
+                        var param = {
+                            DLVNO: oDataHdr.DLVNO,
+                            DLVITEM: oDataHdr.DLVITEM,
+                            SEQNO: "",
+                            PLANTCD: oDataHdr.ISSPLANT,
+                            SLOC: oDataHdr.ISSSLOC,
+                            MATNO: oDataHdr.ISSMATNO,
+                            BATCH: oDataHdr.ISSBATCH,
+                            PKGNO: oDataDtl.PKGNO,
+                            HUID: oDataDtl.HUID,
+                            HUITEM: oDataDtl.HUITEM,
+                            DLVQTYORD: item.toQty,
+                            ACTQTYORD: item.toQty,
+                            DLVQTYBSE: item.toQty,
+                            ACTQTYBSE: item.toQty,
+                            BASEUOM: oDataDtl.UOM,
+                            PKGGRSWT: oDataDtl.GROSSWT,
+                            PKGNETWT: oDataDtl.NETWT,
+                            WTUOM: oDataDtl.WEIGHTUOM,
+                            LNDIM: oDataDtl.LENGTH,
+                            WDDIM: oDataDtl.WIDTH,
+                            DIMUOM: oDataDtl.DIMUOM,
+                            BINCD: oDataDtl.BIN
+                        }
+                        
+                        console.log("InfoHUTblSet param", param);
+                        oModel.create("/InfoHUTblSet", param, {
+                            method: "POST",
+                            success: function(data, oResponse) {
+                                console.log("InfoHUTblSet create", data);
+        
+                                if (idx == _aPickDtl.length - 1) {
+                                    _this.closeLoadingDialog();
+                                }
+                            },
+                            error: function(err) {
+                                console.log("error", err)
+                                _this.closeLoadingDialog();
+                            }
+                        });
+
+                    })
+                } else {
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
+                }
+            },
+
+            onRefreshPickHdr() {
+                _aPickDtl = [];
+                _this.getPickHdr();
+            },
+
+            onCancelPickHdr() {
+                MessageBox.confirm(_oCaption.CONFIRM_PROCEED_CLOSE, {
+                    actions: ["Yes", "No"],
+                    onClose: function (sAction) {
+                        if (sAction == "Yes") {
+                            _this._router.navTo("RouteDeliveryInfo", {
+                                sbu: _this.getView().getModel("ui").getData().sbu,
+                                dlvNo: _this.getView().getModel("ui").getData().dlvNo
+                            }, true);
+                        }
+                    }
+                });
             },
 
             getPickDtl() {
@@ -190,12 +269,21 @@ sap.ui.define([
                         console.log("PickDetailSet read", data);
 
                         data.results.forEach((item, idx) => {
-                            item.BALANCE = parseFloat(item.QTY) - parseFloat(item.TOQTY)
+                            var iIdx = _aPickDtl.findIndex(x => x.huId == item.HUID && x.huItem == item.HUITEM);
+                            if (iIdx > -1) {
+                                item.TOQTY = parseFloat(_aPickDtl[iIdx].toQty).toString();
+                            }
+
+                            item.BALANCE = (parseFloat(item.QTY) - parseFloat(item.TOQTY)).toString();
                         });
 
                         var oJSONModel = new JSONModel();
                         oJSONModel.setData(data);
                         _this.getView().setModel(oJSONModel, "pickDtl");
+                        _this.setRowReadMode("pickDtl");
+
+                        // Set Pick Header
+                        _this.setPickHdr();
 
                         _this.closeLoadingDialog();
                     },
@@ -205,10 +293,156 @@ sap.ui.define([
                 })
             },
 
+            onAutoPickDtl() {
+                var oTable = this.byId("pickDtlTab");
+                var aSelIdx = oTable.getSelectedIndices();
+
+                if (aSelIdx.length === 0) {
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
+                    return;
+                }
+
+                var aOrigSelIdx = [];
+                aSelIdx.forEach(i => {
+                    aOrigSelIdx.push(oTable.getBinding("rows").aIndices[i]);
+                })
+
+                var oDataUI = _this.getView().getModel("ui").getData();
+                var oDataHdr = _this.getView().getModel("pickHdr").getData().results.filter(x => x.ISSPLANT == oDataUI.plantCd &&
+                    x.ISSMATNO == oDataUI.matNo && x.ISSBATCH == oDataUI.batch && x.ISSSLOC == oDataUI.sloc)[0];
+                var iBalHdr = parseFloat(oDataHdr.BALANCE);
+                var oDataDtl = _this.getView().getModel("pickDtl").getData().results[aOrigSelIdx[0]];
+                
+                var iQty = (parseFloat(oDataDtl.QTY) > iBalHdr ? (parseFloat(oDataDtl.QTY) - iBalHdr) : 0);
+                var iToQty = parseFloat(oDataDtl.QTY) - iQty;
+                var iBalDtl = parseFloat(oDataDtl.QTY) - iToQty;
+
+                _this.getView().getModel("pickDtl").setProperty("/results/" + (aOrigSelIdx[0]).toString() + "/TOQTY", iToQty);
+                _this.getView().getModel("pickDtl").setProperty("/results/" + (aOrigSelIdx[0]).toString() + "/BALANCE", iBalDtl);
+
+                _this.setPickDtl();
+            },
+
+            onEditPickDtl() {
+                var aRows = this.getView().getModel("pickDtl").getData().results;
+
+                if (aRows.length > 0) {
+                    _this.byId("btnAutoPickDtl").setVisible(false);
+                    _this.byId("btnEditPickDtl").setVisible(false);
+                    _this.byId("btnRefreshPickDtl").setVisible(false);
+                    _this.byId("btnSavePickDtl").setVisible(true);
+                    _this.byId("btnCancelPickDtl").setVisible(true);
+    
+                    this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel("pickDtl").getData());
+                    _this.setRowEditMode("pickDtl");
+                } else {
+                    MessageBox.warning(_oCaption.INFO_NO_DATA_EDIT);
+                }
+            },
+
+            onRefreshPickDtl() {
+                _this.getPickDtl();
+            },
+
+            onSavePickDtl() {
+                var oTable = this.byId("pickDtlTab");
+                var aEditedRows = this.getView().getModel("pickDtl").getData().results.filter(item => item.Edited === true);
+
+                if (aEditedRows.length > 0) {
+                    // Validation UOM
+                    var sErrType = "";
+                    var sUom = "";
+                    var iUomDecimal = 0;
+
+                    aEditedRows.forEach((item, idx) => {
+                        var aNum = parseFloat(item.TOQTY).toString().split(".");
+
+                        if (item.UOMDECIMAL == 0) {
+                            if (!Number.isInteger(parseFloat(item.TOQTY))) sErrType = "UOMDECIMAL";
+                        } else if (item.UOMDECIMAL > 0) {
+                            if (aNum.length == 1) sErrType = "UOMDECIMAL";
+                            else if (aNum[1].length != item.UOMDECIMAL) sErrType = "UOMDECIMAL";
+                        }
+                        
+                        if (parseFloat(item.TOQTY) > parseFloat(item.QTY)) {
+                            sErrType = "OVERQTY";
+                        }
+
+                        if (sErrType) {
+                            sUom = item.UOM;
+                            iUomDecimal = item.UOMDECIMAL;
+                        }
+                    });
+
+                    if (sErrType) {
+                        var sErrMsg = "";
+                        
+                        if (sErrType == "UOMDECIMAL") {
+                            sErrMsg = "UOM " + sUom + " should only have " + iUomDecimal.toString() + " decimal place(s).";
+                        } else if (sErrType == "OVERQTY") {
+                            sErrMsg = "TO Quantity is greater than Quantity.";
+                        }
+
+                        MessageBox.warning(sErrMsg);
+                        return;
+                    }
+
+                    aEditedRows.forEach((item, idx) => {
+                        var iIdx = _this.getView().getModel("pickDtl").getData().results.filter(x => 
+                                x.HUID == item.HUID && x.HUITEM == item.HUITEM
+                            );
+                        
+                        _this.getView().getModel("pickDtl").setProperty("/results/" + iIdx.toString() + "/TOQTY", item.TOQTY);
+                        
+                    })
+
+                    _this.setPickDtl();
+                    _this.getPickDtl();
+
+                    _this.byId("btnAutoPickDtl").setVisible(true);
+                    _this.byId("btnEditPickDtl").setVisible(true);
+                    _this.byId("btnRefreshPickDtl").setVisible(true);
+                    _this.byId("btnSavePickDtl").setVisible(false);
+                    _this.byId("btnCancelPickDtl").setVisible(false);
+                } else {
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
+                }
+            },
+
+            onCancelPickDtl() {
+                var aEditedRows = this.getView().getModel("pickDtl").getData().results.filter(item => item.Edited === true);
+
+                if (aEditedRows.length > 0) {
+                    MessageBox.confirm(_oCaption.CONFIRM_DISREGARD_CHANGE, {
+                        actions: ["Yes", "No"],
+                        onClose: function (sAction) {
+                            if (sAction == "Yes") {
+
+                                _this.byId("btnAutoPickDtl").setVisible(true);
+                                _this.byId("btnEditPickDtl").setVisible(true);
+                                _this.byId("btnRefreshPickDtl").setVisible(true);
+                                _this.byId("btnSavePickDtl").setVisible(false);
+                                _this.byId("btnCancelPickDtl").setVisible(false);
+
+                                _this.onRefreshPickDtl();
+                            }
+                        }
+                    });
+                } else {
+                    _this.byId("btnAutoPickDtl").setVisible(true);
+                                _this.byId("btnEditPickDtl").setVisible(true);
+                                _this.byId("btnRefreshPickDtl").setVisible(true);
+                                _this.byId("btnSavePickDtl").setVisible(false);
+                                _this.byId("btnCancelPickDtl").setVisible(false);
+
+                    _this.onRefreshPickDtl();
+                }
+            },
+
             setPickDtl() {
                 // Save Pick Detail
                 _this.getView().getModel("pickDtl").getData().results.forEach(item => {
-                    if (parseFloat(item.QTY) != parseFloat(item.BALANCE)) {
+                    if (parseFloat(item.TOQTY) > 0) {
                         var iIdx = _aPickDtl.findIndex(x => x.huId == item.HUID && x.huItem == item.HUITEM);
 
                         if (iIdx == -1) {
@@ -219,11 +453,9 @@ sap.ui.define([
                                 matNo: item.MATNO,
                                 batch: item.BATCH,
                                 sloc: item.SLOC,
-                                qty: item.QTY,
                                 toQty: item.TOQTY
                             })
                         } else {
-                            _aPickDtl[iIdx].qty = item.QTY,
                             _aPickDtl[iIdx].toQty = item.TOQTY
                         }
                     }
@@ -257,6 +489,17 @@ sap.ui.define([
                 _this.getView().getModel("pickHdr").setProperty("/results/" + (aOrigSelIdx[0]).toString() + "/BALANCE", iBalHdr.toString());
             },
 
+            onInputLiveChange(oEvent) {},
+
+            onNumberLiveChange(oEvent) {
+                var oSource = oEvent.getSource();
+                var sRowPath = oSource.getBindingInfo("value").binding.oContext.sPath;
+                var sModel = oSource.getBindingInfo("value").parts[0].model;
+                var dValue = oEvent.getParameters().value;
+
+                _this.getView().getModel(sModel).setProperty(sRowPath + '/Edited', true);
+            },
+
             onKeyUp(oEvent) {
                 if ((oEvent.key === "ArrowUp" || oEvent.key === "ArrowDown") && oEvent.srcControl.sParentAggregationName === "rows") {
                     var oTable = this.byId(oEvent.srcControl.sId).oParent;
@@ -286,6 +529,9 @@ sap.ui.define([
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
                 oCaptionParam.push({CODE: "CONFIRM_PROCEED_CLOSE"});
+                oCaptionParam.push({CODE: "INFO_NO_DATA_EDIT"});
+                oCaptionParam.push({CODE: "CONFIRM_DISREGARD_CHANGE"});
+                oCaptionParam.push({CODE: "WARN_NO_DATA_MODIFIED"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",
