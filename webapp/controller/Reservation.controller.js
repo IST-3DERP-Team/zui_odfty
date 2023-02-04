@@ -35,17 +35,19 @@ sap.ui.define([
             _routePatternMatched: function (oEvent) {
                 this.getView().setModel(new JSONModel({
                     sbu: oEvent.getParameter("arguments").sbu,
+                    dlvNo: oEvent.getParameter("arguments").dlvNo,
                     dlvType: oEvent.getParameter("arguments").dlvType,
                     mvtType: oEvent.getParameter("arguments").mvtType,
                     srcTbl: oEvent.getParameter("arguments").srcTbl,
                     noRangeCd: oEvent.getParameter("arguments").noRangeCd,
-                    dlvNo: ""
+                    rsvList: oEvent.getParameter("arguments").rsvList
                 }), "ui");
 
                 _this.initializeComponent();
             },
 
             initializeComponent() {
+                console.log("initializeComponent")
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
                 _this.showLoadingDialog("Loading...");
 
@@ -78,12 +80,14 @@ sap.ui.define([
 
                 this.byId("rsvTab").addEventDelegate(oTableEventDelegate);
 
+                _this.getRsv();
+
                 _this.closeLoadingDialog();
             },
 
             onAfterTableRender(pTableId, pTableProps) {
                 if (pTableId == "rsvTab") {
-                    _this.getRsv();
+                    
                 }
             },
 
@@ -92,16 +96,27 @@ sap.ui.define([
 
                 var oTable = _this.getView().byId("rsvTab");
                 var oModel = _this.getOwnerComponent().getModel();
-                var sMvtType = _this.getView().getModel("ui").getData().mvtType;
-                var sSrcTbl = _this.getView().getModel("ui").getData().srcTbl;
+                var oDataUI = _this.getView().getModel("ui").getData();
+                var sMvtType = oDataUI.mvtType;
+                var sSrcTbl = oDataUI.srcTbl;
                 
-                var sFilter = "MVTTYPE eq '" + sMvtType + "' and SRCTBL eq '" + sSrcTbl + "'";
+                var sFilter = "MVTTYPE eq '" + sMvtType + "' and SRCTBL eq '" + sSrcTbl + "'";    
                 oModel.read('/ReservationSet', {
                     urlParameters: {
                         "$filter": sFilter
                     },
                     success: function (data, response) {
                         console.log("ReservationSet", data)
+
+                        if (oDataUI.rsvList != "empty") {
+                            var aRsvList = oDataUI.rsvList.split();
+                            aRsvList.forEach(item => {
+                                var iIdx = data.results.findIndex(x => x.RSVNO + x.RSVITEM == item);
+                                if (iIdx > -1) {
+                                    data.results.splice(iIdx, 1);
+                                }
+                            })
+                        }
 
                         data.results.forEach(item => {
                             item.REQDT = _this.formatDate(item.REQDT);
@@ -167,43 +182,48 @@ sap.ui.define([
                     return;
                 }
 
-                var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
-                var oParamGetNumber = {};
+                if (_this.getView().getModel("ui").getData().dlvNo == "empty") {
 
-                oParamGetNumber["N_GetNumberParam"] = [{
-                    IUserid: _startUpInfo.id,
-                    INorangecd: _this.getView().getModel("ui").getProperty("/noRangeCd"),
-                    IKeycd: ""
-                }];
-                oParamGetNumber["N_GetNumberReturn"] = [];
-
-                oModelRFC.create("/GetNumberSet", oParamGetNumber, {
-                    method: "POST",
-                    success: function(oResult, oResponse) {
-                        console.log("GetNumberSet", oResult, oResponse);
-
-                        if (oResult.EReturnno.length > 0) {
-                            _this.getView().getModel("ui").setProperty("/dlvNo", oResult.EReturnno);
-                            _this.onPopulateDlv(aDataSel);
-                            
-                        } else {
-                            var sMessage = oResult.N_GetNumberReturn.results[0].Type + ' - ' + oResult.N_GetNumberReturn.results[0].Message;
-                            sap.m.MessageBox.error(sMessage);
+                    var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
+                    var oParamGetNumber = {};
+    
+                    oParamGetNumber["N_GetNumberParam"] = [{
+                        IUserid: _startUpInfo.id,
+                        INorangecd: _this.getView().getModel("ui").getProperty("/noRangeCd"),
+                        IKeycd: ""
+                    }];
+                    oParamGetNumber["N_GetNumberReturn"] = [];
+    
+                    oModelRFC.create("/GetNumberSet", oParamGetNumber, {
+                        method: "POST",
+                        success: function(oResult, oResponse) {
+                            console.log("GetNumberSet", oResult, oResponse);
+    
+                            if (oResult.EReturnno.length > 0) {
+                                _this.getView().getModel("ui").setProperty("/dlvNo", oResult.EReturnno);
+                                _this.onPopulateDlvHdr(aDataSel);
+                                
+                            } else {
+                                var sMessage = oResult.N_GetNumberReturn.results[0].Type + ' - ' + oResult.N_GetNumberReturn.results[0].Message;
+                                sap.m.MessageBox.error(sMessage);
+                            }
+                        },
+                        error: function(err) {
+                            sap.m.MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
+                            _this.closeLoadingDialog();
                         }
-                    },
-                    error: function(err) {
-                        sap.m.MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
-                        _this.closeLoadingDialog();
-                    }
-                });
+                    });
+
+                } else {
+                    _this.onPopulateDlvDtl(aDataSel);
+                }
             },
 
-            onPopulateDlv(pData) {
+            onPopulateDlvHdr(pData) {
                 var oModel = this.getOwnerComponent().getModel();
                 var oDataUI = _this.getView().getModel("ui").getData();
                 var sCurrentDate = _this.formatDate(new Date());
 
-                // Populate Header
                 var param = {
                     DLVNO: oDataUI.dlvNo,
                     DLVTYP: oDataUI.dlvType,
@@ -221,49 +241,90 @@ sap.ui.define([
                     method: "POST",
                     success: function(data, oResponse) {
                         console.log("InfoHeaderTblSet create", data);
-
-                        // Populate Details
-                        pData.forEach((item, idx) => {
-                            var paramDet = {
-                                DLVNO: oDataUI.dlvNo,
-                                DLVITEM: (idx + 1).toString(),
-                                PLANTCD: item.ISSPLANT,
-                                SLOC: item.ISSSLOC,
-                                MATNO: item.ISSMATNO,
-                                BATCH: item.ISSBATCH,
-                                DLVQTYORD: item.REQQTY,
-                                DLVQTYBSE: item.REQQTY,
-                                ORDUOM: item.UOM,
-                                BASEUOM: item.UOM,
-                                RSVNO: item.RSVNO,
-                                RSNUM: item.RSVNO,
-                                RSPOS: item.RSVITEM
-                            };
-
-                            console.log("InfoDetailTblSet param", paramDet);
-                            oModel.create("/InfoDetailTblSet", paramDet, {
-                                method: "POST",
-                                success: function(data, oResponse) {
-                                    console.log("InfoDetailTblSet create", data)
-                                    //MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
-
-                                    _this._router.navTo("RouteDeliveryInfo", {
-                                        sbu: _this.getView().getModel("ui").getData().sbu,
-                                        dlvNo: _this.getView().getModel("ui").getData().dlvNo
-                                    });
-                                },
-                                error: function(err) {
-                                    console.log("error", err)
-                                    _this.closeLoadingDialog();
-                                }
-                            });
-                        })
+                        _this.onPopulateDlvDtl(pData);
                     },
                     error: function(err) {
                         console.log("error", err)
                         _this.closeLoadingDialog();
                     }
                 });
+            },
+
+            onPopulateDlvDtl(pData) {
+                var oModel = this.getOwnerComponent().getModel();
+                var oDataUI = _this.getView().getModel("ui").getData();
+
+                pData.forEach((item, idx) => {
+                    var paramDet = {
+                        DLVNO: oDataUI.dlvNo,
+                        DLVITEM: "",
+                        PLANTCD: item.ISSPLANT,
+                        SLOC: item.ISSSLOC,
+                        MATNO: item.ISSMATNO,
+                        BATCH: item.ISSBATCH,
+                        DLVQTYORD: item.REQQTY,
+                        DLVQTYBSE: item.REQQTY,
+                        ORDUOM: item.UOM,
+                        BASEUOM: item.UOM,
+                        RSVNO: item.RSVNO,
+                        RSNUM: item.RSVNO,
+                        RSPOS: item.RSVITEM
+                    };
+
+                    console.log("InfoDetailTblSet param", paramDet);
+                    oModel.create("/InfoDetailTblSet", paramDet, {
+                        method: "POST",
+                        success: function(data, oResponse) {
+                            console.log("InfoDetailTblSet create", data)
+                            //MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+
+                            // _this._router.navTo("RouteDeliveryInfo", {
+                            //     sbu: _this.getView().getModel("ui").getData().sbu,
+                            //     dlvNo: _this.getView().getModel("ui").getData().dlvNo
+                            // });
+
+                            _this.onLockDlv();
+                        },
+                        error: function(err) {
+                            console.log("error", err)
+                            _this.closeLoadingDialog();
+                        }
+                    });
+                })
+            },
+
+            onLockDlv() {
+                var oModelLock = _this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
+                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+
+                var oParamLock = {
+                    Dlvno: sDlvNo,
+                    Lock_Unlock_Ind: "X",
+                    N_LOCK_UNLOCK_DLVHDR_RET: [],
+                    N_LOCK_UNLOCK_DLVHDR_MSG: []
+                }
+
+                oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
+                    method: "POST",
+                    success: function(data, oResponse) {
+                        console.log("Lock_Unlock_DlvHdrSet", data);
+                        _this.closeLoadingDialog();
+
+                        if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
+                            this._router.navTo("RouteDeliveryInfo", {
+                                sbu: _this.getView().getModel("ui").getData().sbu,
+                                dlvNo: sDlvNo
+                            });
+                        } else {
+                            var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
+                            MessageBox.warning(oFilter.Message);
+                        }
+                    },
+                    error: function(err) {
+                        MessageBox.error(err);
+                        _this.closeLoadingDialog();
+                    }
+                });   
             },
 
             onCancel() {

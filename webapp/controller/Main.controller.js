@@ -281,11 +281,46 @@ sap.ui.define([
 
             onEditODFtyHdr() {
                 if (this.getView().getModel("ui").getData().dlvNo) {
+                    _this.showLoadingDialog("Loading...");
+
+                    var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
                     var sDlvNo = this.getView().getModel("ui").getData().dlvNo;
-                    this._router.navTo("RouteDeliveryInfo", {
-                        sbu: _this.getView().getModel("ui").getData().sbu,
-                        dlvNo: sDlvNo
-                    });
+
+                    var oParamLock = {
+                        Dlvno: sDlvNo,
+                        Lock_Unlock_Ind: "X",
+                        N_LOCK_UNLOCK_DLVHDR_RET: [],
+                        N_LOCK_UNLOCK_DLVHDR_MSG: []
+                    }
+
+                    oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
+                        method: "POST",
+                        success: function(data, oResponse) {
+                            console.log("Lock_Unlock_DlvHdrSet", data);
+
+                            if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
+                                _this.closeLoadingDialog();
+                                
+                                _this._router.navTo("RouteDeliveryInfo", {
+                                    sbu: _this.getView().getModel("ui").getData().sbu,
+                                    dlvNo: sDlvNo
+                                });
+                            } else {
+                                var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
+                                MessageBox.warning(oFilter.Message);
+                                
+                            }
+                        },
+                        error: function(err) {
+                            MessageBox.error(err);
+                            _this.closeLoadingDialog();
+                        }
+                    });     
+                    
+                    // this._router.navTo("RouteDeliveryInfo", {
+                    //     sbu: _this.getView().getModel("ui").getData().sbu,
+                    //     dlvNo: sDlvNo
+                    // });
                 } else {
                     MessageBox.information(_oCaption.INFO_NO_SELECTED);
                 }
@@ -306,10 +341,12 @@ sap.ui.define([
                 var oData = _this.getView().getModel("dlvType").getData().results[aSelIdx[0]];
                 _this._router.navTo("RouteReservation", {
                     sbu: _this.getView().getModel("ui").getData().sbu,
+                    dlvNo: "empty",
                     dlvType: oData.DLVTYPE,
                     mvtType: oData.MVTTYPE,
                     srcTbl: oData.SRCTBL,
-                    noRangeCd: oData.NORANGECD
+                    noRangeCd: oData.NORANGECD,
+                    rsvList: "empty"
                 });
 
                 _this.closeLoadingDialog();

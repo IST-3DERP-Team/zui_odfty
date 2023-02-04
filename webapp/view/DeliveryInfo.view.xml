@@ -17,9 +17,18 @@
                     <ToolbarSpacer />
                     <Button id="btnEditHdr" type="Ghost" icon="sap-icon://edit" press="onEditHdr" visible="true"/>
                     <Button id="btnDeleteHdr" type="Ghost" icon="sap-icon://delete" press="onDeleteHdr" visible="true"/> 
-                    <Button id="btnPostHdr" type="Ghost" icon="sap-icon://settings" press="onSetStatusHdr" visible="true" tooltip="{caption>/SETSTATUS}"/> 
+                    <MenuButton id="mbtnSetStatusHdr" type="Ghost" icon="sap-icon://settings" visible="true">
+                        <menu>
+                            <Menu id="menuSetStatusHdr">
+                                <MenuItem id="menuPickHdr" text="{caption>/PICK_COMPLETE}" press="onPickHdr" />
+                                <MenuItem id="menuPostHdr" text="{caption>/POST}" press="onPostHdr" />
+                                <MenuItem id="menuUndoPickHdr" text="{caption>/UNDO_PICK_COMPLETE}" press="onUndoPickHdr" />
+                            </Menu>
+                        </menu>
+                    </MenuButton>
                     <Button id="btnRefreshHdr" type="Ghost" icon="sap-icon://refresh" press="onRefreshHdr" visible="true"/> 
                     <Button id="btnPrintHdr" type="Ghost" icon="sap-icon://print" press="onPrintHdr" visible="true"/> 
+                    <Button id="btnCloseHdr" type="Ghost" icon="sap-icon://sys-cancel" press="onCloseHdr" visible="true"/> 
                     <Button id="btnSaveHdr" type="Ghost" icon="sap-icon://save" press="onSaveHdr" visible="false"/> 
                     <Button id="btnCancelHdr" type="Ghost" icon="sap-icon://sys-cancel" press="onCancelHdr" visible="false"/> 
                 </Toolbar>
@@ -222,7 +231,7 @@
                                     showColumnVisibilityMenu="true"
                                     enableColumnFreeze="true"
                                     enableCellFilter="true"
-                                    selectionMode="Single"
+                                    selectionMode="MultiToggle"
                                     firstVisibleRowChanged="onFirstVisibleRowChanged"
                                     cellClick="onCellClick"
                                     sort="onSorted"

@@ -97,7 +97,9 @@
                     <PropertyRef Name="HUID"/>
                     <PropertyRef Name="HUITEM"/>
                 </Key>
+                <Property Name="DELETED" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Deleted" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="UOMDECIMAL" Type="Edm.Int16" Nullable="false" sap:unicode="false" sap:label="Rounding" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVITEM" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Delv Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="SEQNO" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:label="SeqNo" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="MATNO" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -257,8 +259,11 @@
                     <PropertyRef Name="DLVNO"/>
                 </Key>
                 <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DLVTYPE" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Delivery Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SRCTBL" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Source Table" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="USEHU" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="USEHU" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="MVTTYPE" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Movement type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="NORANGECD" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="No. Range Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="USETO" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="STATUS" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="Dlvry Status Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DOCDT" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Document Date" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -353,9 +358,11 @@
             </EntityType>
             <EntityType Name="InfoHUTbl" sap:content-version="1">
                 <Key>
-                    <PropertyRef Name="HUID"/>
-                    <PropertyRef Name="HUITEM"/>
+                    <PropertyRef Name="DLVNO"/>
+                    <PropertyRef Name="DLVITEM"/>
+                    <PropertyRef Name="SEQNO"/>
                 </Key>
+                <Property Name="DELETED" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Deleted" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVITEM" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Delv Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="SEQNO" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="SeqNo" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
