@@ -219,6 +219,8 @@ sap.ui.define([
         },
 
         setRowReadMode(pModel) {
+            if (!_this._aColumns[pModel]) return;
+
             var oTable = this.byId(pModel + "Tab");
             oTable.getColumns().forEach((col, idx) => {     
                 _this._aColumns[pModel].filter(item => item.label === col.getLabel().getText())

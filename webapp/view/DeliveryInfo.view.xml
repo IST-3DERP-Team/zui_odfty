@@ -20,9 +20,9 @@
                     <MenuButton id="mbtnSetStatusHdr" type="Ghost" icon="sap-icon://settings" visible="true">
                         <menu>
                             <Menu id="menuSetStatusHdr">
-                                <MenuItem id="menuPickHdr" text="{caption>/PICK_COMPLETE}" press="onPickHdr" />
+                                <MenuItem id="menuPickHdr" text="{caption>/PICK_COMPLETE}" visible="{ui>/useTo}" press="onPickHdr" />
                                 <MenuItem id="menuPostHdr" text="{caption>/POST}" press="onPostHdr" />
-                                <MenuItem id="menuUndoPickHdr" text="{caption>/UNDO_PICK_COMPLETE}" press="onUndoPickHdr" />
+                                <MenuItem id="menuUndoPickHdr" text="{caption>/UNDO_PICK_COMPLETE}" visible="{ui>/useTo}" press="onUndoPickHdr" />
                             </Menu>
                         </menu>
                     </MenuButton>
@@ -176,7 +176,7 @@
                         applyContentPadding="false"
                         select="onSelectTab">
                         <items>
-                            <IconTabFilter id="itfHU" text="DELIVERY DETAILS (HU)" key="hu">
+                            <IconTabFilter id="itfHU" text="DELIVERY DETAILS (HU)" key="hu" visible="{ui>/useTo}">
                                 <uiT:Table id="huTab"
                                     rows="{hu>/results}"
                                     visibleRowCountMode="Auto"

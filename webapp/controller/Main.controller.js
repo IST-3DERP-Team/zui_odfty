@@ -85,6 +85,14 @@ sap.ui.define([
                 this.byId("odFtyHdrTab").addEventDelegate(oTableEventDelegate);
                 this.byId("odFtyDtlTab").addEventDelegate(oTableEventDelegate);
 
+                // Double click
+                var oTable = this.getView().byId("odFtyHdrTab");
+                oTable.attachBrowserEvent('dblclick', function (e) {
+                    e.preventDefault();
+
+                    _this.onEditODFtyHdr();
+                });
+
                 _this.closeLoadingDialog();
             },
 

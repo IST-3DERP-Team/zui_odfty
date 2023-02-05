@@ -37,7 +37,8 @@ sap.ui.define([
                 this.getView().setModel(new JSONModel({
                     sbu: oEvent.getParameter("arguments").sbu,
                     dlvNo: oEvent.getParameter("arguments").dlvNo,
-                    editModeHdr: false
+                    editModeHdr: false,
+                    useTo: true
                 }), "ui");
 
                 _this.initializeComponent();
@@ -152,6 +153,8 @@ sap.ui.define([
 
                             if (item.UPDATEDDT !== null)
                                 item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+
+                            _this.getView().getModel("ui").setProperty("/useTo", item.USETO);
                         });
 
                         var oJSONModel = new JSONModel();
