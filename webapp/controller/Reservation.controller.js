@@ -33,6 +33,7 @@ sap.ui.define([
             },
 
             _routePatternMatched: function (oEvent) {
+                console.log("_routePatternMatched", oEvent.getParameter("arguments"))
                 this.getView().setModel(new JSONModel({
                     sbu: oEvent.getParameter("arguments").sbu,
                     dlvNo: oEvent.getParameter("arguments").dlvNo,
@@ -101,6 +102,7 @@ sap.ui.define([
                 var sSrcTbl = oDataUI.srcTbl;
                 
                 var sFilter = "MVTTYPE eq '" + sMvtType + "' and SRCTBL eq '" + sSrcTbl + "'";    
+                console.log("sFilter", sFilter)
                 oModel.read('/ReservationSet', {
                     urlParameters: {
                         "$filter": sFilter
@@ -109,7 +111,7 @@ sap.ui.define([
                         console.log("ReservationSet", data)
 
                         if (oDataUI.rsvList != "empty") {
-                            var aRsvList = oDataUI.rsvList.split();
+                            var aRsvList = oDataUI.rsvList.split("|");
                             aRsvList.forEach(item => {
                                 var iIdx = data.results.findIndex(x => x.RSVNO + x.RSVITEM == item);
                                 if (iIdx > -1) {
@@ -152,10 +154,13 @@ sap.ui.define([
             },
 
             onAdd() {
+                _this.showLoadingDialog("Loading...");
+
                 var oTable = this.byId("rsvTab");
                 var aSelIdx = oTable.getSelectedIndices();
 
                 if (aSelIdx.length === 0) {
+                    _this.closeLoadingDialog();
                     MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
                     return;
                 }
@@ -178,6 +183,7 @@ sap.ui.define([
                 });
 
                 if (isError) {
+                    _this.closeLoadingDialog();
                     MessageBox.warning(_oCaption.ISSPLANT + " " + _oCaption.INFO_SHOULD_BE_SAME);
                     return;
                 }
@@ -254,7 +260,7 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oDataUI = _this.getView().getModel("ui").getData();
 
-                pData.forEach((item, idx) => {
+                pData.forEach((item, iIdx) => {
                     var paramDet = {
                         DLVNO: oDataUI.dlvNo,
                         DLVITEM: "",
@@ -271,25 +277,30 @@ sap.ui.define([
                         RSPOS: item.RSVITEM
                     };
 
-                    console.log("InfoDetailTblSet param", paramDet);
-                    oModel.create("/InfoDetailTblSet", paramDet, {
-                        method: "POST",
-                        success: function(data, oResponse) {
-                            console.log("InfoDetailTblSet create", data)
-                            //MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                    setTimeout(() => {
 
-                            // _this._router.navTo("RouteDeliveryInfo", {
-                            //     sbu: _this.getView().getModel("ui").getData().sbu,
-                            //     dlvNo: _this.getView().getModel("ui").getData().dlvNo
-                            // });
+                        console.log("InfoDetailTblSet param", paramDet);
+                        oModel.create("/InfoDetailTblSet", paramDet, {
+                            method: "POST",
+                            success: function(data, oResponse) {
+                                console.log("InfoDetailTblSet create", data)
+                                //MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
 
-                            _this.onLockDlv();
-                        },
-                        error: function(err) {
-                            console.log("error", err)
-                            _this.closeLoadingDialog();
-                        }
-                    });
+                                // _this._router.navTo("RouteDeliveryInfo", {
+                                //     sbu: _this.getView().getModel("ui").getData().sbu,
+                                //     dlvNo: _this.getView().getModel("ui").getData().dlvNo
+                                // });
+
+                                if (iIdx == pData.length - 1) {
+                                    _this.onLockDlv();
+                                }
+                            },
+                            error: function(err) {
+                                console.log("error", err)
+                                _this.closeLoadingDialog();
+                            }
+                        });
+                    }, 100);
                 })
             },
 
@@ -311,7 +322,7 @@ sap.ui.define([
                         _this.closeLoadingDialog();
 
                         if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
-                            this._router.navTo("RouteDeliveryInfo", {
+                            _this._router.navTo("RouteDeliveryInfo", {
                                 sbu: _this.getView().getModel("ui").getData().sbu,
                                 dlvNo: sDlvNo
                             });
@@ -336,6 +347,17 @@ sap.ui.define([
                         }
                     }
                 });
+            },
+
+            onNavBack() {
+                var oHistory = History.getInstance();
+			    var sPreviousHash = oHistory.getPreviousHash();
+
+                if (sPreviousHash !== undefined) {
+                    window.history.go(-1);
+                } else {
+                    _this._router.navTo("RouteMain", {}, true);
+                }
             },
 
             onKeyUp(oEvent) {

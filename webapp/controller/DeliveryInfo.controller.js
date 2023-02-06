@@ -238,36 +238,43 @@ sap.ui.define([
                     return;
                 }
 
-                var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
-                var oParam = {
-                    "GRPID": "1",
-                    "MSGTYP": "",
-                    "N_TODOC_MSG": []
-                };
+                MessageBox.confirm(_oCaption.CONFIRM_PROCEED_EXECUTE, {
+                    actions: ["Yes", "No"],
+                    onClose: function (sAction) {
+                        if (sAction === "Yes") {
+                            _this.showLoadingDialog("Loading...");
 
-                oParam["N_TODOC"] = {
-                    "GrpID": "1",
-                    "Dlvno": oData.DLVNO,
-                    "Rsvno": "",
-                    "Rsvyr": "",
-                    "Rspos": "",
-                    "Inthuid": "",
-                    "Huitem": "",
-                    "Toqty": "1.00",
-                    "Username": _startUpInfo.id
-                }
+                            var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
+                            var oParam = {
+                                "GRPID": "1",
+                                "MSGTYP": "",
+                                "N_TODOC_MSG": []
+                            };
 
-                oModelRFC.create("/ImportTODOCSet", oParam, {
-                    method: "POST",
-                    success: function(oResult, oResponse) {
-                        console.log("ImportTODOCSet", oResult, oResponse);
-                        MessageBox.information(oResult.N_TODOC_MSG.results[0].Message);
+                            oParam["N_TODOC"] = [{
+                                "GrpID": "1",
+                                "Dlvno": oData.DLVNO,
+                                "Username": _startUpInfo.id
+                            }]
 
-                        _this.onRefreshHdr();
-                    },
-                    error: function(err) {
-                        MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
-                        _this.closeLoadingDialog();
+                            console.log("ImportTODOCSet param", oParam);
+                            oModelRFC.create("/ImportTODOCSet", oParam, {
+                                method: "POST",
+                                success: function(oResult, oResponse) {
+                                    console.log("ImportTODOCSet", oResult, oResponse);
+                                    if (oResult.N_TODOC_MSG.results.length == 0) {
+                                        MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
+                                        _this.onRefreshHdr();
+                                    } else {
+                                        MessageBox.information(oResult.N_TODOC_MSG.results[0].Message);
+                                    }
+                                },
+                                error: function(err) {
+                                    MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
+                                    _this.closeLoadingDialog();
+                                }
+                            });
+                        }
                     }
                 });
             },
@@ -298,7 +305,7 @@ sap.ui.define([
                     success: function(data, oResponse) {
                         console.log("Lock_Unlock_DlvHdrSet", data);
                         _this.closeLoadingDialog();
-                        _this._router.navTo("RouteMain", {}, true);
+                        _this.onNavBack();
 
                         // if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
                         //     this._router.navTo("RouteDeliveryInfo", {
@@ -411,7 +418,7 @@ sap.ui.define([
                 }
 
                 var aRows = this.getView().getModel("hu").getData().results;
-                if (aRows.length > 0) {
+                if (aRows.length > 0 && aRows.length > aRows.filter(x => x.DELETED).length) {
                     _this.byId("btnEditHu").setVisible(false);
                     _this.byId("btnDeleteHu").setVisible(false);
                     _this.byId("btnRefreshHu").setVisible(false);
@@ -636,7 +643,7 @@ sap.ui.define([
 
                     _this.getView().getModel("dtl").getData().results.forEach(item => {
                         if (!item.DELETED) {
-                            sRsvList += item.RSVNO + item.RSVITEM + ",";
+                            sRsvList += item.RSVNO + item.RSVITEM + "|";
                         }
                     });
                     sRsvList = sRsvList.slice(0, -1);
@@ -941,6 +948,10 @@ sap.ui.define([
                 _this.getMatDoc();
             },
 
+            onNavBack() {
+                _this._router.navTo("RouteMain", {}, true);
+            },
+
             onInputLiveChange(oEvent) {
                 var oSource = oEvent.getSource();
                 var sRowPath = oSource.getBindingInfo("value").binding.oContext.sPath;
@@ -994,7 +1005,7 @@ sap.ui.define([
                     // Header
                     this.byId("btnEditHdr").setVisible(!pEditable);
                     this.byId("btnDeleteHdr").setVisible(!pEditable);
-                    this.byId("btnPostHdr").setVisible(!pEditable);
+                    this.byId("btnSetStatusHdr").setVisible(!pEditable);
                     this.byId("btnRefreshHdr").setVisible(!pEditable);
                     this.byId("btnPrintHdr").setVisible(!pEditable);
                     this.byId("btnCloseHdr").setVisible(!pEditable);
@@ -1059,22 +1070,29 @@ sap.ui.define([
             },
 
             onKeyUp(oEvent) {
-                if ((oEvent.key === "ArrowUp" || oEvent.key === "ArrowDown") && oEvent.srcControl.sParentAggregationName === "rows") {
+                if ((oEvent.key == "ArrowUp" || oEvent.key == "ArrowDown") && oEvent.srcControl.sParentAggregationName == "rows") {
                     var oTable = this.byId(oEvent.srcControl.sId).oParent;
 
-                    // if (this.byId(oEvent.srcControl.sId).getBindingContext("rsv")) {
-                    //     var sRowPath = this.byId(oEvent.srcControl.sId).getBindingContext("rsv").sPath;
-                        
-                    //     oTable.getModel("rsv").getData().results.forEach(row => row.ACTIVE = "");
-                    //     oTable.getModel("rsv").setProperty(sRowPath + "/ACTIVE", "X"); 
-                        
-                    //     oTable.getRows().forEach(row => {
-                    //         if (row.getBindingContext("rsv") && row.getBindingContext("rsv").sPath.replace("/results/", "") === sRowPath.replace("/results/", "")) {
-                    //             row.addStyleClass("activeRow");
-                    //         }
-                    //         else row.removeStyleClass("activeRow")
-                    //     })
-                    // }
+                    var sModel = "";
+                    if (oTable.getId().indexOf("huTab") >= 0) sModel = "hu";
+                    else if (oTable.getId().indexOf("dtlTab") >= 0) sModel = "dtl";
+                    else if (oTable.getId().indexOf("shipTab") >= 0) sModel = "ship";
+                    else if (oTable.getId().indexOf("statTab") >= 0) sModel = "stat";
+                    else if (oTable.getId().indexOf("matDocTab") >= 0) sModel = "matDoc";
+
+                    if (this.byId(oEvent.srcControl.sId).getBindingContext(sModel)) {
+                        var sRowPath = this.byId(oEvent.srcControl.sId).getBindingContext(sModel).sPath;
+
+                        oTable.getModel(sModel).getData().results.forEach(row => row.ACTIVE = "");
+                        oTable.getModel(sModel).setProperty(sRowPath + "/ACTIVE", "X");
+
+                        oTable.getRows().forEach(row => {
+                            if (row.getBindingContext(sModel) && row.getBindingContext(sModel).sPath.replace("/results/", "") === sRowPath.replace("/results/", "")) {
+                                row.addStyleClass("activeRow");
+                            }
+                            else row.removeStyleClass("activeRow")
+                        })
+                    }
                 }
             },
 
@@ -1124,6 +1142,9 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_PROCEED_DELETE"});
                 oCaptionParam.push({CODE: "INFO_SAVE_SUCCESS"});
                 oCaptionParam.push({CODE: "WARN_ADD_NOT_ALLOW"});
+                oCaptionParam.push({CODE: "INFO_NO_DATA_EDIT"});
+                oCaptionParam.push({CODE: "CONFIRM_PROCEED_EXECUTE"});
+                oCaptionParam.push({CODE: "INFO_EXECUTE_SUCCESS"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

@@ -297,6 +297,7 @@ sap.ui.define([
                     var oParamLock = {
                         Dlvno: sDlvNo,
                         Lock_Unlock_Ind: "X",
+                        IV_Count: 300,
                         N_LOCK_UNLOCK_DLVHDR_RET: [],
                         N_LOCK_UNLOCK_DLVHDR_MSG: []
                     }
@@ -374,6 +375,13 @@ sap.ui.define([
 
                 // Clear Sort and Filter
                 this.clearSortFilter("odFtyDtlTab");
+            },
+
+            onNavBack() {
+                var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");  
+                oCrossAppNavigator.toExternal({  
+                    target: { shellHash: "#Shell-home" }  
+                }); 
             },
 
             onKeyUp(oEvent) {

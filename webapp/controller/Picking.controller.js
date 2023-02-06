@@ -40,7 +40,8 @@ sap.ui.define([
                     plantCd: "",
                     matNo: "",
                     batch: "",
-                    sloc: ""
+                    sloc: "",
+                    dlvItem: ""
                 }), "ui");
 
                 _this.initializeComponent();
@@ -90,8 +91,6 @@ sap.ui.define([
             },
 
             getPickHdr() {
-                _this.showLoadingDialog("Loading...");
-
                 var oModel = this.getOwnerComponent().getModel();
                 var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
                 var sFilter = "DLVNO eq '" + sDlvNo + "'";
@@ -122,8 +121,9 @@ sap.ui.define([
                             _this.getView().getModel("ui").setProperty("/matNo", oData.ISSMATNO);
                             _this.getView().getModel("ui").setProperty("/batch", oData.ISSBATCH);
                             _this.getView().getModel("ui").setProperty("/sloc", oData.ISSSLOC);
+                            _this.getView().getModel("ui").setProperty("/dlvItem", oData.DLVITEM);
 
-                            oTable.setSelectedIndex(aIndices[0]);
+                            //oTable.setSelectedIndex(aIndices[0]);
                             _this.getPickDtl();
                         } else {
                             _this.getView().getModel("pickDtl").setProperty("/results", []);
@@ -143,6 +143,11 @@ sap.ui.define([
 
                 if (aSelIdx.length === 0) {
                     MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
+                    return;
+                }
+
+                if (_this.getView().getModel("pickDtl").getData().results.length == 0) {
+                    MessageBox.information(_oCaption.INFO_NO_ITEM_TO_PICK);
                     return;
                 }
 
@@ -175,6 +180,8 @@ sap.ui.define([
 
             onAddPickHdr() {
                 if (_aPickDtl.length > 0) {
+                    _this.showLoadingDialog("Loading...");
+
                     var oModel = this.getOwnerComponent().getModel();
 
                     _aPickDtl.forEach((item, idx) => {
@@ -220,6 +227,7 @@ sap.ui.define([
         
                                 if (idx == _aPickDtl.length - 1) {
                                     _this.closeLoadingDialog();
+                                    _this.onNavBack();
                                 }
                             },
                             error: function(err) {
@@ -244,17 +252,13 @@ sap.ui.define([
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
                         if (sAction == "Yes") {
-                            _this._router.navTo("RouteDeliveryInfo", {
-                                sbu: _this.getView().getModel("ui").getData().sbu,
-                                dlvNo: _this.getView().getModel("ui").getData().dlvNo
-                            }, true);
+                            _this.onNavBack();
                         }
                     }
                 });
             },
 
             getPickDtl() {
-                _this.showLoadingDialog("Loading...");
 
                 var oModel = this.getOwnerComponent().getModel();
                 var oDataUI = _this.getView().getModel("ui").getData();
@@ -268,9 +272,11 @@ sap.ui.define([
                     success: function (data, response) {
                         console.log("PickDetailSet read", data);
 
+                        var bIsPickDtlExists = false;
                         data.results.forEach((item, idx) => {
                             var iIdx = _aPickDtl.findIndex(x => x.huId == item.HUID && x.huItem == item.HUITEM);
                             if (iIdx > -1) {
+                                bIsPickDtlExists = true;
                                 item.TOQTY = parseFloat(_aPickDtl[iIdx].toQty).toString();
                             }
 
@@ -283,7 +289,7 @@ sap.ui.define([
                         _this.setRowReadMode("pickDtl");
 
                         // Set Pick Header
-                        _this.setPickHdr();
+                        if (bIsPickDtlExists) _this.setPickHdr();
 
                         _this.closeLoadingDialog();
                     },
@@ -308,18 +314,18 @@ sap.ui.define([
                 })
 
                 var oDataUI = _this.getView().getModel("ui").getData();
-                var oDataHdr = _this.getView().getModel("pickHdr").getData().results.filter(x => x.ISSPLANT == oDataUI.plantCd &&
-                    x.ISSMATNO == oDataUI.matNo && x.ISSBATCH == oDataUI.batch && x.ISSSLOC == oDataUI.sloc)[0];
+                var oDataHdr = _this.getView().getModel("pickHdr").getData().results.filter(x => 
+                    x.DLVNO == oDataUI.dlvNo && x.DLVITEM == oDataUI.dlvItem)[0];
                 var iBalHdr = parseFloat(oDataHdr.BALANCE);
                 var oDataDtl = _this.getView().getModel("pickDtl").getData().results[aOrigSelIdx[0]];
                 
                 var iQty = (parseFloat(oDataDtl.QTY) > iBalHdr ? (parseFloat(oDataDtl.QTY) - iBalHdr) : 0);
                 var iToQty = parseFloat(oDataDtl.QTY) - iQty;
                 var iBalDtl = parseFloat(oDataDtl.QTY) - iToQty;
-
-                _this.getView().getModel("pickDtl").setProperty("/results/" + (aOrigSelIdx[0]).toString() + "/TOQTY", iToQty);
-                _this.getView().getModel("pickDtl").setProperty("/results/" + (aOrigSelIdx[0]).toString() + "/BALANCE", iBalDtl);
-
+                
+                _this.getView().getModel("pickDtl").setProperty("/results/" + (aOrigSelIdx[0]).toString() + "/TOQTY", iToQty.toString());
+                _this.getView().getModel("pickDtl").setProperty("/results/" + (aOrigSelIdx[0]).toString() + "/BALANCE", iBalDtl.toString());
+                
                 _this.setPickDtl();
             },
 
@@ -430,10 +436,10 @@ sap.ui.define([
                     });
                 } else {
                     _this.byId("btnAutoPickDtl").setVisible(true);
-                                _this.byId("btnEditPickDtl").setVisible(true);
-                                _this.byId("btnRefreshPickDtl").setVisible(true);
-                                _this.byId("btnSavePickDtl").setVisible(false);
-                                _this.byId("btnCancelPickDtl").setVisible(false);
+                    _this.byId("btnEditPickDtl").setVisible(true);
+                    _this.byId("btnRefreshPickDtl").setVisible(true);
+                    _this.byId("btnSavePickDtl").setVisible(false);
+                    _this.byId("btnCancelPickDtl").setVisible(false);
 
                     _this.onRefreshPickDtl();
                 }
@@ -466,15 +472,12 @@ sap.ui.define([
             },
 
             setPickHdr() {
-                var oTable = this.byId("pickHdrTab");
-                var aSelIdx = oTable.getSelectedIndices();
+                var oDataUI = _this.getView().getModel("ui").getData();
+                var oDataHdr = _this.getView().getModel("pickHdr").getData().results.filter(x => 
+                    x.DLVNO == oDataUI.dlvNo && x.DLVITEM == oDataUI.dlvItem)[0];
+                var iIdxHdr = _this.getView().getModel("pickHdr").getData().results.findIndex(x => 
+                    x.DLVNO == oDataUI.dlvNo && x.DLVITEM == oDataUI.dlvItem);
 
-                var aOrigSelIdx = [];
-                aSelIdx.forEach(i => {
-                    aOrigSelIdx.push(oTable.getBinding("rows").aIndices[i]);
-                })
-
-                var oDataHdr = _this.getView().getModel("pickHdr").getData().results[aOrigSelIdx[0]];
                 var aDataDtl = _aPickDtl.filter(x => x.plantCd == oDataHdr.ISSPLANT && 
                     x.matNo == oDataHdr.ISSMATNO && x.batch == oDataHdr.ISSBATCH && x.sloc == oDataHdr.ISSSLOC);
 
@@ -484,9 +487,35 @@ sap.ui.define([
                 });
 
                 // Set Header
-                _this.getView().getModel("pickHdr").setProperty("/results/" + (aOrigSelIdx[0]).toString() + "/PICKQTY", iTotalToQty.toString());
+                _this.getView().getModel("pickHdr").setProperty("/results/" + iIdxHdr.toString() + "/PICKQTY", iTotalToQty.toString());
                 var iBalHdr = parseFloat(oDataHdr.REQQTY) - parseFloat(oDataHdr.ISSQTY) - iTotalToQty;
-                _this.getView().getModel("pickHdr").setProperty("/results/" + (aOrigSelIdx[0]).toString() + "/BALANCE", iBalHdr.toString());
+                _this.getView().getModel("pickHdr").setProperty("/results/" + iIdxHdr.toString() + "/BALANCE", iBalHdr.toString());
+            },
+
+            onCellClickPickHdr(oEvent) {
+                var oData = oEvent.getParameters().rowBindingContext.getObject();
+                var sPlantCd = oData.ISSPLANT;
+                var sMatNo = oData.ISSMATNO;
+                var sBatch = oData.ISSBATCH;
+                var sSloc = oData.ISSSLOC;
+                var sDlvItem = oData.DLVITEM;
+
+                this.onCellClick(oEvent);
+
+                _this.getView().getModel("ui").setProperty("/plantCd", sPlantCd);
+                _this.getView().getModel("ui").setProperty("/matNo", sMatNo);
+                _this.getView().getModel("ui").setProperty("/batch", sBatch);
+                _this.getView().getModel("ui").setProperty("/sloc", sSloc);
+                _this.getView().getModel("ui").setProperty("/dlvItem", sDlvItem);
+
+                _this.getPickDtl();
+            },
+
+            onNavBack() {
+                _this._router.navTo("RouteDeliveryInfo", {
+                    sbu: _this.getView().getModel("ui").getData().sbu,
+                    dlvNo: _this.getView().getModel("ui").getData().dlvNo
+                }, true);
             },
 
             onInputLiveChange(oEvent) {},
@@ -501,22 +530,45 @@ sap.ui.define([
             },
 
             onKeyUp(oEvent) {
-                if ((oEvent.key === "ArrowUp" || oEvent.key === "ArrowDown") && oEvent.srcControl.sParentAggregationName === "rows") {
+                if ((oEvent.key == "ArrowUp" || oEvent.key == "ArrowDown") && oEvent.srcControl.sParentAggregationName == "rows") {
                     var oTable = this.byId(oEvent.srcControl.sId).oParent;
 
-                    // if (this.byId(oEvent.srcControl.sId).getBindingContext("rsv")) {
-                    //     var sRowPath = this.byId(oEvent.srcControl.sId).getBindingContext("rsv").sPath;
-                        
-                    //     oTable.getModel("rsv").getData().results.forEach(row => row.ACTIVE = "");
-                    //     oTable.getModel("rsv").setProperty(sRowPath + "/ACTIVE", "X"); 
-                        
-                    //     oTable.getRows().forEach(row => {
-                    //         if (row.getBindingContext("rsv") && row.getBindingContext("rsv").sPath.replace("/results/", "") === sRowPath.replace("/results/", "")) {
-                    //             row.addStyleClass("activeRow");
-                    //         }
-                    //         else row.removeStyleClass("activeRow")
-                    //     })
-                    // }
+                    var sModel = "";
+                    if (oTable.getId().indexOf("pickHdrTab") >= 0) sModel = "pickHdr";
+                    else if (oTable.getId().indexOf("pickDtlTab") >= 0) sModel = "pickDtl";
+
+                    if (sModel == "pickHdr") {
+                        var sRowId = this.byId(oEvent.srcControl.sId);
+                        var sRowPath = this.byId(oEvent.srcControl.sId).oBindingContexts["pickHdr"].sPath;
+                        var oRow = this.getView().getModel("pickHdr").getProperty(sRowPath);
+                        var sPlantCd = oRow.ISSPLANT;
+                        var sMatNo = oRow.ISSMATNO;
+                        var sBatch = oRow.ISSBATCH;
+                        var sSloc = oRow.ISSSLOC;
+                        var sDlvItem = oRow.DLVITEM;
+
+                        _this.getView().getModel("ui").setProperty("/plantCd", sPlantCd);
+                        _this.getView().getModel("ui").setProperty("/matNo", sMatNo);
+                        _this.getView().getModel("ui").setProperty("/batch", sBatch);
+                        _this.getView().getModel("ui").setProperty("/sloc", sSloc);
+                        _this.getView().getModel("ui").setProperty("/dlvItem", sDlvItem);
+
+                        _this.getPickDtl();
+                    }
+
+                    if (this.byId(oEvent.srcControl.sId).getBindingContext(sModel)) {
+                        var sRowPath = this.byId(oEvent.srcControl.sId).getBindingContext(sModel).sPath;
+
+                        oTable.getModel(sModel).getData().results.forEach(row => row.ACTIVE = "");
+                        oTable.getModel(sModel).setProperty(sRowPath + "/ACTIVE", "X");
+
+                        oTable.getRows().forEach(row => {
+                            if (row.getBindingContext(sModel) && row.getBindingContext(sModel).sPath.replace("/results/", "") === sRowPath.replace("/results/", "")) {
+                                row.addStyleClass("activeRow");
+                            }
+                            else row.removeStyleClass("activeRow")
+                        })
+                    }
                 }
             },
 
@@ -532,6 +584,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_NO_DATA_EDIT"});
                 oCaptionParam.push({CODE: "CONFIRM_DISREGARD_CHANGE"});
                 oCaptionParam.push({CODE: "WARN_NO_DATA_MODIFIED"});
+                oCaptionParam.push({CODE: "INFO_NO_ITEM_TO_PICK"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

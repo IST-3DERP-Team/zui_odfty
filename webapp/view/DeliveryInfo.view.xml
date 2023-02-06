@@ -10,14 +10,14 @@
     xmlns:f="sap.ui.layout.form"
     height="100%">
 
-    <Page id="page" enableScrolling="false" class="sapUiNoContentPadding" showHeader="false">
+    <Page id="page" enableScrolling="false" class="sapUiNoContentPadding" showHeader="false" showNavButton="true" navButtonPress="onNavBack">
         <content>
             <VBox id="vbMain" fitContainer="true">
                 <Toolbar id="TB1" style="Clear">
                     <ToolbarSpacer />
                     <Button id="btnEditHdr" type="Ghost" icon="sap-icon://edit" press="onEditHdr" visible="true"/>
                     <Button id="btnDeleteHdr" type="Ghost" icon="sap-icon://delete" press="onDeleteHdr" visible="true"/> 
-                    <MenuButton id="mbtnSetStatusHdr" type="Ghost" icon="sap-icon://settings" visible="true">
+                    <MenuButton id="btnSetStatusHdr" type="Ghost" icon="sap-icon://settings" visible="true">
                         <menu>
                             <Menu id="menuSetStatusHdr">
                                 <MenuItem id="menuPickHdr" text="{caption>/PICK_COMPLETE}" visible="{ui>/useTo}" press="onPickHdr" />
