@@ -78,14 +78,17 @@
                             <Button id="btnAddODFtyHdr" 
                                 icon="sap-icon://add"
                                 press="onAddODFtyHdr"
+                                tooltip="{caption>/ADD}"
                                 visible="true"/>
                             <Button id="btnEditODFtyHdr" 
                                 icon="sap-icon://edit"
                                 press="onEditODFtyHdr"
+                                tooltip="{caption>/EDIT}"
                                 visible="true"/>
                             <Button id="btnRefreshODFtyHdr" 
                                 icon="sap-icon://refresh"
                                 press="onRefreshODFtyHdr" 
+                                tooltip="{caption>/REFRESH}"
                                 visible="true" />
                         </Toolbar>
                     </uiT:extension>
@@ -120,6 +123,7 @@
                             <Button id="btnRefreshODFtyDtl" 
                                 icon="sap-icon://refresh"
                                 press="onRefreshODFtyDtl" 
+                                tooltip="{caption>/REFRESH}"
                                 visible="true" />
                         </Toolbar>
                     </uiT:extension>

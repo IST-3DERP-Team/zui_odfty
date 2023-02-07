@@ -348,17 +348,20 @@ sap.ui.define([
                 }
                 
                 var oData = _this.getView().getModel("dlvType").getData().results[aSelIdx[0]];
-                _this._router.navTo("RouteReservation", {
-                    sbu: _this.getView().getModel("ui").getData().sbu,
-                    dlvNo: "empty",
-                    dlvType: oData.DLVTYPE,
-                    mvtType: oData.MVTTYPE,
-                    srcTbl: oData.SRCTBL,
-                    noRangeCd: oData.NORANGECD,
-                    rsvList: "empty"
-                });
-
+                _this.onCancelDlvType();
                 _this.closeLoadingDialog();
+
+                setTimeout(() => {
+                    _this._router.navTo("RouteReservation", {
+                        sbu: _this.getView().getModel("ui").getData().sbu,
+                        dlvNo: "empty",
+                        dlvType: oData.DLVTYPE,
+                        mvtType: oData.MVTTYPE,
+                        srcTbl: oData.SRCTBL,
+                        noRangeCd: oData.NORANGECD,
+                        rsvList: "empty"
+                    });
+                }, 100);
             },
 
             onCancelDlvType() {
@@ -437,6 +440,13 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "DESCRIP"});
                 oCaptionParam.push({CODE: "MVTTYPE"});
                 oCaptionParam.push({CODE: "PROCEED"});
+                oCaptionParam.push({CODE: "CANCEL"});
+
+                // Button
+                oCaptionParam.push({CODE: "ADD"});
+                oCaptionParam.push({CODE: "EDIT"});
+                oCaptionParam.push({CODE: "REFRESH"});
+                oCaptionParam.push({CODE: "SAVE"});
                 oCaptionParam.push({CODE: "CANCEL"});
 
                 // MessageBox

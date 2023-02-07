@@ -81,6 +81,14 @@ sap.ui.define([
 
                 this.byId("pickHdrTab").addEventDelegate(oTableEventDelegate);
                 this.byId("pickDtlTab").addEventDelegate(oTableEventDelegate);
+                
+                _this.getView().setModel(new JSONModel({
+                    results: []
+                }), "pickHdr");
+
+                _this.getView().setModel(new JSONModel({
+                    results: []
+                }), "pickDtl");
 
                 _this.getPickHdr();
 
@@ -577,6 +585,14 @@ sap.ui.define([
                 var oCaptionParam = [];
                 var oCaptionResult = {};
                 var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+
+                // Button
+                oCaptionParam.push({CODE: "ADD"});
+                oCaptionParam.push({CODE: "EDIT"});
+                oCaptionParam.push({CODE: "REFRESH"});
+                oCaptionParam.push({CODE: "SAVE"});
+                oCaptionParam.push({CODE: "CANCEL"});
+                oCaptionParam.push({CODE: "AUTOPICK"});
 
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});

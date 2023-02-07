@@ -254,7 +254,8 @@ sap.ui.define([
                             oParam["N_TODOC"] = [{
                                 "GrpID": "1",
                                 "Dlvno": oData.DLVNO,
-                                "Username": _startUpInfo.id
+                                "Username": _startUpInfo.id,
+                                "Totyp": "04"
                             }]
 
                             console.log("ImportTODOCSet param", oParam);
@@ -262,9 +263,28 @@ sap.ui.define([
                                 method: "POST",
                                 success: function(oResult, oResponse) {
                                     console.log("ImportTODOCSet", oResult, oResponse);
-                                    if (oResult.N_TODOC_MSG.results.length == 0) {
-                                        MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
-                                        _this.onRefreshHdr();
+                                    if (oResult.N_TODOC_MSG.results[0].Type == "S") {
+
+                                        var sEntitySet = "/InfoHeaderTblSet(DLVNO='" + oData.DLVNO + "')";
+                                        var param = {
+                                            STATUSCD: "NEW"
+                                        };
+
+                                        var oModel = _this.getOwnerComponent().getModel();
+                                        console.log("InfoHeaderTblSet param", sEntitySet, param)
+                                        oModel.update(sEntitySet, param, {
+                                            method: "PUT",
+                                            success: function(data, oResponse) {
+                                                console.log(sEntitySet, data, oResponse);
+                                                
+                                                MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
+                                                _this.onRefreshHdr();
+                                            },
+                                            error: function(err) {
+                                                console.log("error", err)
+                                                _this.closeLoadingDialog();
+                                            }
+                                        });
                                     } else {
                                         MessageBox.information(oResult.N_TODOC_MSG.results[0].Message);
                                     }
@@ -280,6 +300,10 @@ sap.ui.define([
             },
 
             onPostHdr() {
+
+            },
+
+            onUndoPickHdr() {
 
             },
 
@@ -709,21 +733,24 @@ sap.ui.define([
 
                                 var oModel = _this.getOwnerComponent().getModel();
                                 console.log("InfoDetailTblSet param", sEntitySet, param)
-                                oModel.update(sEntitySet, param, {
-                                    method: "PUT",
-                                    success: function(data, oResponse) {
-                                        console.log(sEntitySet, data, oResponse, i);
 
-                                        if (idx == aSelIdx.length - 1) {
-                                            console.log("refrsh")
-                                            _this.onRefreshDtl();
+                                setTimeout(() => {
+                                    oModel.update(sEntitySet, param, {
+                                        method: "PUT",
+                                        success: function(data, oResponse) {
+                                            console.log(sEntitySet, data, oResponse, i);
+    
+                                            if (idx == aSelIdx.length - 1) {
+                                                console.log("refrsh")
+                                                _this.onRefreshDtl();
+                                            }
+                                        },
+                                        error: function(err) {
+                                            console.log("error", err)
+                                            _this.closeLoadingDialog();
                                         }
-                                    },
-                                    error: function(err) {
-                                        console.log("error", err)
-                                        _this.closeLoadingDialog();
-                                    }
-                                });
+                                    });
+                                }, 100)
                             });
                         }
                     }
@@ -1127,10 +1154,20 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "UPDATEDBY"});
                 oCaptionParam.push({CODE: "UPDATEDDT"});
 
-                // Buttons
+                // Button
                 oCaptionParam.push({CODE: "PICK_COMPLETE"});
                 oCaptionParam.push({CODE: "POST"});
                 oCaptionParam.push({CODE: "UNDO_PICK_COMPLETE"});
+                oCaptionParam.push({CODE: "ADD"});
+                oCaptionParam.push({CODE: "EDIT"});
+                oCaptionParam.push({CODE: "DELETE"});
+                oCaptionParam.push({CODE: "REFRESH"});
+                oCaptionParam.push({CODE: "SAVE"});
+                oCaptionParam.push({CODE: "CANCEL"});
+                oCaptionParam.push({CODE: "PRINT"});
+                oCaptionParam.push({CODE: "CLOSE"});
+                oCaptionParam.push({CODE: "SETSTATUS"});
+                oCaptionParam.push({CODE: "PICK"});
 
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
