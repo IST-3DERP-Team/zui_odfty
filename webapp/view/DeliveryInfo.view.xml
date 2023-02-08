@@ -176,6 +176,54 @@
                         applyContentPadding="false"
                         select="onSelectTab">
                         <items>
+                            <IconTabFilter id="itfDtl" text="DELIVERY DETAILS" key="dtl">
+                                <uiT:Table id="dtlTab"
+                                    rows="{dtl>/results}"
+                                    visibleRowCountMode="Auto"
+                                    showColumnVisibilityMenu="true"
+                                    enableColumnFreeze="true"
+                                    enableCellFilter="true"
+                                    selectionMode="MultiToggle"
+                                    firstVisibleRowChanged="onFirstVisibleRowChanged"
+                                    cellClick="onCellClick"
+                                    sort="onSorted"
+                                    filter="onFilter"
+                                    columnFreeze="onColumnUpdated"
+                                    columnMove="onColumnUpdated"
+                                    columnResize="onColumnUpdated"
+                                    columnSelect="onColumnUpdated"
+                                    columnVisibility="onColumnUpdated"
+                                    rowSelectionChange="onRowSelectionChange">
+                                    <uiT:extension>
+                                        <Toolbar>
+                                            <ToolbarSpacer/>
+                                            <Button id="btnAddDtl" 
+                                                icon="sap-icon://add"
+                                                press="onAddDtl"
+                                                tooltip="{caption>/ADD}"
+                                                visible="true"/>
+                                            <Button id="btnPickDtl" 
+                                                icon="sap-icon://flag"
+                                                press="onPickDtl" 
+                                                tooltip="{caption>/PICK}"
+                                                visible="true" />
+                                            <Button id="btnDeleteDtl" 
+                                                icon="sap-icon://delete"
+                                                press="onDeleteDtl" 
+                                                tooltip="{caption>/DELETE}"
+                                                visible="true" />
+                                            <Button id="btnRefreshDtl" 
+                                                icon="sap-icon://refresh"
+                                                press="onRefreshDtl" 
+                                                tooltip="{caption>/REFRESH}"
+                                                visible="true" />
+                                        </Toolbar>
+                                    </uiT:extension>
+                                    <uiT:layoutData>
+                                        <FlexItemData growFactor="1" baseSize="0%"/>
+                                    </uiT:layoutData>
+                                </uiT:Table>
+                            </IconTabFilter>
                             <IconTabFilter id="itfHU" text="DELIVERY DETAILS (HU)" key="hu" visible="{ui>/useTo}">
                                 <uiT:Table id="huTab"
                                     rows="{hu>/results}"
@@ -222,54 +270,6 @@
                                                 press="onCancelHu" 
                                                 tooltip="{caption>/CANCEL}"
                                                 visible="false" />
-                                        </Toolbar>
-                                    </uiT:extension>
-                                    <uiT:layoutData>
-                                        <FlexItemData growFactor="1" baseSize="0%"/>
-                                    </uiT:layoutData>
-                                </uiT:Table>
-                            </IconTabFilter>
-                            <IconTabFilter id="itfDtl" text="DELIVERY DETAILS" key="dtl">
-                                <uiT:Table id="dtlTab"
-                                    rows="{dtl>/results}"
-                                    visibleRowCountMode="Auto"
-                                    showColumnVisibilityMenu="true"
-                                    enableColumnFreeze="true"
-                                    enableCellFilter="true"
-                                    selectionMode="MultiToggle"
-                                    firstVisibleRowChanged="onFirstVisibleRowChanged"
-                                    cellClick="onCellClick"
-                                    sort="onSorted"
-                                    filter="onFilter"
-                                    columnFreeze="onColumnUpdated"
-                                    columnMove="onColumnUpdated"
-                                    columnResize="onColumnUpdated"
-                                    columnSelect="onColumnUpdated"
-                                    columnVisibility="onColumnUpdated"
-                                    rowSelectionChange="onRowSelectionChange">
-                                    <uiT:extension>
-                                        <Toolbar>
-                                            <ToolbarSpacer/>
-                                            <Button id="btnAddDtl" 
-                                                icon="sap-icon://add"
-                                                press="onAddDtl"
-                                                tooltip="{caption>/ADD}"
-                                                visible="true"/>
-                                            <Button id="btnPickDtl" 
-                                                icon="sap-icon://flag"
-                                                press="onPickDtl" 
-                                                tooltip="{caption>/PICK}"
-                                                visible="true" />
-                                            <Button id="btnDeleteDtl" 
-                                                icon="sap-icon://delete"
-                                                press="onDeleteDtl" 
-                                                tooltip="{caption>/DELETE}"
-                                                visible="true" />
-                                            <Button id="btnRefreshDtl" 
-                                                icon="sap-icon://refresh"
-                                                press="onRefreshDtl" 
-                                                tooltip="{caption>/REFRESH}"
-                                                visible="true" />
                                         </Toolbar>
                                     </uiT:extension>
                                     <uiT:layoutData>

@@ -35,12 +35,12 @@
                     </sfb:controlConfiguration>
                     <sfb:controlConfiguration>
                         <sfb:ControlConfiguration id="filterIssPlant" key="ISSPLANT" groupId="_BASIC" label="{caption>/ISSPLANT}" controlType="dropDownList" 
-                            displayBehaviour="idOnly" mandatory="notMandatory" index="3">
+                            displayBehaviour="idAndDescription" mandatory="notMandatory" index="3">
                         </sfb:ControlConfiguration>
                     </sfb:controlConfiguration>
                     <sfb:controlConfiguration>
                         <sfb:ControlConfiguration id="filterRcvPlant" key="RCVPLANT" groupId="_BASIC" label="{caption>/RCVPLANT}" controlType="dropDownList" 
-                            displayBehaviour="idOnly" mandatory="notMandatory" index="4">
+                            displayBehaviour="idAndDescription" mandatory="notMandatory" index="4">
                         </sfb:ControlConfiguration>
                     </sfb:controlConfiguration>
                     <sfb:controlConfiguration>

@@ -491,20 +491,23 @@ sap.ui.define([
 
                                 var oModel = _this.getOwnerComponent().getModel();
                                 console.log("InfoHUTblSet param", sEntitySet, param)
-                                oModel.update(sEntitySet, param, {
-                                    method: "PUT",
-                                    success: function(data, oResponse) {
-                                        console.log(sEntitySet, data, oResponse);
 
-                                        if (idx == aSelIdx.length - 1) {
-                                            _this.onRefreshHu();
+                                setTimeout(() => {
+                                    oModel.update(sEntitySet, param, {
+                                        method: "PUT",
+                                        success: function(data, oResponse) {
+                                            console.log(sEntitySet, data, oResponse);
+    
+                                            if (idx == aSelIdx.length - 1) {
+                                                _this.onRefreshHu();
+                                            }
+                                        },
+                                        error: function(err) {
+                                            console.log("error", err)
+                                            _this.closeLoadingDialog();
                                         }
-                                    },
-                                    error: function(err) {
-                                        console.log("error", err)
-                                        _this.closeLoadingDialog();
-                                    }
-                                });
+                                    });
+                                }, 100);
                             });
                         }
                     }

@@ -90,6 +90,7 @@ sap.ui.define([
                     results: []
                 }), "pickDtl");
 
+                _aPickDtl = [];
                 _this.getPickHdr();
 
                 _this.closeLoadingDialog();
@@ -228,22 +229,23 @@ sap.ui.define([
                         }
                         
                         console.log("InfoHUTblSet param", param);
-                        oModel.create("/InfoHUTblSet", param, {
-                            method: "POST",
-                            success: function(data, oResponse) {
-                                console.log("InfoHUTblSet create", data);
-        
-                                if (idx == _aPickDtl.length - 1) {
+                        setTimeout(() => {
+                            oModel.create("/InfoHUTblSet", param, {
+                                method: "POST",
+                                success: function(data, oResponse) {
+                                    console.log("InfoHUTblSet create", data);
+            
+                                    if (idx == _aPickDtl.length - 1) {
+                                        _this.closeLoadingDialog();
+                                        _this.onNavBack();
+                                    }
+                                },
+                                error: function(err) {
+                                    console.log("error", err)
                                     _this.closeLoadingDialog();
-                                    _this.onNavBack();
                                 }
-                            },
-                            error: function(err) {
-                                console.log("error", err)
-                                _this.closeLoadingDialog();
-                            }
-                        });
-
+                            });
+                        }, 100);
                     })
                 } else {
                     MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
