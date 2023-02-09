@@ -300,7 +300,49 @@ sap.ui.define([
             },
 
             onPostHdr() {
+                var oData = _this.getView().getModel("hdr").getProperty("/results/0");
 
+                if (oData.DELETED) {
+                    MessageBox.warning(_oCaption.WARN_ALREADY_DELETED);
+                    return;
+                }
+
+                MessageBox.confirm(_oCaption.CONFIRM_PROCEED_EXECUTE, {
+                    actions: ["Yes", "No"],
+                    onClose: function (sAction) {
+                        if (sAction === "Yes") {
+                            _this.showLoadingDialog("Loading...");
+
+                            var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
+                            var oParam = {
+                                "iv_dlvno": oData.DLVNO,
+                                "iv_userid": _startUpInfo.id,
+                                "N_RETURN_MSG": []
+                            };
+
+                            console.log("GoodsMvt_PostODSet param", oParam);
+                            oModelRFC.create("/GoodsMvt_PostODSet", oParam, {
+                                method: "POST",
+                                success: function(oResult, oResponse) {
+                                    console.log("GoodsMvt_PostODSet", oResult, oResponse);
+
+                                    _this.closeLoadingDialog();
+                                    if (oResult.N_RETURN_MSG.results[0].Type == "S") {
+
+                                        MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
+                                        _this.onRefreshHdr();
+                                    } else {
+                                        MessageBox.information(oResult.N_RETURN_MSG.results[0].Message);
+                                    }
+                                },
+                                error: function(err) {
+                                    MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
+                                    _this.closeLoadingDialog();
+                                }
+                            });
+                        }
+                    }
+                });
             },
 
             onUndoPickHdr() {
