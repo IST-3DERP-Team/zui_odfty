@@ -30,7 +30,7 @@ server:
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - path: /sap
+          - path: /sap/opu/odata/sap/ZGW_3DERP_ODFTY_SRV/
             url: http://159.138.39.203:8000
             client: '888'
             destination: LTD888

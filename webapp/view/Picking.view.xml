@@ -23,7 +23,7 @@
                     showColumnVisibilityMenu="true"
                     enableColumnFreeze="true"
                     enableCellFilter="true"
-                    selectionMode="Single"
+                    selectionMode="MultiToggle"
                     firstVisibleRowChanged="onFirstVisibleRowChanged"
                     cellClick="onCellClickPickHdr"
                     sort="onSorted"
@@ -33,7 +33,7 @@
                     columnResize="onColumnUpdated"
                     columnSelect="onColumnUpdated"
                     columnVisibility="onColumnUpdated"
-                    rowSelectionChange="onRowSelectionChange">
+                    rowSelectionChange="onRowSelectionChangePickHdr">
                     <uiT:extension>
                         <Toolbar>
                             <ToolbarSpacer/>
@@ -71,7 +71,7 @@
                     showColumnVisibilityMenu="true"
                     enableColumnFreeze="true"
                     enableCellFilter="true"
-                    selectionMode="Single"
+                    selectionMode="MultiToggle"
                     firstVisibleRowChanged="onFirstVisibleRowChanged"
                     cellClick="onCellClick"
                     sort="onSorted"

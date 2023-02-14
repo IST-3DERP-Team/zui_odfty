@@ -21,7 +21,7 @@ sap.ui.define([
         var _oCaption = {};
         var _startUpInfo;
 
-        return BaseController.extend("zuiodfty.controller.Reservation", {
+        return BaseController.extend("zuiodfty.controller.DeliveryInfo", {
             onInit: function () {
                 _this = this;
 
@@ -33,7 +33,6 @@ sap.ui.define([
             },
 
             _routePatternMatched: function (oEvent) {
-                console.log("_routePatternMatched", oEvent)
                 this.getView().setModel(new JSONModel({
                     sbu: oEvent.getParameter("arguments").sbu,
                     dlvNo: oEvent.getParameter("arguments").dlvNo,
@@ -717,15 +716,17 @@ sap.ui.define([
                     });
                     sRsvList = sRsvList.slice(0, -1);
 
-                    _this._router.navTo("RouteReservation", {
-                        sbu: _this.getView().getModel("ui").getData().sbu,
-                        dlvNo: oDataHdr.DLVNO,
-                        dlvType: oDataHdr.DLVTYPE,
-                        mvtType: oDataHdr.MVTTYPE,
-                        srcTbl: oDataHdr.SRCTBL,
-                        noRangeCd: oDataHdr.NORANGECD,
-                        rsvList: sRsvList
-                    });
+                    setTimeout(() => {
+                        _this._router.navTo("RouteReservation", {
+                            sbu: _this.getView().getModel("ui").getData().sbu,
+                            dlvNo: oDataHdr.DLVNO,
+                            dlvType: oDataHdr.DLVTYPE,
+                            mvtType: oDataHdr.MVTTYPE,
+                            srcTbl: oDataHdr.SRCTBL,
+                            noRangeCd: oDataHdr.NORANGECD,
+                            rsvList: sRsvList
+                        });
+                    }, 100);
                 } else {
                     MessageBox.information(_oCaption.WARN_ADD_NOT_ALLOW)
                 }

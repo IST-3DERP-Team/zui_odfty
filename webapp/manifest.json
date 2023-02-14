@@ -206,19 +206,19 @@
                     ]
                 },
                 {
-                    "name": "RouteReservation",
-                    "pattern": "Reservation/{sbu},{dlvNo},{dlvType},{mvtType},{srcTbl},{noRangeCd},{rsvList}",
-                    "greedy": false,
-                    "target": [
-                        "TargetReservation"
-                    ]
-                },
-                {
                     "name": "RouteDeliveryInfo",
                     "pattern": "DeliveryInfo/{sbu},{dlvNo}",
                     "greedy": false,
                     "target": [
                         "TargetDeliveryInfo"
+                    ]
+                },
+                {
+                    "name": "RouteReservation",
+                    "pattern": "Reservation/{sbu},{dlvNo},{dlvType},{mvtType},{srcTbl},{noRangeCd},{rsvList}",
+                    "greedy": false,
+                    "target": [
+                        "TargetReservation"
                     ]
                 },
                 {
@@ -238,19 +238,19 @@
                     "viewId": "Main",
                     "viewName": "Main"
                 },
-                "TargetReservation": {
-                    "viewType": "XML",
-                    "transition": "slide",
-                    "clearControlAggregation": false,
-                    "viewId": "Reservation",
-                    "viewName": "Reservation"
-                },
                 "TargetDeliveryInfo": {
                     "viewType": "XML",
                     "transition": "slide",
                     "clearControlAggregation": false,
                     "viewId": "DeliveryInfo",
                     "viewName": "DeliveryInfo"
+                },
+                "TargetReservation": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "Reservation",
+                    "viewName": "Reservation"
                 },
                 "TargetPicking": {
                     "viewType": "XML",

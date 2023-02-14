@@ -33,7 +33,6 @@ sap.ui.define([
             },
 
             _routePatternMatched: function (oEvent) {
-                console.log("_routePatternMatched", oEvent.getParameter("arguments"))
                 this.getView().setModel(new JSONModel({
                     sbu: oEvent.getParameter("arguments").sbu,
                     dlvNo: oEvent.getParameter("arguments").dlvNo,
@@ -48,7 +47,6 @@ sap.ui.define([
             },
 
             initializeComponent() {
-                console.log("initializeComponent")
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
                 _this.showLoadingDialog("Loading...");
 
