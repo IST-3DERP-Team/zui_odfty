@@ -260,6 +260,7 @@
                     <PropertyRef Name="DLVNO"/>
                 </Key>
                 <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="STATUSDESC" Type="Edm.String" Nullable="false" MaxLength="61" sap:unicode="false" sap:label="STATUSDESC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVTYPE" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Delivery Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="SRCTBL" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Source Table" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="USEHU" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="USEHU" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>

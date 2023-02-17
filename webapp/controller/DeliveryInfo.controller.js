@@ -1048,7 +1048,7 @@ sap.ui.define([
 
                 _this.byId("iptDlvNo").setValue(oHeader.DLVNO);
                 _this.byId("iptMvtType").setValue(oHeader.MVTTYPE);
-                _this.byId("iptStatus").setValue(oHeader.STATUS);
+                _this.byId("iptStatus").setValue(oHeader.STATUSDESC);
                 _this.byId("dpDocDt").setValue(oHeader.DOCDT);
                 _this.byId("iptReqDt").setValue(oHeader.REQDT);
 
