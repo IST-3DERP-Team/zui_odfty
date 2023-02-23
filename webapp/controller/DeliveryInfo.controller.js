@@ -344,6 +344,59 @@ sap.ui.define([
                 });
             },
 
+            onReverseHdr() {
+                var oData = _this.getView().getModel("hdr").getProperty("/results/0");
+
+                if (oData.DELETED) {
+                    MessageBox.warning(_oCaption.WARN_ALREADY_DELETED);
+                    return;
+                }
+
+                if (oData.STATUS != "54") {
+                    MessageBox.warning(_oCaption.WARN_STATUS_POSTED_REVERSE);
+                    return;
+                }
+
+                MessageBox.confirm(_oCaption.CONFIRM_PROCEED_EXECUTE, {
+                    actions: ["Yes", "No"],
+                    onClose: function (sAction) {
+                        if (sAction === "Yes") {
+                            _this.showLoadingDialog("Loading...");
+
+                            var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
+                            var oParam = {
+                                "iv_dlvno": oData.DLVNO,
+                                "iv_userid": _startUpInfo.id,
+                                "iv_pstngdt": _this.formatDate(new Date(oData.POSTDT)) + "T00:00:00", 
+                                "N_IDOD_ET_CANC": [],
+                                "N_IDOD_RETURN": []
+                            };
+
+                            console.log("IDOD_ReverseSet param", oParam);
+                            oModelRFC.create("/IDOD_ReverseSet", oParam, {
+                                method: "POST",
+                                success: function(oResult, oResponse) {
+                                    console.log("IDOD_ReverseSet", oResult, oResponse);
+
+                                    _this.closeLoadingDialog();
+                                    if (oResult.N_IDOD_ET_CANC.results[0].Type == "S") {
+
+                                        MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
+                                        _this.onRefreshHdr();
+                                    } else {
+                                        MessageBox.information(oResult.N_IDOD_RETURN.results[0].Message);
+                                    }
+                                },
+                                error: function(err) {
+                                    MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
+                                    _this.closeLoadingDialog();
+                                }
+                            });
+                        }
+                    }
+                });
+            },
+
             onUndoPickHdr() {
 
             },
@@ -716,17 +769,38 @@ sap.ui.define([
                     });
                     sRsvList = sRsvList.slice(0, -1);
 
-                    setTimeout(() => {
-                        _this._router.navTo("RouteReservation", {
-                            sbu: _this.getView().getModel("ui").getData().sbu,
-                            dlvNo: oDataHdr.DLVNO,
-                            dlvType: oDataHdr.DLVTYPE,
-                            mvtType: oDataHdr.MVTTYPE,
-                            srcTbl: oDataHdr.SRCTBL,
-                            noRangeCd: oDataHdr.NORANGECD,
-                            rsvList: sRsvList
-                        });
-                    }, 100);
+                    var test = {
+                        sbu: _this.getView().getModel("ui").getData().sbu,
+                        dlvNo: oDataHdr.DLVNO,
+                        dlvType: oDataHdr.DLVTYPE,
+                        mvtType: oDataHdr.MVTTYPE,
+                        srcTbl: oDataHdr.SRCTBL,
+                        noRangeCd: oDataHdr.NORANGECD,
+                        rsvList: sRsvList
+                    };
+                    console.log("test", test)
+
+                    _this._router.navTo("RouteReservation", {
+                        sbu: _this.getView().getModel("ui").getData().sbu,
+                        dlvNo: oDataHdr.DLVNO,
+                        dlvType: oDataHdr.DLVTYPE,
+                        mvtType: oDataHdr.MVTTYPE,
+                        srcTbl: oDataHdr.SRCTBL,
+                        noRangeCd: oDataHdr.NORANGECD,
+                        rsvList: sRsvList
+                    });
+
+                    // setTimeout(() => {
+                    //     _this._router.navTo("RouteReservation", {
+                    //         sbu: _this.getView().getModel("ui").getData().sbu,
+                    //         dlvNo: oDataHdr.DLVNO,
+                    //         dlvType: oDataHdr.DLVTYPE,
+                    //         mvtType: oDataHdr.MVTTYPE,
+                    //         srcTbl: oDataHdr.SRCTBL,
+                    //         noRangeCd: oDataHdr.NORANGECD,
+                    //         rsvList: sRsvList
+                    //     });
+                    // }, 100);
                 } else {
                     MessageBox.information(_oCaption.WARN_ADD_NOT_ALLOW)
                 }
@@ -1204,6 +1278,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "PICK_COMPLETE"});
                 oCaptionParam.push({CODE: "POST"});
                 oCaptionParam.push({CODE: "UNDO_PICK_COMPLETE"});
+                oCaptionParam.push({CODE: "REVERSE"});
                 oCaptionParam.push({CODE: "ADD"});
                 oCaptionParam.push({CODE: "EDIT"});
                 oCaptionParam.push({CODE: "DELETE"});
@@ -1228,6 +1303,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_NO_DATA_EDIT"});
                 oCaptionParam.push({CODE: "CONFIRM_PROCEED_EXECUTE"});
                 oCaptionParam.push({CODE: "INFO_EXECUTE_SUCCESS"});
+                oCaptionParam.push({CODE: "WARN_STATUS_POSTED_REVERSE"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

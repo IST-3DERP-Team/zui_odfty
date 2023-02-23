@@ -21,8 +21,9 @@
                         <menu>
                             <Menu id="menuSetStatusHdr">
                                 <MenuItem id="menuPickHdr" text="{caption>/PICK_COMPLETE}" visible="{ui>/useTo}" press="onPickHdr" />
-                                <MenuItem id="menuPostHdr" text="{caption>/POST}" press="onPostHdr" />
                                 <MenuItem id="menuUndoPickHdr" text="{caption>/UNDO_PICK_COMPLETE}" visible="{ui>/useTo}" press="onUndoPickHdr" />
+                                <MenuItem id="menuPostHdr" text="{caption>/POST}" press="onPostHdr" />
+                                <MenuItem id="menuReverseHdr" text="{caption>/REVERSE}" press="onReverseHdr" />
                             </Menu>
                         </menu>
                     </MenuButton>
