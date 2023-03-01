@@ -297,11 +297,12 @@ sap.ui.define([
                     var oParamLock = {
                         Dlvno: sDlvNo,
                         Lock_Unlock_Ind: "X",
-                        IV_Count: 300,
+                        IV_Count: 600,
                         N_LOCK_UNLOCK_DLVHDR_RET: [],
                         N_LOCK_UNLOCK_DLVHDR_MSG: []
                     }
 
+                    console.log("Lock_Unlock_DlvHdrSet param", oParamLock)
                     oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
                         method: "POST",
                         success: function(data, oResponse) {
