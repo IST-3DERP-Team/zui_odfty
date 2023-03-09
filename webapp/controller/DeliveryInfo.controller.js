@@ -518,6 +518,7 @@ sap.ui.define([
                         _this.getView().setModel(oJSONModel, "hu");
 
                         _this.setRowReadMode("hu");
+                        _this.setControlEditMode("hu", false);
 
                         _this.closeLoadingDialog();
                     },
@@ -537,14 +538,10 @@ sap.ui.define([
 
                 var aRows = this.getView().getModel("hu").getData().results;
                 if (aRows.length > 0 && aRows.length > aRows.filter(x => x.DELETED).length) {
-                    _this.byId("btnEditHu").setVisible(false);
-                    _this.byId("btnDeleteHu").setVisible(false);
-                    _this.byId("btnRefreshHu").setVisible(false);
-                    _this.byId("btnSaveHu").setVisible(true);
-                    _this.byId("btnCancelHu").setVisible(true);
     
                     this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel("hu").getData());
                     _this.setRowEditMode("hu");
+                    _this.setControlEditMode("hu", true);
                 } else {
                     MessageBox.warning(_oCaption.INFO_NO_DATA_EDIT);
                 }
@@ -670,13 +667,6 @@ sap.ui.define([
                             method: "PUT",
                             success: function(data, oResponse) {
                                 console.log(sEntitySet, data, oResponse);
-
-                                _this.byId("btnEditHu").setVisible(true);
-                                _this.byId("btnDeleteHu").setVisible(true);
-                                _this.byId("btnRefreshHu").setVisible(true);
-                                _this.byId("btnSaveHu").setVisible(false);
-                                _this.byId("btnCancelHu").setVisible(false);
-
                                 _this.onRefreshHu();
                             },
                             error: function(err) {
@@ -698,24 +688,11 @@ sap.ui.define([
                         actions: ["Yes", "No"],
                         onClose: function (sAction) {
                             if (sAction == "Yes") {
-
-                                _this.byId("btnEditHu").setVisible(true);
-                                _this.byId("btnDeleteHu").setVisible(true);
-                                _this.byId("btnRefreshHu").setVisible(true);
-                                _this.byId("btnSaveHu").setVisible(false);
-                                _this.byId("btnCancelHu").setVisible(false);
-
                                 _this.onRefreshHu();
                             }
                         }
                     });
                 } else {
-                    _this.byId("btnEditHu").setVisible(true);
-                    _this.byId("btnDeleteHu").setVisible(true);
-                    _this.byId("btnRefreshHu").setVisible(true);
-                    _this.byId("btnSaveHu").setVisible(false);
-                    _this.byId("btnCancelHu").setVisible(false);
-
                     _this.onRefreshHu();
                 }
             },
@@ -898,6 +875,7 @@ sap.ui.define([
                         _this.getView().setModel(oJSONModel, "ship");
 
                         _this.setRowReadMode("ship");
+                        _this.setControlEditMode("ship", false);
 
                         _this.closeLoadingDialog();
                     },
@@ -917,13 +895,9 @@ sap.ui.define([
 
                 var aRows = this.getView().getModel("ship").getData().results;
                 if (aRows.length > 0) {
-                    _this.byId("btnEditShip").setVisible(false);
-                    _this.byId("btnRefreshShip").setVisible(false);
-                    _this.byId("btnSaveShip").setVisible(true);
-                    _this.byId("btnCancelShip").setVisible(true);
-    
                     this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel("ship").getData());
                     _this.setRowEditMode("ship");
+                    _this.setControlEditMode("ship", true);
                 } else {
                     MessageBox.warning(_oCaption.INFO_NO_DATA_EDIT);
                 }
@@ -968,11 +942,6 @@ sap.ui.define([
                         success: function(data, oResponse) {
                             console.log(sEntitySet, data, oResponse);
 
-                            _this.byId("btnEditShip").setVisible(true);
-                            _this.byId("btnRefreshShip").setVisible(true);
-                            _this.byId("btnSaveShip").setVisible(false);
-                            _this.byId("btnCancelShip").setVisible(false);
-
                             MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                             _this.onRefreshShip();
                         },
@@ -994,22 +963,11 @@ sap.ui.define([
                         actions: ["Yes", "No"],
                         onClose: function (sAction) {
                             if (sAction == "Yes") {
-
-                                _this.byId("btnEditShip").setVisible(true);
-                                _this.byId("btnRefreshShip").setVisible(true);
-                                _this.byId("btnSaveShip").setVisible(false);
-                                _this.byId("btnCancelShip").setVisible(false);
-
-                                _this.onRefreshShip();
+                                 _this.onRefreshShip();
                             }
                         }
                     });
                 } else {
-                    _this.byId("btnEditShip").setVisible(true);
-                    _this.byId("btnRefreshShip").setVisible(true);
-                    _this.byId("btnSaveShip").setVisible(false);
-                    _this.byId("btnCancelShip").setVisible(false);
-
                     _this.onRefreshShip();
                 }
             },
@@ -1147,6 +1105,8 @@ sap.ui.define([
 
             setControlEditMode(pType, pEditable) {
 
+                if (sap.ushell.Container) sap.ushell.Container.setDirtyFlag(pEditable);
+
                 if (pType == "hdr") {
 
                     // Header
@@ -1182,6 +1142,22 @@ sap.ui.define([
 
                     // Material Document
                     this.byId("btnRefreshMatDoc").setEnabled(!pEditable);
+
+                } else if (pType == "hu") {
+
+                    _this.byId("btnEditHu").setVisible(!pEditable);
+                    _this.byId("btnDeleteHu").setVisible(!pEditable);
+                    _this.byId("btnRefreshHu").setVisible(!pEditable);
+                    _this.byId("btnSaveHu").setVisible(pEditable);
+                    _this.byId("btnCancelHu").setVisible(pEditable);
+
+                } else if (pType == "ship") {
+
+                    _this.byId("btnEditShip").setVisible(!pEditable);
+                    _this.byId("btnRefreshShip").setVisible(!pEditable);
+                    _this.byId("btnSaveShip").setVisible(pEditable);
+                    _this.byId("btnCancelShip").setVisible(pEditable);
+
                 }
             },
 
