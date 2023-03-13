@@ -45,6 +45,8 @@ sap.ui.define([
 
             initializeComponent() {
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
+                this.getAppAction();
+        
                 _this.showLoadingDialog("Loading...");
 
                 var oModelStartUp= new sap.ui.model.json.JSONModel();
@@ -1104,7 +1106,10 @@ sap.ui.define([
             },
 
             setControlEditMode(pType, pEditable) {
-
+                
+                var bAppChange = _this.getView().getModel("base").getProperty("/appChange");
+                if (!bAppChange) return;
+                //console.log("setControlEditMode2", bAppChange);
                 if (sap.ushell.Container) sap.ushell.Container.setDirtyFlag(pEditable);
 
                 if (pType == "hdr") {
@@ -1144,12 +1149,13 @@ sap.ui.define([
                     this.byId("btnRefreshMatDoc").setEnabled(!pEditable);
 
                 } else if (pType == "hu") {
-
+                    console.log("setControlEditMode", _this.getView().getModel("base").getData());
                     _this.byId("btnEditHu").setVisible(!pEditable);
                     _this.byId("btnDeleteHu").setVisible(!pEditable);
                     _this.byId("btnRefreshHu").setVisible(!pEditable);
                     _this.byId("btnSaveHu").setVisible(pEditable);
                     _this.byId("btnCancelHu").setVisible(pEditable);
+                    console.log("setControlEditMode", _this.getView().getModel("base").getData());
 
                 } else if (pType == "ship") {
 

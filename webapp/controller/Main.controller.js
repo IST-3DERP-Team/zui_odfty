@@ -4,23 +4,20 @@ sap.ui.define([
     "sap/m/MessageBox",
     "sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
-    'sap/ui/model/Sorter',
-    "sap/ui/Device",
-    "sap/ui/table/library",
-    "sap/m/TablePersoController",
-    'sap/m/MessageToast',
-	'sap/m/SearchField'
+    "sap/ui/model/Sorter",
+    "sap/ui/core/routing/HashChanger"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-     function (BaseController, JSONModel, MessageBox, Filter, FilterOperator, Sorter, Device, library, TablePersoController, MessageToast, SearchField) {
+     function (BaseController, JSONModel, MessageBox, Filter, FilterOperator, Sorter, HashChanger) {
         "use strict";
 
         var _this;
         var _oCaption = {};
         var _aSmartFilter;
         var _sSmartFilterGlobal;
+        
 
         return BaseController.extend("zuiodfty.controller.Main", {
             onInit: function () {
@@ -40,6 +37,8 @@ sap.ui.define([
                 }), "ui");
 
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
+                this.getAppAction();
+
                 _this.showLoadingDialog("Loading...");
 
                 var aTableList = [];
@@ -289,48 +288,52 @@ sap.ui.define([
 
             onEditODFtyHdr() {
                 if (this.getView().getModel("ui").getData().dlvNo) {
-                    _this.showLoadingDialog("Loading...");
-
-                    var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
                     var sDlvNo = this.getView().getModel("ui").getData().dlvNo;
-
-                    var oParamLock = {
-                        Dlvno: sDlvNo,
-                        Lock_Unlock_Ind: "X",
-                        IV_Count: 600,
-                        N_LOCK_UNLOCK_DLVHDR_RET: [],
-                        N_LOCK_UNLOCK_DLVHDR_MSG: []
-                    }
-
-                    console.log("Lock_Unlock_DlvHdrSet param", oParamLock)
-                    oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
-                        method: "POST",
-                        success: function(data, oResponse) {
-                            console.log("Lock_Unlock_DlvHdrSet", data);
-
-                            if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
-                                _this.closeLoadingDialog();
-                                
-                                _this._router.navTo("RouteDeliveryInfo", {
-                                    sbu: _this.getView().getModel("ui").getData().sbu,
-                                    dlvNo: sDlvNo
-                                });
-                            } else {
-                                var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
-                                MessageBox.warning(oFilter.Message);
-                                
-                            }
-                        },
-                        error: function(err) {
-                            MessageBox.error(err);
-                            _this.closeLoadingDialog();
-                        }
-                    });     
+                    var bAppChange = _this.getView().getModel("base").getProperty("/appChange");
                     
-                    // this._router.navTo("RouteDeliveryInfo", {
-                    //     sbu: _this.getView().getModel("ui").getData().sbu,
-                    //     dlvNo: sDlvNo
-                    // });
+                    if (bAppChange) {
+
+                        _this.showLoadingDialog("Loading...");
+                        var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
+
+                        var oParamLock = {
+                            Dlvno: sDlvNo,
+                            Lock_Unlock_Ind: "X",
+                            IV_Count: 600,
+                            N_LOCK_UNLOCK_DLVHDR_RET: [],
+                            N_LOCK_UNLOCK_DLVHDR_MSG: []
+                        }
+
+                        console.log("Lock_Unlock_DlvHdrSet param", oParamLock)
+                        oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
+                            method: "POST",
+                            success: function(data, oResponse) {
+                                console.log("Lock_Unlock_DlvHdrSet", data);
+
+                                if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
+                                    _this.closeLoadingDialog();
+                                    
+                                    _this._router.navTo("RouteDeliveryInfo", {
+                                        sbu: _this.getView().getModel("ui").getData().sbu,
+                                        dlvNo: sDlvNo
+                                    });
+                                } else {
+                                    var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
+                                    MessageBox.warning(oFilter.Message);
+                                    
+                                }
+                            },
+                            error: function(err) {
+                                MessageBox.error(err);
+                                _this.closeLoadingDialog();
+                            }
+                        });     
+                    } else {
+                        _this._router.navTo("RouteDeliveryInfo", {
+                            sbu: _this.getView().getModel("ui").getData().sbu,
+                            dlvNo: sDlvNo
+                        });
+                    }
                 } else {
                     MessageBox.information(_oCaption.INFO_NO_SELECTED);
                 }

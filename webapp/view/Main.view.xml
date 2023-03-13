@@ -79,7 +79,7 @@
                                 icon="sap-icon://add"
                                 press="onAddODFtyHdr"
                                 tooltip="{caption>/ADD}"
-                                visible="true"/>
+                                visible="{base>/appChange}"/>
                             <Button id="btnEditODFtyHdr" 
                                 icon="sap-icon://edit"
                                 press="onEditODFtyHdr"

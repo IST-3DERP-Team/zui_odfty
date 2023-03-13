@@ -5,13 +5,9 @@ sap.ui.define([
     "sap/m/MessageBox",
     "sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
-    'sap/ui/model/Sorter',
-    "sap/ui/Device",
-    "sap/ui/table/library",
-    "sap/m/TablePersoController",
-    'sap/m/MessageToast',
-	'sap/m/SearchField'
-  ], function (Controller, JSONModel, MessageBox, Filter, FilterOperator, Sorter, Device, library, TablePersoController, MessageToast, SearchField) {
+    "sap/ui/model/Sorter",
+    "sap/ui/core/routing/HashChanger"
+  ], function (Controller, JSONModel, MessageBox, Filter, FilterOperator, Sorter, HashChanger) {
   
     "use strict";
 
@@ -32,6 +28,25 @@ sap.ui.define([
             this._aColumns = {};
             this._aFilterableColumns = {};
             this._aSortableColumns = {};
+
+            this.getView().setModel(new JSONModel({}), "base");
+        },
+
+        getAppAction: async function() {
+            if (sap.ushell.Container !== undefined) {
+                const fullHash = new HashChanger().getHash();
+                const urlParsing = await sap.ushell.Container.getServiceAsync("URLParsing");
+                const shellHash = urlParsing.parseShellHash(fullHash);
+                const sAction = shellHash.action;
+                var bAppChange;
+
+                if (sAction == "display") bAppChange = false;
+                else bAppChange = true;
+            } else {
+                bAppChange = true;
+            }
+
+            _this.getView().getModel("base").setProperty("/appChange", bAppChange);
         },
    
         getColumns: async function(pTableList) {
