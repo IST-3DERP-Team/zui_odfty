@@ -47,8 +47,10 @@ sap.ui.define([
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
                 this.getAppAction();
 
-                var bAppChange = _this.getView().getModel("base").getProperty("/appChange");
-                this.setControlAppAction(bAppChange);
+                setTimeout(() => {
+                    var bAppChange = _this.getView().getModel("base").getProperty("/appChange");
+                    this.setControlAppAction(bAppChange);
+                }, 100);
         
                 _this.showLoadingDialog("Loading...");
 
@@ -411,41 +413,47 @@ sap.ui.define([
             },
 
             onCloseHdr() {
-                _this.showLoadingDialog("Loading...");
+                var bAppChange = _this.getView().getModel("base").getProperty("/appChange");
 
-                var oModelLock = _this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
-                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+                if (bAppChange) {
+                    _this.showLoadingDialog("Loading...");
 
-                var oParamLock = {
-                    Dlvno: sDlvNo,
-                    Lock_Unlock_Ind: "",
-                    N_LOCK_UNLOCK_DLVHDR_RET: [],
-                    N_LOCK_UNLOCK_DLVHDR_MSG: []
-                }
-
-                oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
-                    method: "POST",
-                    success: function(data, oResponse) {
-                        console.log("Lock_Unlock_DlvHdrSet", data);
-                        _this.closeLoadingDialog();
-                        _this.onNavBack();
-
-                        // if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
-                        //     this._router.navTo("RouteDeliveryInfo", {
-                        //         sbu: _this.getView().getModel("ui").getData().sbu,
-                        //         dlvNo: sDlvNo
-                        //     });
-                        // } else {
-                        //     var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
-                        //     MessageBox.warning(oFilter.Message);
-                        //     _this.closeLoadingDialog();
-                        // }
-                    },
-                    error: function(err) {
-                        MessageBox.error(err);
-                        _this.closeLoadingDialog();
+                    var oModelLock = _this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
+                    var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+    
+                    var oParamLock = {
+                        Dlvno: sDlvNo,
+                        Lock_Unlock_Ind: "",
+                        N_LOCK_UNLOCK_DLVHDR_RET: [],
+                        N_LOCK_UNLOCK_DLVHDR_MSG: []
                     }
-                });   
+    
+                    oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
+                        method: "POST",
+                        success: function(data, oResponse) {
+                            console.log("Lock_Unlock_DlvHdrSet", data);
+                            _this.closeLoadingDialog();
+                            _this.onNavBack();
+    
+                            // if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
+                            //     this._router.navTo("RouteDeliveryInfo", {
+                            //         sbu: _this.getView().getModel("ui").getData().sbu,
+                            //         dlvNo: sDlvNo
+                            //     });
+                            // } else {
+                            //     var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
+                            //     MessageBox.warning(oFilter.Message);
+                            //     _this.closeLoadingDialog();
+                            // }
+                        },
+                        error: function(err) {
+                            MessageBox.error(err);
+                            _this.closeLoadingDialog();
+                        }
+                    });
+                } else {
+                    _this.onNavBack();
+                }
             },
 
             onSaveHdr() {
