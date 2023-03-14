@@ -46,6 +46,9 @@ sap.ui.define([
             initializeComponent() {
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
                 this.getAppAction();
+
+                var bAppChange = _this.getView().getModel("base").getProperty("/appChange");
+                this.setControlAppAction(bAppChange);
         
                 _this.showLoadingDialog("Loading...");
 
@@ -506,6 +509,7 @@ sap.ui.define([
                     },
                     success: function (data, response) {
                         console.log("InfoHUSet", data)
+                        _this.setControlEditMode("hu", false);
 
                         data.results.forEach(item => {
                             if (item.CREATEDDT !== null)
@@ -520,8 +524,6 @@ sap.ui.define([
                         _this.getView().setModel(oJSONModel, "hu");
 
                         _this.setRowReadMode("hu");
-                        _this.setControlEditMode("hu", false);
-
                         _this.closeLoadingDialog();
                     },
                     error: function (err) { 
@@ -540,10 +542,9 @@ sap.ui.define([
 
                 var aRows = this.getView().getModel("hu").getData().results;
                 if (aRows.length > 0 && aRows.length > aRows.filter(x => x.DELETED).length) {
-    
+                    _this.setControlEditMode("hu", true);
                     this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel("hu").getData());
                     _this.setRowEditMode("hu");
-                    _this.setControlEditMode("hu", true);
                 } else {
                     MessageBox.warning(_oCaption.INFO_NO_DATA_EDIT);
                 }
@@ -871,14 +872,13 @@ sap.ui.define([
                     },
                     success: function (data, response) {
                         console.log("InfoShipSet", data)
+                        _this.setControlEditMode("ship", false);
 
                         var oJSONModel = new sap.ui.model.json.JSONModel();
                         oJSONModel.setData(data);
                         _this.getView().setModel(oJSONModel, "ship");
 
                         _this.setRowReadMode("ship");
-                        _this.setControlEditMode("ship", false);
-
                         _this.closeLoadingDialog();
                     },
                     error: function (err) { 
@@ -897,9 +897,9 @@ sap.ui.define([
 
                 var aRows = this.getView().getModel("ship").getData().results;
                 if (aRows.length > 0) {
+                    _this.setControlEditMode("ship", true);
                     this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel("ship").getData());
                     _this.setRowEditMode("ship");
-                    _this.setControlEditMode("ship", true);
                 } else {
                     MessageBox.warning(_oCaption.INFO_NO_DATA_EDIT);
                 }
@@ -1108,63 +1108,95 @@ sap.ui.define([
             setControlEditMode(pType, pEditable) {
                 
                 var bAppChange = _this.getView().getModel("base").getProperty("/appChange");
-                if (!bAppChange) return;
-                //console.log("setControlEditMode2", bAppChange);
-                if (sap.ushell.Container) sap.ushell.Container.setDirtyFlag(pEditable);
 
-                if (pType == "hdr") {
+                if (bAppChange) {
+                    if (sap.ushell.Container) sap.ushell.Container.setDirtyFlag(pEditable);
 
-                    // Header
-                    this.byId("btnEditHdr").setVisible(!pEditable);
-                    this.byId("btnDeleteHdr").setVisible(!pEditable);
-                    this.byId("btnSetStatusHdr").setVisible(!pEditable);
-                    this.byId("btnRefreshHdr").setVisible(!pEditable);
-                    this.byId("btnPrintHdr").setVisible(!pEditable);
-                    this.byId("btnCloseHdr").setVisible(!pEditable);
-                    this.byId("btnSaveHdr").setVisible(pEditable);
-                    this.byId("btnCancelHdr").setVisible(pEditable);
-
-                    this.setReqField("hdr", pEditable);
-                    this.getView().getModel("ui").setProperty("/editModeHdr", pEditable);
-
-                    // HU
-                    this.byId("btnEditHu").setEnabled(!pEditable);
-                    this.byId("btnDeleteHu").setEnabled(!pEditable);
-                    this.byId("btnRefreshHu").setEnabled(!pEditable);
-
-                    // Detail
-                    this.byId("btnAddDtl").setEnabled(!pEditable);
-                    this.byId("btnPickDtl").setEnabled(!pEditable);
-                    this.byId("btnDeleteDtl").setEnabled(!pEditable);
-                    this.byId("btnRefreshDtl").setEnabled(!pEditable);
-
-                    // Shipment
-                    this.byId("btnEditShip").setEnabled(!pEditable);
-                    this.byId("btnRefreshShip").setEnabled(!pEditable);
-                    
-                    // Status
-                    this.byId("btnRefreshStat").setEnabled(!pEditable);
-
-                    // Material Document
-                    this.byId("btnRefreshMatDoc").setEnabled(!pEditable);
-
-                } else if (pType == "hu") {
-                    console.log("setControlEditMode", _this.getView().getModel("base").getData());
-                    _this.byId("btnEditHu").setVisible(!pEditable);
-                    _this.byId("btnDeleteHu").setVisible(!pEditable);
-                    _this.byId("btnRefreshHu").setVisible(!pEditable);
-                    _this.byId("btnSaveHu").setVisible(pEditable);
-                    _this.byId("btnCancelHu").setVisible(pEditable);
-                    console.log("setControlEditMode", _this.getView().getModel("base").getData());
-
-                } else if (pType == "ship") {
-
-                    _this.byId("btnEditShip").setVisible(!pEditable);
-                    _this.byId("btnRefreshShip").setVisible(!pEditable);
-                    _this.byId("btnSaveShip").setVisible(pEditable);
-                    _this.byId("btnCancelShip").setVisible(pEditable);
-
+                    if (pType == "hdr") {
+    
+                        // Header
+                        this.byId("btnEditHdr").setVisible(!pEditable);
+                        this.byId("btnDeleteHdr").setVisible(!pEditable);
+                        this.byId("btnSetStatusHdr").setVisible(!pEditable);
+                        this.byId("btnRefreshHdr").setVisible(!pEditable);
+                        this.byId("btnPrintHdr").setVisible(!pEditable);
+                        this.byId("btnCloseHdr").setVisible(!pEditable);
+                        this.byId("btnSaveHdr").setVisible(pEditable);
+                        this.byId("btnCancelHdr").setVisible(pEditable);
+    
+                        this.setReqField("hdr", pEditable);
+                        this.getView().getModel("ui").setProperty("/editModeHdr", pEditable);
+    
+                        // HU
+                        this.byId("btnEditHu").setEnabled(!pEditable);
+                        this.byId("btnDeleteHu").setEnabled(!pEditable);
+                        this.byId("btnRefreshHu").setEnabled(!pEditable);
+    
+                        // Detail
+                        this.byId("btnAddDtl").setEnabled(!pEditable);
+                        this.byId("btnPickDtl").setEnabled(!pEditable);
+                        this.byId("btnDeleteDtl").setEnabled(!pEditable);
+                        this.byId("btnRefreshDtl").setEnabled(!pEditable);
+    
+                        // Shipment
+                        this.byId("btnEditShip").setEnabled(!pEditable);
+                        this.byId("btnRefreshShip").setEnabled(!pEditable);
+                        
+                        // Status
+                        this.byId("btnRefreshStat").setEnabled(!pEditable);
+    
+                        // Material Document
+                        this.byId("btnRefreshMatDoc").setEnabled(!pEditable);
+    
+                    } else if (pType == "hu") {
+                        _this.byId("btnEditHu").setVisible(!pEditable);
+                        _this.byId("btnDeleteHu").setVisible(!pEditable);
+                        _this.byId("btnRefreshHu").setVisible(!pEditable);
+                        _this.byId("btnSaveHu").setVisible(pEditable);
+                        _this.byId("btnCancelHu").setVisible(pEditable);
+    
+                    } else if (pType == "ship") {
+    
+                        _this.byId("btnEditShip").setVisible(!pEditable);
+                        _this.byId("btnRefreshShip").setVisible(!pEditable);
+                        _this.byId("btnSaveShip").setVisible(pEditable);
+                        _this.byId("btnCancelShip").setVisible(pEditable);
+    
+                    }
                 }
+            },
+
+            setControlAppAction(pChange) {
+                // Header
+                this.byId("btnEditHdr").setVisible(pChange);
+                this.byId("btnDeleteHdr").setVisible(pChange);
+                this.byId("btnSetStatusHdr").setVisible(pChange);
+                this.byId("btnRefreshHdr").setVisible(true);
+                this.byId("btnPrintHdr").setVisible(true);
+                this.byId("btnCloseHdr").setVisible(true);
+                this.byId("btnSaveHdr").setVisible(false);
+                this.byId("btnCancelHdr").setVisible(false);
+
+                // HU
+                this.byId("btnEditHu").setVisible(pChange);
+                this.byId("btnDeleteHu").setVisible(pChange);
+                this.byId("btnRefreshHu").setVisible(true);
+
+                // Detail
+                this.byId("btnAddDtl").setVisible(pChange);
+                this.byId("btnPickDtl").setVisible(pChange);
+                this.byId("btnDeleteDtl").setVisible(pChange);
+                this.byId("btnRefreshDtl").setVisible(true);
+
+                // Shipment
+                this.byId("btnEditShip").setVisible(pChange);
+                this.byId("btnRefreshShip").setVisible(true);
+
+                // Status
+                this.byId("btnRefreshStat").setVisible(true);
+
+                // Material Document
+                this.byId("btnRefreshMatDoc").setVisible(true);
             },
 
             setReqField(pType, pEditable) {

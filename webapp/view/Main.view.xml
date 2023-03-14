@@ -84,7 +84,7 @@
                                 icon="sap-icon://edit"
                                 press="onEditODFtyHdr"
                                 tooltip="{caption>/EDIT}"
-                                visible="true"/>
+                                visible="{base>/appChange}"/>
                             <Button id="btnRefreshODFtyHdr" 
                                 icon="sap-icon://refresh"
                                 press="onRefreshODFtyHdr" 

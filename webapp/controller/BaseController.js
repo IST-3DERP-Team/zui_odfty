@@ -43,7 +43,7 @@ sap.ui.define([
                 if (sAction == "display") bAppChange = false;
                 else bAppChange = true;
             } else {
-                bAppChange = true;
+                bAppChange = false;
             }
 
             _this.getView().getModel("base").setProperty("/appChange", bAppChange);
