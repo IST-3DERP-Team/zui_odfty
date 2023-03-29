@@ -309,10 +309,9 @@ sap.ui.define([
                             method: "POST",
                             success: function(data, oResponse) {
                                 console.log("Lock_Unlock_DlvHdrSet", data);
+                                _this.closeLoadingDialog();
 
                                 if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
-                                    _this.closeLoadingDialog();
-                                    
                                     _this._router.navTo("RouteDeliveryInfo", {
                                         sbu: _this.getView().getModel("ui").getData().sbu,
                                         dlvNo: sDlvNo
