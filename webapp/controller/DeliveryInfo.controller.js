@@ -386,9 +386,10 @@ sap.ui.define([
                                     console.log("IDOD_ReverseSet", oResult, oResponse);
 
                                     _this.closeLoadingDialog();
-                                    if (oResult.N_IDOD_ET_CANC.results[0].Type == "S") {
+                                    if (oResult.N_IDOD_ET_CANC.results) { //oResult.N_IDOD_ET_CANC.results[0].Type == "S"
 
-                                        MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
+                                        MessageBox.information(oResult.N_IDOD_ET_CANC.results[0].Message);
+                                        //MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
                                         _this.onRefreshHdr();
                                     } else {
                                         MessageBox.information(oResult.N_IDOD_RETURN.results[0].Message);
