@@ -757,17 +757,7 @@ sap.ui.define([
                         }
                     });
                     sRsvList = sRsvList.slice(0, -1);
-
-                    var test = {
-                        sbu: _this.getView().getModel("ui").getData().sbu,
-                        dlvNo: oDataHdr.DLVNO,
-                        dlvType: oDataHdr.DLVTYPE,
-                        mvtType: oDataHdr.MVTTYPE,
-                        srcTbl: oDataHdr.SRCTBL,
-                        noRangeCd: oDataHdr.NORANGECD,
-                        rsvList: sRsvList
-                    };
-                    console.log("test", test)
+                    if (sRsvList.length == 0) sRsvList = "empty";
 
                     _this._router.navTo("RouteReservation", {
                         sbu: _this.getView().getModel("ui").getData().sbu,

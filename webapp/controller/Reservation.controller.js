@@ -40,7 +40,8 @@ sap.ui.define([
                     mvtType: oEvent.getParameter("arguments").mvtType,
                     srcTbl: oEvent.getParameter("arguments").srcTbl,
                     noRangeCd: oEvent.getParameter("arguments").noRangeCd,
-                    rsvList: oEvent.getParameter("arguments").rsvList
+                    rsvList: oEvent.getParameter("arguments").rsvList,
+                    dlvNoInit: oEvent.getParameter("arguments").dlvNo
                 }), "ui");
 
                 _this.initializeComponent();
@@ -290,7 +291,14 @@ sap.ui.define([
                                 // });
 
                                 if (iIdx == pData.length - 1) {
-                                    _this.onLockDlv();
+                                    if (oDataUI.dlvNoInit == "empty") _this.onLockDlv();
+                                    else {
+                                        _this.closeLoadingDialog();
+                                        _this._router.navTo("RouteDeliveryInfo", {
+                                            sbu: oDataUI.sbu,
+                                            dlvNo: oDataUI.dlvNo
+                                        });
+                                    }
                                 }
                             },
                             error: function(err) {
@@ -298,7 +306,7 @@ sap.ui.define([
                                 _this.closeLoadingDialog();
                             }
                         });
-                    }, 100);
+                    }, 200);
                 })
             },
 
