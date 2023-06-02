@@ -215,7 +215,7 @@
                 },
                 {
                     "name": "RouteReservation",
-                    "pattern": "Reservation/{sbu},{dlvNo},{dlvType},{mvtType},{srcTbl},{noRangeCd},{rsvList}",
+                    "pattern": "Reservation/{sbu},{dlvNo},{dlvType},{mvtType},{srcTbl},{noRangeCd},{rsvList},{dtlMaxCount}",
                     "greedy": false,
                     "target": [
                         "TargetReservation"

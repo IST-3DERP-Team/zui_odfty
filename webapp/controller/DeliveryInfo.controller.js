@@ -759,6 +759,9 @@ sap.ui.define([
                     sRsvList = sRsvList.slice(0, -1);
                     if (sRsvList.length == 0) sRsvList = "empty";
 
+                    var aDlvItem = _this.getView().getModel("dtl").getData().results.map(item => { return parseFloat(item.DLVITEM) });
+                    var maxDlvItem = Math.max(...aDlvItem);
+
                     _this._router.navTo("RouteReservation", {
                         sbu: _this.getView().getModel("ui").getData().sbu,
                         dlvNo: oDataHdr.DLVNO,
@@ -766,7 +769,8 @@ sap.ui.define([
                         mvtType: oDataHdr.MVTTYPE,
                         srcTbl: oDataHdr.SRCTBL,
                         noRangeCd: oDataHdr.NORANGECD,
-                        rsvList: sRsvList
+                        rsvList: sRsvList,
+                        dtlMaxCount: maxDlvItem
                     });
 
                     // setTimeout(() => {

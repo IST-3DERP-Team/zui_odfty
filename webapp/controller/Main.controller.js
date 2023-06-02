@@ -362,7 +362,8 @@ sap.ui.define([
                         mvtType: oData.MVTTYPE,
                         srcTbl: oData.SRCTBL,
                         noRangeCd: oData.NORANGECD,
-                        rsvList: "empty"
+                        rsvList: "empty",
+                        dtlMaxCount: 0
                     });
                 }, 100);
             },

@@ -300,6 +300,7 @@ sap.ui.define([
                             DLVQTYBSE: item.toQty,
                             ACTQTYBSE: item.toQty,
                             BASEUOM: oDataDtl.UOM,
+                            ORDUOM: oDataDtl.UOM,
                             PKGGRSWT: oDataDtl.GROSSWT,
                             PKGNETWT: oDataDtl.NETWT,
                             WTUOM: oDataDtl.WEIGHTUOM,
@@ -334,6 +335,7 @@ sap.ui.define([
             },
 
             onRefreshPickHdr() {
+                _this.showLoadingDialog("Loading...");
                 _this.getPickHdr();
             },
 
@@ -351,8 +353,8 @@ sap.ui.define([
             getPickDtl() {
                 var oModel = this.getOwnerComponent().getModel();
                 var aData = _this.getView().getModel("pickHdr").getData().results;
-                _aPickDtl = [];
-                _aPickDtlTo = [];
+                // _aPickDtl = [];
+                // _aPickDtlTo = [];
 
                 aData.forEach((item, idx) => {
                     var sPlantCd = item.ISSPLANT;
@@ -378,6 +380,7 @@ sap.ui.define([
                             
                             if (idx == aData.length - 1) {
                                 _this.setPickDtl();
+                                _this.setPickHdrTo();
                             }
     
                             _this.closeLoadingDialog();
@@ -562,7 +565,9 @@ sap.ui.define([
                                 _this.byId("btnSavePickDtl").setVisible(false);
                                 _this.byId("btnCancelPickDtl").setVisible(false);
 
-                                _this.onRefreshPickDtl();
+                                //_this.onRefreshPickDtl();
+                                _this.setRowReadMode("pickDtl");
+                                _this.setPickDtl();
                             }
                         }
                     });
@@ -573,7 +578,9 @@ sap.ui.define([
                     _this.byId("btnSavePickDtl").setVisible(false);
                     _this.byId("btnCancelPickDtl").setVisible(false);
 
-                    _this.onRefreshPickDtl();
+                    //_this.onRefreshPickDtl();
+                    _this.setRowReadMode("pickDtl");
+                    _this.setPickDtl();
                 }
             },
 

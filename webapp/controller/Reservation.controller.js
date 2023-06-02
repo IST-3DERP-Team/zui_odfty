@@ -41,6 +41,7 @@ sap.ui.define([
                     srcTbl: oEvent.getParameter("arguments").srcTbl,
                     noRangeCd: oEvent.getParameter("arguments").noRangeCd,
                     rsvList: oEvent.getParameter("arguments").rsvList,
+                    dtlMaxCount: oEvent.getParameter("arguments").dtlMaxCount,
                     dlvNoInit: oEvent.getParameter("arguments").dlvNo
                 }), "ui");
 
@@ -262,7 +263,7 @@ sap.ui.define([
                 pData.forEach((item, iIdx) => {
                     var paramDet = {
                         DLVNO: oDataUI.dlvNo,
-                        DLVITEM: "",
+                        DLVITEM: (parseInt(oDataUI.dtlMaxCount) + iIdx + 1).toString(),
                         PLANTCD: item.ISSPLANT,
                         SLOC: item.ISSSLOC,
                         MATNO: item.ISSMATNO,
