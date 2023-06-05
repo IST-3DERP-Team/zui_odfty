@@ -210,6 +210,7 @@
                     <PropertyRef Name="ITEM"/>
                 </Key>
                 <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Netavailqty" Type="Edm.Double" Nullable="false" sap:unicode="false" sap:label="NETAVAILQTY" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVITEM" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Delv Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="RSVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="RSVNO" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="ITEM" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Item no." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -364,6 +365,7 @@
                     <PropertyRef Name="DLVITEM"/>
                     <PropertyRef Name="SEQNO"/>
                 </Key>
+                <Property Name="ORDUOM" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Base Unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
                 <Property Name="DELETED" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Deleted" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVITEM" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Delv Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -375,16 +377,16 @@
                 <Property Name="PKGNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Packing No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="HUID" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="HU ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="HUITEM" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="HU Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="DLVQTYORD" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Delivery Qty. in Order" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="DLVQTYBSE" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Delivery Qty. in Base" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DLVQTYORD" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="ORDUOM" sap:label="Delivery Qty. in Order" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DLVQTYBSE" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="ORDUOM" sap:label="Delivery Qty. in Base" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="BASEUOM" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Base Unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
-                <Property Name="ACTQTYORD" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Actual Qty. in Order" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="ACTQTYBSE" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Actual Qty. in Base" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="PKGGRSWT" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Pkg. Gross Weight" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="PKGNETWT" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Pkg. Net Weight" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ACTQTYORD" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="ORDUOM" sap:label="Actual Qty. in Order" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ACTQTYBSE" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="ORDUOM" sap:label="Actual Qty. in Base" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PKGGRSWT" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="ORDUOM" sap:label="Pkg. Gross Weight" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PKGNETWT" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="ORDUOM" sap:label="Pkg. Net Weight" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="WTUOM" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Base Unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
-                <Property Name="LNDIM" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Length" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="WDDIM" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Width" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LNDIM" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="ORDUOM" sap:label="Length" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="WDDIM" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="ORDUOM" sap:label="Width" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DIMUOM" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Base Unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
                 <Property Name="BINCD" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Bin Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
             </EntityType>

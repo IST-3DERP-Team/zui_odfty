@@ -381,6 +381,7 @@ sap.ui.define([
                             if (idx == aData.length - 1) {
                                 _this.setPickDtl();
                                 _this.setPickHdrTo();
+                                _this.setPickHdrNet();
                             }
     
                             _this.closeLoadingDialog();
@@ -633,6 +634,18 @@ sap.ui.define([
                 _this.getView().getModel("pickHdr").setProperty("/results/" + iIdxHdr.toString() + "/PICKQTY", iTotalToQty.toFixed(3).toString());
                 var iBalHdr = parseFloat(oDataHdr.REQQTY) - parseFloat(oDataHdr.ISSQTY) - iTotalToQty;
                 _this.getView().getModel("pickHdr").setProperty("/results/" + iIdxHdr.toString() + "/BALANCE", iBalHdr.toFixed(3).toString());
+            },
+
+            setPickHdrNet() {
+                var oDataHdr = _this.getView().getModel("pickHdr").getData().results;
+
+                oDataHdr.forEach((item, idx) => {
+                    var aDataDtl = _aPickDtl.filter(x => x.PLANTCD == item.ISSPLANT && 
+                        x.MATNO == item.ISSMATNO && x.BATCH == item.ISSBATCH && x.SLOC == item.ISSSLOC);
+
+                    var dNetTotal = aDataDtl.reduce((a, b) => +a + +b.QTY, 0);
+                    _this.getView().getModel("pickHdr").setProperty("/results/" + idx.toString() + "/NETAVAILQTY", dNetTotal.toFixed(3).toString());
+                })
             },
 
             onCellClickPickHdr(oEvent) {
