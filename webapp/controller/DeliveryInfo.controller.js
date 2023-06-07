@@ -244,7 +244,7 @@ sap.ui.define([
                     return;
                 }
 
-                MessageBox.confirm(_oCaption.CONFIRM_PROCEED_EXECUTE, {
+                MessageBox.confirm(_oCaption.CONFIRM_OD_PICK, {
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
                         if (sAction === "Yes") {
@@ -283,7 +283,7 @@ sap.ui.define([
                                             success: function(data, oResponse) {
                                                 console.log(sEntitySet, data, oResponse);
                                                 
-                                                MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
+                                                MessageBox.information(_oCaption.INFO_OD_PICKED);
                                                 _this.onRefreshHdr();
                                             },
                                             error: function(err) {
@@ -313,7 +313,7 @@ sap.ui.define([
                     return;
                 }
 
-                MessageBox.confirm(_oCaption.CONFIRM_PROCEED_EXECUTE, {
+                MessageBox.confirm(_oCaption.CONFIRM_OD_POST, {
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
                         if (sAction === "Yes") {
@@ -335,7 +335,7 @@ sap.ui.define([
                                     _this.closeLoadingDialog();
                                     if (oResult.N_RETURN_MSG.results[0].Type == "S") {
 
-                                        MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
+                                        MessageBox.information(_oCaption.INFO_OD_POSTED);
                                         _this.onRefreshHdr();
                                     } else {
                                         MessageBox.information(oResult.N_RETURN_MSG.results[0].Message);
@@ -1321,6 +1321,10 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "CONFIRM_PROCEED_EXECUTE"});
                 oCaptionParam.push({CODE: "INFO_EXECUTE_SUCCESS"});
                 oCaptionParam.push({CODE: "WARN_STATUS_POSTED_REVERSE"});
+                oCaptionParam.push({CODE: "INFO_OD_POSTED"});
+                oCaptionParam.push({CODE: "INFO_OD_PICKED"});
+                oCaptionParam.push({CODE: "CONFIRM_OD_POST"});
+                oCaptionParam.push({CODE: "CONFIRM_OD_PICK"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",
