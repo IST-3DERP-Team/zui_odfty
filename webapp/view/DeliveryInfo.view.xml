@@ -392,6 +392,39 @@
                                     </uiT:layoutData>
                                 </uiT:Table>
                             </IconTabFilter>
+                            <IconTabFilter id="itfOthInfo" text="OTHER INFO" key="othInfo">
+                                <uiT:Table id="othInfoTab"
+                                    rows="{othInfo>/results}"
+                                    visibleRowCountMode="Auto"
+                                    showColumnVisibilityMenu="true"
+                                    enableColumnFreeze="true"
+                                    enableCellFilter="true"
+                                    selectionMode="Single"
+                                    firstVisibleRowChanged="onFirstVisibleRowChanged"
+                                    cellClick="onCellClick"
+                                    sort="onSorted"
+                                    filter="onFilter"
+                                    columnFreeze="onColumnUpdated"
+                                    columnMove="onColumnUpdated"
+                                    columnResize="onColumnUpdated"
+                                    columnSelect="onColumnUpdated"
+                                    columnVisibility="onColumnUpdated"
+                                    rowSelectionChange="onRowSelectionChange">
+                                    <uiT:extension>
+                                        <Toolbar>
+                                            <ToolbarSpacer/>
+                                            <Button id="btnRefreshOthInfo" 
+                                                icon="sap-icon://refresh"
+                                                press="onRefreshMatDoc" 
+                                                tooltip="{caption>/REFRESH}"
+                                                visible="true" />
+                                        </Toolbar>
+                                    </uiT:extension>
+                                    <uiT:layoutData>
+                                        <FlexItemData growFactor="1" baseSize="0%"/>
+                                    </uiT:layoutData>
+                                </uiT:Table>
+                            </IconTabFilter>
                         </items>
                         <layoutData>
                             <FlexItemData growFactor="1" baseSize="0%"/>

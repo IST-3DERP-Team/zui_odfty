@@ -15,8 +15,8 @@ sap.ui.define([
     var _aTable = [];
     var _sSbu = "";
 
-    var _sapDateFormat = sap.ui.core.format.DateFormat.getDateInstance({pattern : "yyyy-MM-dd" });
-    var _sapDateTimeFormat = sap.ui.core.format.DateFormat.getDateInstance({pattern : "yyyy-MM-dd HH24:MI:SS" });
+    var _sapDateFormat = sap.ui.core.format.DateFormat.getDateInstance({pattern : "MM/dd/yyyy" });
+    var _sapDateTimeFormat = sap.ui.core.format.DateFormat.getDateInstance({pattern : "MM/dd/yyyy HH24:MI:SS" });
     var _sapTimeFormat = sap.ui.core.format.DateFormat.getTimeInstance({pattern: "KK:mm:ss a"});
    
     return Controller.extend("zuiodfty.controller.BaseController", {

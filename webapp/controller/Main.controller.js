@@ -361,6 +361,7 @@ sap.ui.define([
                         dlvType: oData.DLVTYPE,
                         mvtType: oData.MVTTYPE,
                         srcTbl: oData.SRCTBL,
+                        varCd: oData.VARCD,
                         noRangeCd: oData.NORANGECD,
                         rsvList: "empty",
                         dtlMaxCount: 0

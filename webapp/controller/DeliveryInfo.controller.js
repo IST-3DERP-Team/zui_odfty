@@ -750,11 +750,14 @@ sap.ui.define([
                 if (oData.STATUS == "50") {
                     var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
                     var sRsvList = "";
+                    var sVarCd = "";
 
-                    _this.getView().getModel("dtl").getData().results.forEach(item => {
+                    _this.getView().getModel("dtl").getData().results.forEach((item, idx) => {
                         if (!item.DELETED) {
                             sRsvList += item.RSVNO + item.RSVITEM + "|";
                         }
+
+                        if (idx == 0) sVarCd = (item.VARCD.length > 0 ? item.VARCD : "empty");
                     });
                     sRsvList = sRsvList.slice(0, -1);
                     if (sRsvList.length == 0) sRsvList = "empty";
@@ -768,6 +771,7 @@ sap.ui.define([
                         dlvType: oDataHdr.DLVTYPE,
                         mvtType: oDataHdr.MVTTYPE,
                         srcTbl: oDataHdr.SRCTBL,
+                        varCd: sVarCd,
                         noRangeCd: oDataHdr.NORANGECD,
                         rsvList: sRsvList,
                         dtlMaxCount: maxDlvItem

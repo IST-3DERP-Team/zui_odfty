@@ -270,7 +270,7 @@ sap.ui.define([
                     _this.showLoadingDialog("Loading...");
 
                     var oModel = this.getOwnerComponent().getModel();
-
+                    var iDelay = 0;
                     _aPickDtlTo.forEach((item, idx) => {
                         var oDataHdr = _this.getView().getModel("pickHdr").getData().results.filter(x => 
                                 x.ISSPLANT == item.plantCd && x.ISSMATNO == item.matNo && 
@@ -309,6 +309,8 @@ sap.ui.define([
                             DIMUOM: oDataDtl.DIMUOM,
                             BINCD: oDataDtl.BIN
                         }
+
+                        iDelay += 100;
                
                         console.log("InfoHUTblSet param", param);
                         setTimeout(() => {
@@ -327,7 +329,7 @@ sap.ui.define([
                                     _this.closeLoadingDialog();
                                 }
                             });
-                        }, 100);
+                        }, iDelay);
                     })
                 } else {
                     MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);

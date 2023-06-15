@@ -39,6 +39,7 @@ sap.ui.define([
                     dlvType: oEvent.getParameter("arguments").dlvType,
                     mvtType: oEvent.getParameter("arguments").mvtType,
                     srcTbl: oEvent.getParameter("arguments").srcTbl,
+                    varCd: (oEvent.getParameter("arguments").varCd == "empty" ? "" : oEvent.getParameter("arguments").varCd),
                     noRangeCd: oEvent.getParameter("arguments").noRangeCd,
                     rsvList: oEvent.getParameter("arguments").rsvList,
                     dtlMaxCount: oEvent.getParameter("arguments").dtlMaxCount,
@@ -100,8 +101,9 @@ sap.ui.define([
                 var oDataUI = _this.getView().getModel("ui").getData();
                 var sMvtType = oDataUI.mvtType;
                 var sSrcTbl = oDataUI.srcTbl;
+                var sVarCd = oDataUI.varCd;
                 
-                var sFilter = "MVTTYPE eq '" + sMvtType + "' and SRCTBL eq '" + sSrcTbl + "'";    
+                var sFilter = "MVTTYPE eq '" + sMvtType + "' and SRCTBL eq '" + sSrcTbl + "' and VARCD eq '" + sVarCd + "'";    
                 console.log("sFilter", sFilter)
                 oModel.read('/ReservationSet', {
                     urlParameters: {
