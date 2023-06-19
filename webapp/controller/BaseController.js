@@ -28,6 +28,7 @@ sap.ui.define([
             this._aColumns = {};
             this._aFilterableColumns = {};
             this._aSortableColumns = {};
+            this._aInvalidValueState = [];
 
             this.getView().setModel(new JSONModel({}), "base");
         },
@@ -258,6 +259,103 @@ sap.ui.define([
             })
         },
 
+        setRowCreateMode(pModel) {
+            var oTable = this.byId(pModel + "Tab");
+            oTable.clearSelection();
+
+            var aNewRows = this.getView().getModel(pModel).getData().results.filter(item => item.NEW === true);
+            // if (aNewRows.length == 0) {
+            //     this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel(pModel).getData());
+            // }
+
+            var oNewRow = {};
+            oTable.getColumns().forEach((col, idx) => {
+                this._aColumns[pModel].filter(item => item.label === col.getLabel().getText())
+                    .forEach(ci => {
+                        if (!ci.hideOnChange && ci.creatable) {
+                            if (ci.type === "BOOLEAN") {
+                                col.setTemplate(new sap.m.CheckBox({selected: "{" + pModel + ">" + ci.name + "}",  
+                                    editable: true
+                                }));
+                            }
+                            else if (ci.valueHelp["show"]) {
+                                col.setTemplate(new sap.m.Input({
+                                    type: "Text",
+                                    value: "{" + pModel + ">" + ci.name + "}",
+                                    maxLength: +ci.maxLength,
+                                    showValueHelp: true,
+                                    valueHelpRequest: this.handleValueHelp.bind(this),
+                                    showSuggestion: true,
+                                    maxSuggestionWidth: ci.valueHelp["suggestionItems"].additionalText !== undefined ? ci.valueHelp["suggestionItems"].maxSuggestionWidth : "1px",
+                                    suggestionItems: {
+                                        path: ci.valueHelp["items"].path,
+                                        length: 1000,
+                                        template: new sap.ui.core.ListItem({
+                                            key: ci.valueHelp["items"].text,
+                                            text: ci.valueHelp["items"].text,
+                                            additionalText: ci.valueHelp["suggestionItems"].additionalText !== undefined ? ci.valueHelp["suggestionItems"].additionalText : '',
+                                        }),
+                                        templateShareable: false
+                                    },
+                                    change: this.onValueHelpLiveInputChange.bind(this)
+                                }));
+                            }
+                            else if (ci.type === "NUMBER") {
+                                col.setTemplate(new sap.m.Input({
+                                    type: sap.m.InputType.Number,
+                                    textAlign: sap.ui.core.TextAlign.Right,
+                                    value: "{path:'" + pModel + ">" + ci.name + "', type:'sap.ui.model.odata.type.Decimal', formatOptions:{ minFractionDigits:" + ci.scale + ", maxFractionDigits:" + ci.scale + " }, constraints:{ precision:" + ci.precision + ", scale:" + ci.scale + " }}",
+                                    liveChange: this.onNumberLiveChange.bind(this)
+                                }));
+                            }
+                            else {
+                                if (ci.maxLength !== null) {
+                                    col.setTemplate(new sap.m.Input({
+                                        value: "{" + pModel + ">" + ci.name + "}",
+                                        maxLength: +ci.maxLength,
+                                        liveChange: this.onInputLiveChange.bind(this)
+                                    }));
+                                }
+                                else {
+                                    col.setTemplate(new sap.m.Input({
+                                        value: "{" + pModel + ">" + ci.name + "}",
+                                        liveChange: this.onInputLiveChange.bind(this)
+                                    }));
+                                }
+                            }
+                        } 
+
+                        if (ci.required) {
+                            col.getLabel().addStyleClass("requiredField");
+                        }
+
+                        if (ci.type === "STRING") oNewRow[ci.name] = "";
+                        //else if (ci.type === "NUMBER") oNewRow[ci.name] = "0";
+                        else if (ci.type === "BOOLEAN") oNewRow[ci.name] = false;
+                    })
+            }) 
+            
+            oNewRow["NEW"] = true;
+
+            // if (pModel == "othInfo") {
+            //     oNewRow["DLVNO"] = iMaxSeq.toString();
+            // }
+
+            // Get column filters before create
+            // if (_this.getView().byId(arg + "Tab").getBinding("rows")) {
+            //     _aFilterTbl[arg] = _this.getView().byId(arg + "Tab").getBinding("rows").aFilters;
+            // }
+
+            aNewRows.push(oNewRow);
+            this.getView().getModel(pModel).setProperty("/results", aNewRows);
+            
+            // Remove filter
+            // Search filter
+            this.byId(pModel + "Tab").getBinding("rows").filter(null, "Application");
+            // Column filter
+            this.clearSortFilter(pModel + "Tab");
+        },
+
         setRowEditMode(pModel) {
             this.getView().getModel(pModel).getData().results.forEach(item => item.Edited = false);
 
@@ -323,6 +421,147 @@ sap.ui.define([
                         }
                     })
             })
+        },
+
+        handleValueHelp: function(oEvent) {
+            var oModel = this.getOwnerComponent().getModel();
+            var oSource = oEvent.getSource();
+            var sEntity = oSource.getBindingInfo("suggestionItems").path;
+            var sModel = oSource.getBindingInfo("value").parts[0].model;
+
+            this._inputId = oSource.getId();
+            this._inputValue = oSource.getValue();
+            this._inputSource = oSource;
+            this._inputField = oSource.getBindingInfo("value").parts[0].path;
+
+            var vCellPath = _this._inputField;
+            var vColProp = _this._aColumns[sModel].filter(item => item.name === vCellPath);
+            var vItemValue = vColProp[0].valueHelp.items.value;
+            var vItemDesc = vColProp[0].valueHelp.items.text;
+
+            var sFilter = "";
+            oModel.read(sEntity, {
+                urlParameters: {
+                    "$filter": sFilter
+                },
+                success: function (data, response) {
+                    console.log("handleValueHelp", data)
+                    data.results.forEach(item => {
+                        item.VHTitle = item[vItemValue];
+                        item.VHDesc = item[vItemDesc];
+                        item.VHSelected = (item[vItemValue] === _this._inputValue);
+                    });
+
+                    // create value help dialog
+                    if (!_this._valueHelpDialog) {
+                        _this._valueHelpDialog = sap.ui.xmlfragment(
+                            "zuiodfty.view.fragments.dialog.ValueHelpDialog",
+                            _this
+                        );
+
+                        _this._valueHelpDialog.setModel(
+                            new JSONModel({
+                                items: data.results,
+                                title: vColProp[0].label,
+                                table: sModel
+                            })
+                        )
+
+                        _this.getView().addDependent(_this._valueHelpDialog);
+                    }
+                    else {
+                        _this._valueHelpDialog.setModel(
+                            new JSONModel({
+                                items: data.results,
+                                title: vColProp[0].label,
+                                table: sModel
+                            })
+                        )
+                    }                            
+
+                    _this._valueHelpDialog.open();
+                },
+                error: function (err) { 
+                    _this.closeLoadingDialog();
+                }
+            })
+        },
+
+        handleValueHelpSearch : function (oEvent) {
+            var sValue = oEvent.getParameter("value");
+
+            var oFilter = new sap.ui.model.Filter({
+                filters: [
+                    new sap.ui.model.Filter("VHTitle", sap.ui.model.FilterOperator.Contains, sValue),
+                    new sap.ui.model.Filter("VHDesc", sap.ui.model.FilterOperator.Contains, sValue)
+                ],
+                and: false
+            });
+
+            oEvent.getSource().getBinding("items").filter([oFilter]);
+        },
+
+        handleValueHelpClose : function (oEvent) {               
+            if (oEvent.sId === "confirm") {                  
+                var oSelectedItem = oEvent.getParameter("selectedItem");               
+                //var sTable = this._oViewSettingsDialog["zuimattype3.view.fragments.ValueHelpDialog"].getModel().getData().table;
+                var sTable = this._valueHelpDialog.getModel().getData().table;
+
+                if (oSelectedItem) {
+                    this._inputSource.setValue(oSelectedItem.getTitle());
+
+                    if (this._inputValue !== oSelectedItem.getTitle()) {
+                        var sRowPath = this._inputSource.getBindingInfo("value").binding.oContext.sPath;
+                        this.getView().getModel(sTable).setProperty(sRowPath + '/EDITED', true);
+                    }
+                }
+
+                this._inputSource.setValueState("None");
+                this.addRemoveValueState(true, this._inputSource.getId());
+            }
+        },
+
+        onValueHelpLiveInputChange: function(oEvent) {
+            var oSource = oEvent.getSource();
+            //console.log("onInputChange", oEvent, oSource)
+            var isInvalid = !oSource.getSelectedKey() && oSource.getValue().trim();
+            oSource.setValueState(isInvalid ? "Error" : "None");
+
+            if (!oSource.getSelectedKey()) {
+                oSource.getSuggestionItems().forEach(item => {
+                    // console.log(item.getProperty("key"), oSource.getValue().trim())
+                    if (item.getProperty("key") === oSource.getValue().trim()) {
+                        isInvalid = false;
+                        oSource.setValueState(isInvalid ? "Error" : "None");
+                    }
+                })
+            }
+
+            this.addRemoveValueState(!isInvalid, oSource.getId());
+
+            var sRowPath = oSource.getBindingInfo("value").binding.oContext.sPath;
+            var sModel = oSource.getBindingInfo("value").parts[0].model;
+            var sColumn = oSource.getBindingInfo("value").parts[0].path;
+            this.getView().getModel(sModel).setProperty(sRowPath + '/' + sColumn, oSource.mProperties.selectedKey);
+            this.getView().getModel(sModel).setProperty(sRowPath + '/EDITED', true);
+        },
+
+        addRemoveValueState(pIsValid, pId) {
+            console.log("addRemoveValueState", this._aInvalidValueState, pIsValid, pId)
+            if (!pIsValid) {
+                if (!this._aInvalidValueState.includes(pId)) {
+                    this._aInvalidValueState.push(pId);
+                }
+            } else {
+                if (this._aInvalidValueState.includes(pId)) {
+                    for(var i = this._aInvalidValueState.length - 1; i >= 0; i--) {
+                        if (this._aInvalidValueState[i] == pId){
+                            this._aInvalidValueState.splice(i, 1)
+                        }
+                        
+                    }
+                }
+            }
         },
 
         onFilterBySmart(pModel, pFilters, pFilterGlobal, pFilterTab) {

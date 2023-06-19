@@ -96,6 +96,13 @@ sap.ui.define([
                     tblModel: "matDoc"
                 });
 
+                aTableList.push({
+                    modCode: "ODFTYINFOOTHMOD",
+                    tblSrc: "ZDV_ODF_INF_ATRB",
+                    tblId: "othInfoTab",
+                    tblModel: "othInfo"
+                });
+
                 _this.getColumns(aTableList);
 
                 this._tableRendered = "";
@@ -114,6 +121,7 @@ sap.ui.define([
                 this.byId("shipTab").addEventDelegate(oTableEventDelegate);
                 this.byId("statTab").addEventDelegate(oTableEventDelegate);
                 this.byId("matDocTab").addEventDelegate(oTableEventDelegate);
+                this.byId("othInfoTab").addEventDelegate(oTableEventDelegate);
 
                 _this.getHdr();
 
@@ -174,6 +182,7 @@ sap.ui.define([
                         _this.getShip();
                         _this.getStat();
                         _this.getMatDoc();
+                        _this.getOthInfo();
 
                         _this.closeLoadingDialog();
                     },
@@ -793,7 +802,7 @@ sap.ui.define([
                 }
             },
 
-            onPickDtl() {
+            onPickDtlManual() {
                 var oData = _this.getView().getModel("hdr").getData().results[0];
                 
                 if (oData.STATUS == "50") {
@@ -1062,6 +1071,187 @@ sap.ui.define([
                 _this.getMatDoc();
             },
 
+            getOthInfo() {
+                var oModel = this.getOwnerComponent().getModel();
+                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+                var sFilter = "DLVNO eq '" + sDlvNo + "'";
+
+                oModel.read('/InfoAttribSet', {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("InfoAttribSet", data);
+                        _this.setControlEditMode("othInfo", false);
+
+                        data.results.forEach(item => {
+                            if (item.CREATEDDT !== null)
+                                item.CREATEDDT = _this.formatDate(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+
+                            if (item.UPDATEDDT !== null)
+                                item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                        })
+
+                        var oJSONModel = new sap.ui.model.json.JSONModel();
+                        oJSONModel.setData(data);
+                        _this.getView().setModel(oJSONModel, "othInfo");
+
+                        _this.setRowReadMode("othInfo");
+
+                        _this.closeLoadingDialog();
+                    },
+                    error: function (err) { 
+                        console.log("error", err)
+                        _this.closeLoadingDialog();
+                    }
+                })
+            },
+
+            onAddOthInfo() {
+                var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
+                if (oDataHdr.STATUS == "54") {
+                    MessageBox.warning(_oCaption.WARN_EDIT_NOT_ALLOW);
+                    return;
+                }
+
+                _this.setControlEditMode("othInfo", true);
+                _this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel("othInfo").getData());
+                _this.setRowCreateMode("othInfo");
+            },
+
+            onEditOthInfo() {
+                var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
+                if (oDataHdr.STATUS == "54") {
+                    MessageBox.warning(_oCaption.WARN_EDIT_NOT_ALLOW);
+                    return;
+                }
+
+                var aRows = this.getView().getModel("othInfo").getData().results;
+                if (aRows.length > 0) {
+                    _this.setControlEditMode("othInfo", true);
+                    this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel("othInfo").getData());
+                    _this.setRowEditMode("othInfo");
+                } else {
+                    MessageBox.warning(_oCaption.INFO_NO_DATA_EDIT);
+                }
+            },
+
+            onAddRowOthInfo() {
+                _this.setRowCreateMode("othInfo");
+            },
+
+            onRemoveRowOthInfo() {
+                var sModel = "othInfo";
+                var oTable = _this.byId("othInfoTab");
+                var aNewRows = _this.getView().getModel(sModel).getData().results.filter(item => item.NEW === true);
+                aNewRows.splice(oTable.getSelectedIndices(), 1);
+                _this.getView().getModel(sModel).setProperty("/results", aNewRows);
+            },
+
+            onSaveOthInfo() {
+                _this.showLoadingDialog("Loading...");
+                var sModel = "othInfo";
+
+                var aNewRows = this.getView().getModel(sModel).getData().results.filter(item => item.NEW === true);
+                var aEditedRows = this.getView().getModel(sModel).getData().results.filter(item => item.Edited === true);
+                
+                var aNewEditRows = aNewRows.length > 0 ? aNewRows : aEditedRows;
+
+                var isValid = true;
+                var sInvalidMsg = "";
+                var aRequiredFields = this._aColumns[sModel].filter(x => x.required).map(x => x.name);
+
+                for (var i = 0; i < aRequiredFields.length; i++) {
+                    var sRequiredField = aRequiredFields[i];
+                    if (aNewEditRows.filter(x => !x[sRequiredField]).length > 0) {
+                        isValid = false;
+                        sInvalidMsg = "\"" + this._aColumns[sModel].filter(x => x.name == sRequiredField)[0].label + "\" is required."
+                        break;
+                    }
+                }
+
+                if (!isValid) {
+                    var bCompact = true;
+                    MessageBox.error(sInvalidMsg);
+
+                    _this.closeLoadingDialog();
+                    return;
+                }
+
+                if (aNewRows.length > 0) {
+                    var oModel = this.getOwnerComponent().getModel();
+                    var entitySet = "/InfoAttribTblSet";
+                    var iNew = 0;
+
+                    aNewRows.forEach((item, idx) => {
+                        var param = {
+                            CARRIER: oData.CARRIER,
+                            VOYAGE: oData.VOYAGE,
+                            VESSEL: oData.VESSEL,
+                            FORWRDR: oData.FORWARDER,
+                            FORREFNO: oData.FORREFNO,
+                            VOLUME: oData.VOLUME,
+                            VOLUOM: oData.VOLUOM,
+                            PORTLD: oData.PORTLOAD,
+                            PORTDIS: oData.PORTDIS,
+                            CONTNO: oData.CONTNO,
+                            CONTTYP: oData.CONTTYPE,
+                            SEALNO: oData.SEALNO,
+                            DEST: oData.DESTINATION,
+                            COO: oData.COO,
+                            GRSWT: oData.GROSSWT,
+                            NETWT: oData.NETWT,
+                            WTUOM: oData.WTUOM
+                        };
+                    })
+
+                    var sEntitySet = "/InfoHeaderTblSet(DLVNO='" + oData.DLVNO + "')";
+    
+                    console.log("InfoHeaderTblSet param", sEntitySet, param)
+                    oModel.update(sEntitySet, param, {
+                        method: "PUT",
+                        success: function(data, oResponse) {
+                            console.log(sEntitySet, data, oResponse);
+
+                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                            _this.onRefreshShip();
+                        },
+                        error: function(err) {
+                            console.log("error", err)
+                            _this.closeLoadingDialog();
+                        }
+                    });
+                } else {
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
+                }
+            },
+
+            onCancelOthInfo() {
+                var aNewRows = this.getView().getModel("othInfo").getData().results.filter(item => item.NEW === true);
+                var aEditedRows = this.getView().getModel("othInfo").getData().results.filter(item => item.Edited === true);
+
+                if (aEditedRows.length > 0) {
+                    MessageBox.confirm(_oCaption.CONFIRM_DISREGARD_CHANGE, {
+                        actions: ["Yes", "No"],
+                        onClose: function (sAction) {
+                            if (sAction == "Yes") {
+                                 _this.onRefreshOthInfo();
+                            }
+                        }
+                    });
+                } else {
+                    _this.onRefreshOthInfo();
+                }
+            },
+
+            onDeleteOthInfo() {
+
+            },
+
+            onRefreshOthInfo() {
+                _this.getOthInfo();
+            },
+
             onNavBack() {
                 _this._router.navTo("RouteMain", {}, true);
             },
@@ -1112,7 +1302,7 @@ sap.ui.define([
                 _this.byId("iptUpdatedDt").setValue(oHeader.UPDATEDDT);
             },
 
-            setControlEditMode(pType, pEditable) {
+            setControlEditMode(pType, pEditable, pAdd) {
                 
                 var bAppChange = _this.getView().getModel("base").getProperty("/appChange");
 
@@ -1154,7 +1344,13 @@ sap.ui.define([
     
                         // Material Document
                         this.byId("btnRefreshMatDoc").setEnabled(!pEditable);
-    
+
+                        // Other Info
+                        this.byId("btnAddOthInfo").setEnabled(!pEditable);
+                        this.byId("btnEditOthInfo").setEnabled(!pEditable);
+                        this.byId("btnDeleteOthInfo").setEnabled(!pEditable);
+                        this.byId("btnRefreshOthInfo").setEnabled(!pEditable);
+
                     } else if (pType == "hu") {
                         _this.byId("btnEditHu").setVisible(!pEditable);
                         _this.byId("btnDeleteHu").setVisible(!pEditable);
@@ -1163,12 +1359,31 @@ sap.ui.define([
                         _this.byId("btnCancelHu").setVisible(pEditable);
     
                     } else if (pType == "ship") {
-    
                         _this.byId("btnEditShip").setVisible(!pEditable);
                         _this.byId("btnRefreshShip").setVisible(!pEditable);
                         _this.byId("btnSaveShip").setVisible(pEditable);
                         _this.byId("btnCancelShip").setVisible(pEditable);
-    
+
+                    } else if (pType == "othInfo") {
+                        if (pAdd == true) {
+                            this.byId("btnAddOthInfo").setVisible(!pAdd);
+                            this.byId("btnEditOthInfo").setVisible(!pAdd);
+                            this.byId("btnAddRowOthInfo").setVisible(pAdd);
+                            this.byId("btnRemoveRowOthInfo").setVisible(pAdd);
+                            this.byId("btnSaveOthInfo").setVisible(pAdd);
+                            this.byId("btnCancelOthInfo").setVisible(pAdd);
+                            this.byId("btnDeleteOthInfo").setVisible(!pAdd);
+                            this.byId("btnRefreshOthInfo").setVisible(!pAdd);
+                        } else {
+                            this.byId("btnAddOthInfo").setVisible(!pEditable);
+                            this.byId("btnEditOthInfo").setVisible(!pEditable);
+                            this.byId("btnAddRowOthInfo").setVisible(pEditable);
+                            this.byId("btnRemoveRowOthInfo").setVisible(pEditable);
+                            this.byId("btnSaveOthInfo").setVisible(pEditable);
+                            this.byId("btnCancelOthInfo").setVisible(pEditable);
+                            this.byId("btnDeleteOthInfo").setVisible(!pEditable);
+                            this.byId("btnRefreshOthInfo").setVisible(!pEditable);
+                        }
                     }
                 }
             },
@@ -1310,6 +1525,8 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "CLOSE"});
                 oCaptionParam.push({CODE: "SETSTATUS"});
                 oCaptionParam.push({CODE: "PICK"});
+                oCaptionParam.push({CODE: "AUTOPICK"});
+                oCaptionParam.push({CODE: "MANUALPICK"});
 
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});

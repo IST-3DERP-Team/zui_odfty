@@ -203,11 +203,19 @@
                                                 press="onAddDtl"
                                                 tooltip="{caption>/ADD}"
                                                 visible="true"/>
-                                            <Button id="btnPickDtl" 
+                                            <MenuButton id="btnPickDtl" type="Ghost" icon="sap-icon://flag" tooltip="{caption>/PICK}" visible="true">
+                                                <menu>
+                                                    <Menu id="menuPickDtl">
+                                                        <MenuItem id="menuPickDtlAuto" text="{caption>/AUTOPICK}" press="onPickDtlAuto" />
+                                                        <MenuItem id="menuPickDtlManual" text="{caption>/MANUALPICK}" press="onPickDtlManual" />
+                                                    </Menu>
+                                                </menu>
+                                            </MenuButton>
+                                            <!-- <Button id="btnPickDtl" 
                                                 icon="sap-icon://flag"
                                                 press="onPickDtl" 
                                                 tooltip="{caption>/PICK}"
-                                                visible="true" />
+                                                visible="true" /> -->
                                             <Button id="btnDeleteDtl" 
                                                 icon="sap-icon://delete"
                                                 press="onDeleteDtl" 
@@ -413,11 +421,46 @@
                                     <uiT:extension>
                                         <Toolbar>
                                             <ToolbarSpacer/>
+                                            <Button id="btnAddOthInfo" 
+                                                icon="sap-icon://add"
+                                                press="onAddOthInfo"
+                                                tooltip="{caption>/ADD}"
+                                                visible="true"/>
+                                            <Button id="btnEditOthInfo" 
+                                                icon="sap-icon://edit"
+                                                press="onEditOthInfo"
+                                                tooltip="{caption>/EDIT}"
+                                                visible="true"/>
+                                            <Button id="btnAddRowOthInfo" 
+                                                icon="sap-icon://add"
+                                                press="onAddRowOthInfo"
+                                                tooltip="{caption>/ADD}"
+                                                visible="false" />
+                                            <Button id="btnRemoveRowOthInfo" 
+                                                icon="sap-icon://less"
+                                                press="onRemoveRowOthInfo"
+                                                tooltip="{caption>/REMOVE}"
+                                                visible="false" />
+                                            <Button id="btnSaveOthInfo" 
+                                                icon="sap-icon://save"
+                                                press="onSave('othInfo')"
+                                                tooltip="{caption>/SAVE}"
+                                                visible="false" />
+                                            <Button id="btnCancelOthInfo" 
+                                                icon="sap-icon://sys-cancel"
+                                                press="onCancelOthInfo" 
+                                                tooltip="{caption>/CANCEL}"
+                                                visible="false" />                                        
+                                            <Button id="btnDeleteOthInfo" 
+                                                icon="sap-icon://delete"
+                                                press="onDeleteOthInfo"
+                                                tooltip="{caption>/DELETE}"
+                                                visible="true"/>
                                             <Button id="btnRefreshOthInfo" 
                                                 icon="sap-icon://refresh"
-                                                press="onRefreshMatDoc" 
+                                                press="onRefreshOthInfo"
                                                 tooltip="{caption>/REFRESH}"
-                                                visible="true" />
+                                                visible="true"/> 
                                         </Toolbar>
                                     </uiT:extension>
                                     <uiT:layoutData>

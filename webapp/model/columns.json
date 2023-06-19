@@ -1,1 +1,12 @@
-{}
+{
+    "othInfo": [
+        {"name": "ATTRIBTYPE", "position": 1, "type": "Edm.String", "visible": true, "required": true, "width": "160px", "hideOnChange": false, "showable": true, "sort": "Ascending",
+            "valueHelp": {"show": true, "items": {"path": "/AttribTypeSet", "value": "ATTRIBTYP", "text": "DESC1"},
+            "suggestionItems": {"path": "/AttribTypeSet", "text": "{ATTRIBTYP}", "additionalText": "{DESC1}", "maxSuggestionWidth": "350px"},
+            "filter": "", "entitySet": ""}},
+        {"name": "ATTRIBCD", "position": 1, "type": "Edm.String", "visible": true, "required": true, "width": "160px", "hideOnChange": false, "showable": true, "sort": "Ascending",
+            "valueHelp": {"show": true, "items": {"path": "/AttribTypeDtlSet", "value": "ATTRIBCD", "text": "DESC1"},
+            "suggestionItems": {"path": "/AttribTypeDtlSet", "text": "{ATTRIBCD}", "additionalText": "{DESC1}", "maxSuggestionWidth": "350px"},
+            "filter": "", "entitySet": ""}}
+    ]
+}
