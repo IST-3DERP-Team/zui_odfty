@@ -802,6 +802,81 @@ sap.ui.define([
                 }
             },
 
+            onPickDtlAuto() {
+                var oData = _this.getView().getModel("hdr").getData().results[0];
+
+                if (oData.DELETED) {
+                    MessageBox.warning(_oCaption.WARN_ALREADY_DELETED);
+                    return;
+                }
+
+                if (oData.STATUS != "50") return;
+
+                var oTable = this.byId("dtlTab");
+                var aSelIdx = oTable.getSelectedIndices();
+
+                if (aSelIdx.length === 0) {
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
+                    return;
+                }
+
+                MessageBox.confirm(_oCaption.CONFIRM_PROCEED_EXECUTE, {
+                    actions: ["Yes", "No"],
+                    onClose: function (sAction) {
+                        if (sAction === "Yes") {
+                            _this.showLoadingDialog("Loading...");
+
+                            var aData = _this.getView().getModel("dtl").getData().results;
+                            aSelIdx.forEach((i, idx) => {
+                                var oData = aData[i];
+                                _this.getPickDtl(oData);
+                            })
+                        }
+                    }
+                });
+            },
+
+            getPickDtl(pData) {
+                var oModel = this.getOwnerComponent().getModel();
+                var aData = _this.getView().getModel("pickHdr").getData().results;
+
+                aData.forEach((item, idx) => {
+                    var sPlantCd = item.ISSPLANT;
+                    var sMatNo = item.ISSMATNO;
+                    var sBatch = item.ISSBATCH;
+                    var sSloc = item.ISSSLOC;
+
+                    var sFilter = "PLANTCD eq '" + sPlantCd + "' and MATNO eq '" + sMatNo + 
+                    "' and BATCH eq '" + sBatch + "' and SLOC eq '" + sSloc + "'";
+                    
+                    oModel.read("/PickDetailSet", {
+                        urlParameters: {
+                            "$filter": sFilter
+                        },
+                        success: function (data, response) {
+                            console.log("PickDetailSet read", data);
+
+                            data.results.forEach(itemData => {
+                                if (_aPickDtl.filter(x => x.HUID == itemData.HUID && x.HUITEM == itemData.HUITEM).length == 0) {
+                                    _aPickDtl.push(...data.results);
+                                }
+                            })
+                            
+                            if (idx == aData.length - 1) {
+                                _this.setPickDtl();
+                                _this.setPickHdrTo();
+                                _this.setPickHdrNet();
+                            }
+    
+                            _this.closeLoadingDialog();
+                        },
+                        error: function (err) {
+                            _this.closeLoadingDialog();
+                        }
+                    })
+                })
+            },
+
             onPickDtlManual() {
                 var oData = _this.getView().getModel("hdr").getData().results[0];
                 
