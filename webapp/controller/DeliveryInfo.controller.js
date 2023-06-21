@@ -96,12 +96,12 @@ sap.ui.define([
                     tblModel: "matDoc"
                 });
 
-                aTableList.push({
-                    modCode: "ODFTYINFOOTHMOD",
-                    tblSrc: "ZDV_ODF_INF_ATRB",
-                    tblId: "othInfoTab",
-                    tblModel: "othInfo"
-                });
+                // aTableList.push({
+                //     modCode: "ODFTYINFOOTHMOD",
+                //     tblSrc: "ZDV_ODF_INF_ATRB",
+                //     tblId: "othInfoTab",
+                //     tblModel: "othInfo"
+                // });
 
                 _this.getColumns(aTableList);
 
@@ -121,7 +121,7 @@ sap.ui.define([
                 this.byId("shipTab").addEventDelegate(oTableEventDelegate);
                 this.byId("statTab").addEventDelegate(oTableEventDelegate);
                 this.byId("matDocTab").addEventDelegate(oTableEventDelegate);
-                this.byId("othInfoTab").addEventDelegate(oTableEventDelegate);
+                //this.byId("othInfoTab").addEventDelegate(oTableEventDelegate);
 
                 _this.getHdr();
 
@@ -182,7 +182,7 @@ sap.ui.define([
                         _this.getShip();
                         _this.getStat();
                         _this.getMatDoc();
-                        _this.getOthInfo();
+                        //_this.getOthInfo();
 
                         _this.closeLoadingDialog();
                     },
@@ -820,60 +820,67 @@ sap.ui.define([
                     return;
                 }
 
+                var aData = _this.getView().getModel("dtl").getData().results;
+                var bErr = false;
+                for (var i = 0; i < aSelIdx.length; i ++) {
+                    var oData = aData[aSelIdx[i]];
+
+                    if (oData.DELETED == true) {
+                        MessageBox.information(_oCaption.INFO_SEL_RECORD + " " + _oCaption.INFO_ALREADY_DELETED);
+                        bErr = true;
+                        break;
+                    }
+                    else if (parseFloat(oData.REQQTY) <= parseFloat(oData.ACTQTY)) {
+                        MessageBox.information(_oCaption.INFO_SEL_RECORD + " " + _oCaption.INFO_NO_BALANCE);
+                        bErr = true;
+                        break;
+                    }
+                }
+
+                if (bErr) return;
+
                 MessageBox.confirm(_oCaption.CONFIRM_PROCEED_EXECUTE, {
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
                         if (sAction === "Yes") {
                             _this.showLoadingDialog("Loading...");
 
-                            var aData = _this.getView().getModel("dtl").getData().results;
                             aSelIdx.forEach((i, idx) => {
                                 var oData = aData[i];
-                                _this.getPickDtl(oData);
+                                var bRefresh = false;
+
+                                if (idx == aSelIdx.length - 1) {
+                                    bRefresh = true;
+                                }
+
+                                _this.setPickAuto(oData, bRefresh);
                             })
                         }
                     }
                 });
             },
 
-            getPickDtl(pData) {
-                var oModel = this.getOwnerComponent().getModel();
-                var aData = _this.getView().getModel("pickHdr").getData().results;
+            setPickAuto(pData, pRefresh) {
+                var oModel = _this.getOwnerComponent().getModel();
+                var sFilter = "DLVNO eq '" + pData.DLVNO + "' and DLVITEM eq '" + pData.DLVITEM + "'";
 
-                aData.forEach((item, idx) => {
-                    var sPlantCd = item.ISSPLANT;
-                    var sMatNo = item.ISSMATNO;
-                    var sBatch = item.ISSBATCH;
-                    var sSloc = item.ISSSLOC;
+                oModel.read("/InfoDetailAutoSet", {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("InfoDetailAutoSet read", data);
 
-                    var sFilter = "PLANTCD eq '" + sPlantCd + "' and MATNO eq '" + sMatNo + 
-                    "' and BATCH eq '" + sBatch + "' and SLOC eq '" + sSloc + "'";
-                    
-                    oModel.read("/PickDetailSet", {
-                        urlParameters: {
-                            "$filter": sFilter
-                        },
-                        success: function (data, response) {
-                            console.log("PickDetailSet read", data);
-
-                            data.results.forEach(itemData => {
-                                if (_aPickDtl.filter(x => x.HUID == itemData.HUID && x.HUITEM == itemData.HUITEM).length == 0) {
-                                    _aPickDtl.push(...data.results);
-                                }
-                            })
-                            
-                            if (idx == aData.length - 1) {
-                                _this.setPickDtl();
-                                _this.setPickHdrTo();
-                                _this.setPickHdrNet();
-                            }
-    
-                            _this.closeLoadingDialog();
-                        },
-                        error: function (err) {
-                            _this.closeLoadingDialog();
+                        if (pRefresh == true) {
+                            _this.onRefreshDtl();
+                            _this.onRefreshHu();
                         }
-                    })
+
+                        _this.closeLoadingDialog();
+                    },
+                    error: function (err) {
+                        _this.closeLoadingDialog();
+                    }
                 })
             },
 
@@ -1621,6 +1628,9 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_OD_PICKED"});
                 oCaptionParam.push({CODE: "CONFIRM_OD_POST"});
                 oCaptionParam.push({CODE: "CONFIRM_OD_PICK"});
+                oCaptionParam.push({CODE: "INFO_SEL_RECORD"});
+                oCaptionParam.push({CODE: "INFO_ALREADY_DELETED"});
+                oCaptionParam.push({CODE: "INFO_NO_BALANCE"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",
