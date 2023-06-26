@@ -9,12 +9,13 @@ sap.ui.define([
     "sap/ui/table/library",
     "sap/m/TablePersoController",
     'sap/m/MessageToast',
-	'sap/m/SearchField'
+	'sap/m/SearchField',
+    'sap/ui/core/routing/History'
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (BaseController, JSONModel, MessageBox, Filter, FilterOperator, Sorter, Device, library, TablePersoController, MessageToast, SearchField) {
+    function (BaseController, JSONModel, MessageBox, Filter, FilterOperator, Sorter, Device, library, TablePersoController, MessageToast, SearchField, History) {
         "use strict";
 
         var _this;
@@ -47,6 +48,12 @@ sap.ui.define([
                 }), "ui");
 
                 _this.initializeComponent();
+
+                if (sap.ui.getCore().byId("backBtn")) {
+                    sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = function(oEvent) {
+                        _this.onNavBack();
+                    }
+                }
             },
 
             initializeComponent() {
@@ -352,7 +359,7 @@ sap.ui.define([
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
                         if (sAction == "Yes") {
-                            _this._router.navTo("RouteMain", {}, true);
+                            _this.onNavBack();
                         }
                     }
                 });

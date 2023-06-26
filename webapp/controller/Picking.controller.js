@@ -46,6 +46,12 @@ sap.ui.define([
                 }), "ui");
 
                 _this.initializeComponent();
+
+                if (sap.ui.getCore().byId("backBtn")) {
+                    sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = function(oEvent) {
+                        _this.onNavBack();
+                    }
+                }
             },
 
             initializeComponent() {
