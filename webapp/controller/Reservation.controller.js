@@ -123,7 +123,7 @@ sap.ui.define([
                         }
 
                         data.results.forEach(item => {
-                            item.REQDT = _this.formatDate(item.REQDT);
+                            item.REQDT = _this.formatDatePH(item.REQDT);
                         })
 
                         var aFilterTab = [];

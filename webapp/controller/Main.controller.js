@@ -133,25 +133,25 @@ sap.ui.define([
 
                             data.results.forEach((item, idx) => {
                                 if (item.CREATEDDT !== null)
-                                    item.CREATEDDT = _this.formatDate(item.CREATEDDT);
+                                    item.CREATEDDT = _this.formatDatePH(item.CREATEDDT);
 
                                 if (item.PLANDLVDT !== null)
-                                    item.PLANDLVDT = _this.formatDate(item.PLANDLVDT);
+                                    item.PLANDLVDT = _this.formatDatePH(item.PLANDLVDT);
 
                                 if (item.DOCDT !== null)
-                                    item.DOCDT = _this.formatDate(item.DOCDT);
+                                    item.DOCDT = _this.formatDatePH(item.DOCDT);
 
                                 if (item.POSTDT !== null)
-                                    item.POSTDT = _this.formatDate(item.POSTDT);
+                                    item.POSTDT = _this.formatDatePH(item.POSTDT);
                                 
                                 if (item.REFDOCDT !== null)
-                                    item.REFDOCDT = _this.formatDate(item.REFDOCDT);
+                                    item.REFDOCDT = _this.formatDatePH(item.REFDOCDT);
 
                                 if (item.CREATEDDT !== null)
-                                    item.CREATEDDT = _this.formatDate(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+                                    item.CREATEDDT = _this.formatDatePH(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
 
                                 if (item.UPDATEDDT !== null)
-                                    item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                                    item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
 
                                 if (idx == 0) item.ACTIVE = "X";
                                 else item.ACTIVE = "";
@@ -210,10 +210,10 @@ sap.ui.define([
 
                             data.results.forEach(item => {
                                 if (item.CREATEDDT !== null)
-                                    item.CREATEDDT = _this.formatDate(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+                                    item.CREATEDDT = _this.formatDatePH(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
 
                                 if (item.UPDATEDDT !== null)
-                                    item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                                    item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
                             })
 
                             var aFilterTab = [];

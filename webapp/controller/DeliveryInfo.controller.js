@@ -148,25 +148,25 @@ sap.ui.define([
 
                         data.results.forEach(item => {
                             if (item.DOCDT !== null)
-                                item.DOCDT = _this.formatDate(item.DOCDT);
+                                item.DOCDT = _this.formatDatePH(item.DOCDT);
 
                             if (item.REQDT !== null)
-                                item.REQDT = _this.formatDate(item.REQDT);
+                                item.REQDT = _this.formatDatePH(item.REQDT);
 
                             if (item.POSTDT !== null)
-                                item.POSTDT = _this.formatDate(item.POSTDT);
+                                item.POSTDT = _this.formatDatePH(item.POSTDT);
 
                             if (item.ACTISSDT !== null)
-                                item.ACTISSDT = _this.formatDate(item.ACTISSDT);
+                                item.ACTISSDT = _this.formatDatePH(item.ACTISSDT);
 
                             if (item.REFDOCDT !== null)
-                                item.REFDOCDT = _this.formatDate(item.REFDOCDT);
+                                item.REFDOCDT = _this.formatDatePH(item.REFDOCDT);
 
                             if (item.CREATEDDT !== null)
-                                item.CREATEDDT = _this.formatDate(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+                                item.CREATEDDT = _this.formatDatePH(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
 
                             if (item.UPDATEDDT !== null)
-                                item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                                item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
 
                             _this.getView().getModel("ui").setProperty("/useTo", item.USETO);
                         });
@@ -531,10 +531,10 @@ sap.ui.define([
 
                         data.results.forEach(item => {
                             if (item.CREATEDDT !== null)
-                                item.CREATEDDT = _this.formatDate(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+                                item.CREATEDDT = _this.formatDatePH(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
 
                             if (item.UPDATEDDT !== null)
-                                item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                                item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
                         })
 
                         var oJSONModel = new sap.ui.model.json.JSONModel();
@@ -732,10 +732,10 @@ sap.ui.define([
 
                         data.results.forEach(item => {
                             if (item.CREATEDDT !== null)
-                                item.CREATEDDT = _this.formatDate(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+                                item.CREATEDDT = _this.formatDatePH(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
 
                             if (item.UPDATEDDT !== null)
-                                item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                                item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
                         })
 
                         var oJSONModel = new sap.ui.model.json.JSONModel();
@@ -1086,13 +1086,13 @@ sap.ui.define([
 
                         data.results.forEach(item => {
                             if (item.STARTDT !== null)
-                                item.STARTDT = _this.formatDate(item.STARTDT) + " " + _this.formatTime(item.STARTTM);
+                                item.STARTDT = _this.formatDatePH(item.STARTDT) + " " + _this.formatTime(item.STARTTM);
 
                             if (item.ENDDT !== null)
-                                item.ENDDT = _this.formatDate(item.ENDDT) + " " + _this.formatTime(item.ENDTM);
+                                item.ENDDT = _this.formatDatePH(item.ENDDT) + " " + _this.formatTime(item.ENDTM);
 
                             if (item.UPDATEDDT !== null)
-                                item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                                item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
                         })
 
                         var oJSONModel = new sap.ui.model.json.JSONModel();
@@ -1128,10 +1128,10 @@ sap.ui.define([
 
                         data.results.forEach(item => {
                             if (item.DOCDT !== null)
-                                item.DOCDT = _this.formatDate(item.DOCDT);
+                                item.DOCDT = _this.formatDatePH(item.DOCDT);
 
                             if (item.POSTDT !== null)
-                                item.POSTDT = _this.formatDate(item.POSTDT);
+                                item.POSTDT = _this.formatDatePH(item.POSTDT);
                         })
 
                         var oJSONModel = new sap.ui.model.json.JSONModel();
@@ -1168,10 +1168,10 @@ sap.ui.define([
 
                         data.results.forEach(item => {
                             if (item.CREATEDDT !== null)
-                                item.CREATEDDT = _this.formatDate(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+                                item.CREATEDDT = _this.formatDatePH(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
 
                             if (item.UPDATEDDT !== null)
-                                item.UPDATEDDT = _this.formatDate(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+                                item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
                         })
 
                         var oJSONModel = new sap.ui.model.json.JSONModel();
