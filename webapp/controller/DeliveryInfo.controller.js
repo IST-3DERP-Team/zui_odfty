@@ -561,7 +561,7 @@ sap.ui.define([
 
             onEditHu() {
                 var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
-                if (oDataHdr.STATUS == "54") {
+                if (oDataHdr.STATUS != "50") {
                     MessageBox.warning(_oCaption.WARN_EDIT_NOT_ALLOW);
                     return;
                 }
@@ -619,6 +619,7 @@ sap.ui.define([
                                             console.log(sEntitySet, data, oResponse);
     
                                             if (idx == aSelIdx.length - 1) {
+                                                _this.onRefreshDtl();
                                                 _this.onRefreshHu();
                                             }
                                         },
@@ -696,6 +697,7 @@ sap.ui.define([
                             method: "PUT",
                             success: function(data, oResponse) {
                                 console.log(sEntitySet, data, oResponse);
+                                _this.onRefreshDtl();
                                 _this.onRefreshHu();
                             },
                             error: function(err) {
@@ -818,7 +820,10 @@ sap.ui.define([
                     return;
                 }
 
-                if (oData.STATUS != "50") return;
+                if (oData.STATUS != "50") {
+                    MessageBox.warning(_oCaption.WARN_PICK_NOT_ALLOW);
+                    return;
+                }
 
                 var oTable = this.byId("dtlTab");
                 var aSelIdx = oTable.getSelectedIndices();
@@ -902,6 +907,10 @@ sap.ui.define([
                         mvtType: oData.MVTTYPE
                     });
                 }
+                else {
+                    MessageBox.warning(_oCaption.WARN_PICK_NOT_ALLOW);
+                    return;
+                }
             },
 
             onDeleteDtl() {
@@ -949,6 +958,7 @@ sap.ui.define([
                                             if (idx == aSelIdx.length - 1) {
                                                 console.log("refrsh")
                                                 _this.onRefreshDtl();
+                                                _this.onRefreshHu();
                                             }
                                         },
                                         error: function(err) {
@@ -1667,6 +1677,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_PROCEED_DELETE"});
                 oCaptionParam.push({CODE: "INFO_SAVE_SUCCESS"});
                 oCaptionParam.push({CODE: "WARN_ADD_NOT_ALLOW"});
+                oCaptionParam.push({CODE: "WARN_PICK_NOT_ALLOW"});
                 oCaptionParam.push({CODE: "INFO_NO_DATA_EDIT"});
                 oCaptionParam.push({CODE: "CONFIRM_PROCEED_EXECUTE"});
                 oCaptionParam.push({CODE: "INFO_EXECUTE_SUCCESS"});

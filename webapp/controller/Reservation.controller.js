@@ -88,7 +88,7 @@ sap.ui.define([
                 };
 
                 this.byId("rsvTab").addEventDelegate(oTableEventDelegate);
-
+                _this.clearSortFilter("rsvTab");
                 _this.getRsv();
 
                 _this.closeLoadingDialog();
