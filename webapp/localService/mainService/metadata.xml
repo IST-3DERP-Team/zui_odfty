@@ -20,6 +20,49 @@
                 <Property Name="UPDATEDDT" Type="Edm.DateTime" Nullable="false" Precision="7" sap:unicode="false" sap:label="Last Change" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="UPDATEDTM" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Updated Time" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
             </EntityType>
+            <EntityType Name="AttribType" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ATTRIBTYP"/>
+                </Key>
+                <Property Name="ATTRIBTYP" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Attribute Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DESC1" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="AttribTypeDtl" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ATTRIBTYP"/>
+                    <PropertyRef Name="ATTRIBCD"/>
+                    <PropertyRef Name="ATTRIBGRP"/>
+                    <PropertyRef Name="ATTRIBSEQ"/>
+                </Key>
+                <Property Name="ATTRIBTYP" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Attribute Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ATTRIBCD" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:label="Attrib Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ATTRIBGRP" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Attribute Grp" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ATTRIBSEQ" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Seq Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DESC1" Type="Edm.String" Nullable="false" MaxLength="100" sap:unicode="false" sap:label="Attrib Desc1" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="InfoAttribTbl" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DLVNO"/>
+                    <PropertyRef Name="ATTRIBTYP"/>
+                    <PropertyRef Name="ATTRIBCD"/>
+                </Key>
+                <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ATTRIBTYP" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Attribute Type" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ATTRIBCD" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:label="Attrib Code" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DESC1" Type="Edm.String" MaxLength="100" sap:unicode="false" sap:label="Attrib Desc1" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DESC2" Type="Edm.String" MaxLength="100" sap:unicode="false" sap:label="Attrib Desc2" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ATTRIBGRP" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Attribute Grp" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ATTRIBSEQ" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Seq Number" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DELETED" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Deleted" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="InfoDetailAuto" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DLVNO"/>
+                    <PropertyRef Name="DLVITEM"/>
+                </Key>
+                <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DLVITEM" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Delv Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
             <EntityType Name="Header" sap:content-version="1">
                 <Key>
                     <PropertyRef Name="DLVNO"/>
@@ -96,8 +139,8 @@
                     <PropertyRef Name="RSVNO"/>
                     <PropertyRef Name="RSVITEM"/>
                 </Key>
-                <Property Name="ISSPLANT" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="VARCD" Type="Edm.String" Nullable="false" MaxLength="25" sap:unicode="false" sap:label="Unloading Point" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ISSPLANT" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="MVTTYPE" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Movement type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="ISSMATNO" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="RCVPLANT" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Receiving plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -145,8 +188,9 @@
                     <PropertyRef Name="DLVNO"/>
                     <PropertyRef Name="DLVITEM"/>
                 </Key>
-                <Property Name="VARCD" Type="Edm.String" Nullable="false" MaxLength="25" sap:unicode="false" sap:label="Unloading Point" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="REQQTYRESTRICT" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="VARCD" Type="Edm.String" Nullable="false" MaxLength="25" sap:unicode="false" sap:label="Unloading Point" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVITEM" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Delv Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="PLANTCD" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="MATNO" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -230,8 +274,9 @@
                     <PropertyRef Name="RSVNO"/>
                     <PropertyRef Name="ITEM"/>
                 </Key>
-                <Property Name="Netavailqty" Type="Edm.Double" Nullable="false" sap:unicode="false" sap:label="NETAVAILQTY" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Netavailqty" Type="Edm.Double" Nullable="false" sap:unicode="false" sap:label="NETAVAILQTY" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="REQQTYRESTRICT" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVITEM" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Delv Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="RSVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="RSVNO" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="ITEM" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Item no." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -411,15 +456,12 @@
                 <Property Name="DIMUOM" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Base Unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
                 <Property Name="BINCD" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Bin Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
             </EntityType>
-            <EntityType Name="AttribType" sap:content-version="1">
-                <Key>
-                    <PropertyRef Name="ATTRIBTYP"/>
-                </Key>
-                <Property Name="ATTRIBTYP" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Attribute Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="DESC1" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-            </EntityType>
             <EntityContainer Name="ZGW_3DERP_ODFTY_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
                 <EntitySet Name="InfoAttribSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoAttrib" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="AttribTypeSet" EntityType="ZGW_3DERP_ODFTY_SRV.AttribType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="AttribTypeDtlSet" EntityType="ZGW_3DERP_ODFTY_SRV.AttribTypeDtl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="InfoAttribTblSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoAttribTbl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="InfoDetailAutoSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoDetailAuto" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="HeaderSet" EntityType="ZGW_3DERP_ODFTY_SRV.Header" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="DetailSet" EntityType="ZGW_3DERP_ODFTY_SRV.Detail" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="DlvTypeSet" EntityType="ZGW_3DERP_ODFTY_SRV.DlvType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
@@ -435,7 +477,6 @@
                 <EntitySet Name="InfoHeaderTblSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoHeaderTbl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="InfoDetailTblSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoDetailTbl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="InfoHUTblSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoHUTbl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
-                <EntitySet Name="AttribTypeSet" EntityType="ZGW_3DERP_ODFTY_SRV.AttribType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
             </EntityContainer>
             <atom:link rel="self" href="http://159.138.39.203:8000/sap/opu/odata/sap/ZGW_3DERP_ODFTY_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
             <atom:link rel="latest-version" href="http://159.138.39.203:8000/sap/opu/odata/sap/ZGW_3DERP_ODFTY_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>

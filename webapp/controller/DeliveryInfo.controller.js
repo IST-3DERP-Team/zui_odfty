@@ -651,9 +651,10 @@ sap.ui.define([
 
                     aEditedRows.forEach((item, idx) => {
                         var aNum = parseFloat(item.REQQTY).toString().split(".");
-
+                        console.log("aEditedRows", item)
                         if (item.UOMDECIMAL == 0) {
-                            if (!Number.isInteger(parseFloat(item.TOQTY))) sErrType = "UOMDECIMAL";
+                            if (parseInt(aNum[1]) > 0) sErrType = "UOMDECIMAL";
+                            //if (!Number.isInteger(parseFloat(item.TOQTY))) sErrType = "UOMDECIMAL";
                         } else if (item.UOMDECIMAL > 0) {
                             if (aNum.length == 1) sErrType = "UOMDECIMAL";
                             else if (aNum[1].length != item.UOMDECIMAL) sErrType = "UOMDECIMAL";
@@ -667,6 +668,18 @@ sap.ui.define([
                             sUom = item.UOM;
                             iUomDecimal = item.UOMDECIMAL;
                         }
+
+                        var oDataDtl = _this.getView().getModel("dtl").getData().results.filter(
+                            x => x.DLVNO == item.DLVNO && x.DLVITEM == item.DLVITEM
+                        )[0];
+                        var aDataHu = _this.getView().getModel("hu").getData().results.filter(
+                            x => x.DLVNO == oDataDtl.DLVNO && x.DLVITEM == oDataDtl.DLVITEM
+                        )
+                        
+                        var dQtyTotal = 0.0;
+                        aDataHu.forEach(x => { dQtyTotal += parseFloat(x.ACTQTY); });
+
+                        if (oDataDtl.REQQTYRESTRICT == true && oDataDtl.REQQTY < dQtyTotal) sErrType = "REQQTYRESTRICT";
                     });
 
                     if (sErrType) {
@@ -676,6 +689,8 @@ sap.ui.define([
                             sErrMsg = "UOM " + sUom + " should only have " + iUomDecimal.toString() + " decimal place(s).";
                         } else if (sErrType == "OVERQTY") {
                             sErrMsg = "Required Quantity is greater than Net Avail Quantity.";
+                        } else if (sErrType == "REQQTYRESTRICT") {
+                            sErrMsg = "Total Actual Quantity should not be more than Delivery Detail required quantity."
                         }
 
                         MessageBox.warning(sErrMsg);
@@ -688,7 +703,9 @@ sap.ui.define([
                         var sEntitySet = "/InfoHUTblSet(DLVNO='" + item.DLVNO + 
                             "',DLVITEM='" + item.DLVITEM + "',SEQNO='" + item.SEQNO + "')";
                         var param = {
-                            REQQTY: item.REQQTY
+                            ACTQTYBSE: item.ACTQTY,
+                            ACTQTYORD: item.ACTQTY,
+                            DELETED: ""
                         };
 
                         var oModel = _this.getOwnerComponent().getModel();

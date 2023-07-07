@@ -268,6 +268,7 @@ sap.ui.define([
                             var oJSONModel = new sap.ui.model.json.JSONModel();
                             oJSONModel.setData(data);
                             _this.getView().setModel(oJSONModel, "dlvType");
+                            _this.getView().getModel("ui").setProperty("/dlvTypeCount", data.results.length);
 
 
                             _this._DeliveryType = sap.ui.xmlfragment(_this.getView().getId(), "zuiodfty.view.fragments.dialog.DeliveryType", _this);
@@ -338,6 +339,34 @@ sap.ui.define([
                 }
             },
 
+            onRowSelectionChangeDlvType: function (oEvent) {
+                var sPath = oEvent.getParameter("rowContext").getPath();
+                var oTable = this.getView().byId("dlvTypeTab");
+                var model = oTable.getModel();
+                //get the selected  data from the model and set to variable style
+                var oData = model.getProperty(sPath);
+                console.log("onRowSelectionChangeDlvType", oData)
+                
+                _this.showLoadingDialog("Loading...");
+
+                _this.onCancelDlvType();
+                _this.closeLoadingDialog();
+
+                setTimeout(() => {
+                    _this._router.navTo("RouteReservation", {
+                        sbu: _this.getView().getModel("ui").getData().sbu,
+                        dlvNo: "empty",
+                        dlvType: oData.DLVTYPE,
+                        mvtType: oData.MVTTYPE,
+                        srcTbl: oData.SRCTBL,
+                        varCd: (oData.VARCD == "" ? "empty" : oData.VARCD),
+                        noRangeCd: oData.NORANGECD,
+                        rsvList: "empty",
+                        dtlMaxCount: 0
+                    });
+                }, 100);
+            },
+
             onProceedDlvType() {
                 _this.showLoadingDialog("Loading...");
 
@@ -361,7 +390,7 @@ sap.ui.define([
                         dlvType: oData.DLVTYPE,
                         mvtType: oData.MVTTYPE,
                         srcTbl: oData.SRCTBL,
-                        varCd: oData.VARCD,
+                        varCd: (oData.VARCD == "" ? "empty" : oData.VARCD),
                         noRangeCd: oData.NORANGECD,
                         rsvList: "empty",
                         dtlMaxCount: 0
@@ -456,6 +485,9 @@ sap.ui.define([
 
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
+
+                // Label
+                oCaptionParam.push({CODE: "ROWS"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

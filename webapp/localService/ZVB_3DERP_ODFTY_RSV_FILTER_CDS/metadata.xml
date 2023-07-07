@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:Reference Uri="./sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="./sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="./sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="./sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="Aggregation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="./sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="ZVB_3DERP_ODFTY_RSV_FILTER_CDS" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="ZVB_3DERP_ODFTY_ISSSLOC_SHType" sap:label="Outbound Delivery Fty Iss Sloc SH" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="SLOC"/>
+                </Key>
+                <Property Name="SLOC" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="DESCRIPTION" sap:label="Storage location"/>
+                <Property Name="DESCRIPTION" Type="Edm.String" MaxLength="50" sap:label="Short Description"/>
+            </EntityType>
+            <EntityType Name="ZVB_3DERP_ODFTY_MATNO_SHType" sap:label="Outbound Delivery Fty Mat No SH" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="MATNO"/>
+                </Key>
+                <Property Name="MATNO" Type="Edm.String" Nullable="false" MaxLength="40" sap:display-format="UpperCase" sap:label="Material" sap:quickinfo="Material Number"/>
+                <Property Name="GMCDESC" Type="Edm.String" MaxLength="500" sap:label="GMC Description (EN)"/>
+                <Property Name="ADDTLDESC" Type="Edm.String" MaxLength="500" sap:label="Desc (English)" sap:quickinfo="Description (English)"/>
+                <Property Name="BASEUOM" Type="Edm.String" MaxLength="3" sap:label="Base Unit of Measure" sap:semantics="unit-of-measure"/>
+            </EntityType>
+            <EntityType Name="ZVB_3DERP_ODFTY_RSVNO_SHType" sap:label="Outbound Delivery Fty Rsv SH" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="RSVNO"/>
+                    <PropertyRef Name="RSVITEM"/>
+                </Key>
+                <Property Name="RSVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="NonNegative" sap:label="Reservation" sap:quickinfo="Number of reservation/dependent requirements"/>
+                <Property Name="RSVITEM" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="NonNegative" sap:label="Item no." sap:quickinfo="Item Number of Reservation / Dependent Requirements"/>
+                <Property Name="PLANTCD" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Plant"/>
+                <Property Name="MATNO" Type="Edm.String" MaxLength="40" sap:display-format="UpperCase" sap:label="Material" sap:quickinfo="Material Number"/>
+                <Property Name="SLOC" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Storage location"/>
+                <Property Name="BALANCE" Type="Edm.Decimal" Precision="14" Scale="3"/>
+                <Property Name="UOM" Type="Edm.String" MaxLength="3" sap:label="Base Unit of Measure" sap:semantics="unit-of-measure"/>
+            </EntityType>
+            <EntityType Name="ZVB_3DERP_ODFTY_RSV_FILTERType" sap:label="Outbound Delivery Fty Rsv Filter" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="RSVNO"/>
+                </Key>
+                <Property Name="RSVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="NonNegative" sap:label="Reservation" sap:quickinfo="Number of reservation/dependent requirements" sap:value-list="standard"/>
+                <Property Name="ISSSLOC" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Storage location" sap:value-list="standard"/>
+                <Property Name="ISSMATNO" Type="Edm.String" MaxLength="40" sap:display-format="UpperCase" sap:label="Material" sap:quickinfo="Material Number" sap:value-list="standard"/>
+            </EntityType>
+            <EntityContainer Name="ZVB_3DERP_ODFTY_RSV_FILTER_CDS_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="ZVB_3DERP_ODFTY_ISSSLOC_SH" EntityType="ZVB_3DERP_ODFTY_RSV_FILTER_CDS.ZVB_3DERP_ODFTY_ISSSLOC_SHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="ZVB_3DERP_ODFTY_MATNO_SH" EntityType="ZVB_3DERP_ODFTY_RSV_FILTER_CDS.ZVB_3DERP_ODFTY_MATNO_SHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="ZVB_3DERP_ODFTY_RSVNO_SH" EntityType="ZVB_3DERP_ODFTY_RSV_FILTER_CDS.ZVB_3DERP_ODFTY_RSVNO_SHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="ZVB_3DERP_ODFTY_RSV_FILTER" EntityType="ZVB_3DERP_ODFTY_RSV_FILTER_CDS.ZVB_3DERP_ODFTY_RSV_FILTERType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+            </EntityContainer>
+            <Annotations Target="ZVB_3DERP_ODFTY_RSV_FILTER_CDS.ZVB_3DERP_ODFTY_RSV_FILTERType/RSVNO" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Outbound Delivery Fty Rsv SH"/>
+                        <PropertyValue Property="CollectionPath" String="ZVB_3DERP_ODFTY_RSVNO_SH"/>
+                        <PropertyValue Property="SearchSupported" Bool="false"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="RSVNO"/>
+                                    <PropertyValue Property="ValueListProperty" String="RSVNO"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="RSVITEM"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PLANTCD"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="MATNO"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="SLOC"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="BALANCE"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="UOM"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="ZVB_3DERP_ODFTY_RSV_FILTER_CDS.ZVB_3DERP_ODFTY_RSV_FILTERType/ISSSLOC" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Outbound Delivery Fty Iss Sloc SH"/>
+                        <PropertyValue Property="CollectionPath" String="ZVB_3DERP_ODFTY_ISSSLOC_SH"/>
+                        <PropertyValue Property="SearchSupported" Bool="false"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="ISSSLOC"/>
+                                    <PropertyValue Property="ValueListProperty" String="SLOC"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="DESCRIPTION"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="ZVB_3DERP_ODFTY_RSV_FILTER_CDS.ZVB_3DERP_ODFTY_RSV_FILTERType/ISSMATNO" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Outbound Delivery Fty Mat No SH"/>
+                        <PropertyValue Property="CollectionPath" String="ZVB_3DERP_ODFTY_MATNO_SH"/>
+                        <PropertyValue Property="SearchSupported" Bool="false"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="ISSMATNO"/>
+                                    <PropertyValue Property="ValueListProperty" String="MATNO"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="GMCDESC"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="ADDTLDESC"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="BASEUOM"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="ZVB_3DERP_ODFTY_RSV_FILTER_CDS.ZVB_3DERP_ODFTY_RSV_FILTER_CDS_Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Aggregation.ApplySupported">
+                    <Record>
+                        <PropertyValue Property="Transformations">
+                            <Collection>
+                                <String>aggregate</String>
+                                <String>groupby</String>
+                                <String>filter</String>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Rollup" EnumMember="None"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <atom:link rel="self" href="http://159.138.39.203:8000/sap/opu/odata/sap/ZVB_3DERP_ODFTY_RSV_FILTER_CDS/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="http://159.138.39.203:8000/sap/opu/odata/sap/ZVB_3DERP_ODFTY_RSV_FILTER_CDS/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

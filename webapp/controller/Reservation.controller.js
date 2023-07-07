@@ -20,6 +20,8 @@ sap.ui.define([
 
         var _this;
         var _oCaption = {};
+        var _aSmartFilter;
+        var _sSmartFilterGlobal;
         var _startUpInfo;
 
         return BaseController.extend("zuiodfty.controller.Reservation", {
@@ -27,6 +29,10 @@ sap.ui.define([
                 _this = this;
 
                 _this.getCaption();
+
+                var oModel = this.getOwnerComponent().getModel("ZVB_3DERP_ODFTY_RSV_FILTER_CDS");
+                var oSmartFilter = this.getView().byId("sfbODFtyRsv");
+                oSmartFilter.setModel(oModel);
 
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
@@ -46,6 +52,10 @@ sap.ui.define([
                     dtlMaxCount: oEvent.getParameter("arguments").dtlMaxCount,
                     dlvNoInit: oEvent.getParameter("arguments").dlvNo
                 }), "ui");
+
+                var oModel = this.getOwnerComponent().getModel("ZVB_3DERP_ODFTY_RSV_FILTER_CDS");
+                var oSmartFilter = this.getView().byId("sfbODFtyRsv");
+                oSmartFilter.setModel(oModel);
 
                 _this.initializeComponent();
 
@@ -76,6 +86,8 @@ sap.ui.define([
 
                 _this.getColumns(aTableList);
 
+                
+
                 this._tableRendered = "";
                 var oTableEventDelegate = {
                     onkeyup: function(oEvent){
@@ -89,9 +101,28 @@ sap.ui.define([
 
                 this.byId("rsvTab").addEventDelegate(oTableEventDelegate);
                 _this.clearSortFilter("rsvTab");
-                _this.getRsv();
+                _this.getRsv([], "");
+
+                // var oModel = _this.getOwnerComponent().getModel("ZVB_3DERP_ODFTY_RSV_FILTER_CDS");
+                // var oSmartFilter = _this.getView().byId("sfbODFtyRsv");
+                // console.log("sfbODFtyRsv", oModel, oSmartFilter)
+                // oSmartFilter.setModel(oModel);            
+                
 
                 _this.closeLoadingDialog();
+            },
+
+            onSearch(oEvent) {
+                this.showLoadingDialog("Loading...");
+
+                var aSmartFilter = this.getView().byId("sfbODFtyRsv").getFilters();
+                var sSmartFilterGlobal = "";
+                if (oEvent) sSmartFilterGlobal = oEvent.getSource()._oBasicSearchField.mProperties.value;
+                
+                _aSmartFilter = aSmartFilter;
+                _sSmartFilterGlobal = sSmartFilterGlobal;
+
+                _this.getRsv(aSmartFilter, sSmartFilterGlobal);
             },
 
             onAfterTableRender(pTableId, pTableProps) {
@@ -100,7 +131,7 @@ sap.ui.define([
                 }
             },
 
-            getRsv() {
+            getRsv(pFilters, pFilterGlobal) {
                 _this.showLoadingDialog("Loading...");
 
                 var oTable = _this.getView().byId("rsvTab");
@@ -143,7 +174,8 @@ sap.ui.define([
                         _this.getView().setModel(oJSONModel, "rsv");
                         _this._tableRendered = "rsvTab";
 
-                        _this.onFilterByCol("rsv", aFilterTab);
+                        //_this.onFilterByCol("rsv", aFilterTab);
+                        _this.onFilterBySmart("rsv", pFilters, pFilterGlobal, aFilterTab);
 
                         _this.setRowReadMode("rsv");
 
@@ -404,6 +436,11 @@ sap.ui.define([
 
                 // Label
                 oCaptionParam.push({CODE: "ISSPLANT"});
+
+                // Smart Filter
+                oCaptionParam.push({CODE: "RSVNO"});
+                oCaptionParam.push({CODE: "ISSSLOC"});
+                oCaptionParam.push({CODE: "ISSMATNO"});
 
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});

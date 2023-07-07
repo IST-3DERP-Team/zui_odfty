@@ -496,6 +496,10 @@ sap.ui.define([
 
             onSavePickDtl() {
                 var oTable = this.byId("pickDtlTab");
+                var oDataUI = _this.getView().getModel("ui").getData();
+                var oDataHdr = _this.getView().getModel("pickHdr").getData().results.filter(
+                    x => x.DLVNO == oDataUI.dlvNo && x.DLVITEM == oDataUI.dlvItem
+                )[0];
                 var aEditedRows = this.getView().getModel("pickDtl").getData().results.filter(item => item.Edited === true);
 
                 if (aEditedRows.length > 0) {
@@ -503,8 +507,12 @@ sap.ui.define([
                     var sErrType = "";
                     var sUom = "";
                     var iUomDecimal = 0;
+                    var bReqQtyRestrict = oDataHdr.REQQTYRESTRICT;
+                    var dBalanceHdr = oDataHdr.BALANCE;
+                    var dQtyTotal = 0.0;
 
                     aEditedRows.forEach((item, idx) => {
+                        dQtyTotal += parseFloat(item.TOQTY);
                         var aNum = parseFloat(item.TOQTY).toString().split(".");
 
                         if (item.UOMDECIMAL == 0) {
@@ -524,6 +532,10 @@ sap.ui.define([
                         }
                     });
 
+                    if (bReqQtyRestrict == true && parseFloat(dBalanceHdr) < dQtyTotal) {
+                        sErrType = "REQQTYRESTRICT";
+                    }
+                    
                     if (sErrType) {
                         var sErrMsg = "";
                         
@@ -531,6 +543,8 @@ sap.ui.define([
                             sErrMsg = "UOM " + sUom + " should only have " + iUomDecimal.toString() + " decimal place(s).";
                         } else if (sErrType == "OVERQTY") {
                             sErrMsg = "TO Quantity is greater than Quantity.";
+                        } else if (sErrType == "REQQTYRESTRICT") {
+                            sErrMsg = "Total TO Quantity should not be more than reservation quantity."
                         }
 
                         MessageBox.warning(sErrMsg);

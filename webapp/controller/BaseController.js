@@ -32,6 +32,45 @@ sap.ui.define([
             this._aInvalidValueState = [];
 
             this.getView().setModel(new JSONModel({}), "base");
+
+            this._aColumns["dlvType"] = [
+                {
+                    "name": "DLVTYPE",
+                    "type": "STRING"
+                },
+                {
+                    "name": "DESCRIP",
+                    "type": "STRING"
+                },
+                {
+                    "name": "BTEXT",
+                    "type": "STRING"
+                }
+            ];
+
+            this._aFilterableColumns["dlvType"] = [
+                {
+                    "name": "DLVTYPE",
+                    "label": "Delivery Type",
+                    "position": 1,
+                    "value": "",
+                    "connector": "Contains"
+                },
+                {
+                    "name": "DESCRIP",
+                    "label": "Description",
+                    "position": 2,
+                    "value": "",
+                    "connector": "Contains"
+                },
+                {
+                    "name": "BTEXT",
+                    "label": "Movement Type",
+                    "position": 3,
+                    "value": "",
+                    "connector": "Contains"
+                }
+            ];
         },
 
         getAppAction: async function() {
@@ -593,7 +632,7 @@ sap.ui.define([
                         aFilter = [];
                     }
                 });
-            } else {
+            } else if (pFilters.length > 0) {
                 var sName = pFilters[0].sPath;
                 aFilter.push(new Filter(sName, FilterOperator.EQ,  pFilters[0].oValue1));
                 var oFilterGrp = new Filter(aFilter, false);
@@ -637,7 +676,7 @@ sap.ui.define([
             var sQuery = oEvent.getParameter("query");
             var oFilter = null;
             var aFilter = [];
-
+console.log("onFilterByGlobal", sTable, this._aFilterableColumns, this._aColumns)
             if (sQuery) {
                 this._aFilterableColumns[sTable].forEach(item => {
                     var sDataType = this._aColumns[sTable].filter(col => col.name === item.name)[0].type;
