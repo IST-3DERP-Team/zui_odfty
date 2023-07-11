@@ -53,9 +53,8 @@ sap.ui.define([
                     dlvNoInit: oEvent.getParameter("arguments").dlvNo
                 }), "ui");
 
-                var oModel = this.getOwnerComponent().getModel("ZVB_3DERP_ODFTY_RSV_FILTER_CDS");
                 var oSmartFilter = this.getView().byId("sfbODFtyRsv");
-                oSmartFilter.setModel(oModel);
+                oSmartFilter.clear();
 
                 _this.initializeComponent();
 
