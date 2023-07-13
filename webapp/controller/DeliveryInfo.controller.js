@@ -135,7 +135,7 @@ sap.ui.define([
             },
 
             onAfterTableRender(pTableId, pTableProps) {
-                //console.log(pTableId, pTableProps)
+                console.log(pTableId, pTableProps)
             },
 
             getHdr() {
@@ -664,6 +664,8 @@ sap.ui.define([
                             sErrType = "OVERQTY";
                         }
 
+                        if (item.HUTYPE == "CTN" && item.HUID == item.DESTHUID) sErrType = "HUTYPECTN";
+
                         if (sErrType) {
                             sUom = item.UOM;
                             iUomDecimal = item.UOMDECIMAL;
@@ -691,6 +693,8 @@ sap.ui.define([
                             sErrMsg = "Required Quantity is greater than Net Avail Quantity.";
                         } else if (sErrType == "REQQTYRESTRICT") {
                             sErrMsg = "Total Actual Quantity should not be more than Delivery Detail required quantity."
+                        } else if (sErrType == "HUTYPECTN") {
+                            sErrMsg = "Destination HUID should not be equal to HUID."
                         }
 
                         MessageBox.warning(sErrMsg);
@@ -705,6 +709,7 @@ sap.ui.define([
                         var param = {
                             ACTQTYBSE: item.ACTQTY,
                             ACTQTYORD: item.ACTQTY,
+                            DESTHUID: item.DESTHUID,
                             DELETED: ""
                         };
 

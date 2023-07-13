@@ -480,6 +480,18 @@ sap.ui.define([
             var vItemDesc = vColProp[0].valueHelp.items.text;
 
             var sFilter = "";
+
+            if (this._inputField == "DESTHUID") {
+                var sPath = oSource.getParent().oBindingContexts[sModel].sPath;
+                var oHu = _this.getView().getModel("hu").getProperty(sPath);
+                var oHdr = _this.getView().getModel("hdr").getData().results[0];
+                
+                sFilter = "HUTYPE eq '" + oHu.HUTYPE + "' and PLANTCD eq '" + oHdr.ISSPLANT + "' and SLOC eq '" + oHu.SLOC + 
+                    "' and WAREHOUSE eq '" + oHdr.WAREHOUSE + "' and STORAGEAREA eq '" + oHdr.STORAGEAREA + "'";
+
+                //console.log("DESTHUID", sFilter)
+            }
+            
             oModel.read(sEntity, {
                 urlParameters: {
                     "$filter": sFilter

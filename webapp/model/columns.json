@@ -1,4 +1,10 @@
 {
+    "hu": [
+        {"name": "DESTHUID", "position": 1, "type": "Edm.String", "visible": true, "required": true, "width": "160px", "hideOnChange": false, "showable": true, "sort": "Ascending",
+        "valueHelp": {"show": true, "items": {"path": "/InfoHUDestSet", "value": "HUID", "text": "HUID"},
+        "suggestionItems": {"path": "/InfoHUDestSet", "text": "{HUID}", "additionalText": "", "maxSuggestionWidth": "350px"},
+        "filter": "", "entitySet": ""}}
+    ],
     "othInfo": [
         {"name": "ATTRIBTYPE", "position": 1, "type": "Edm.String", "visible": true, "required": true, "width": "160px", "hideOnChange": false, "showable": true, "sort": "Ascending",
             "valueHelp": {"show": true, "items": {"path": "/AttribTypeSet", "value": "ATTRIBTYP", "text": "DESC1"},
