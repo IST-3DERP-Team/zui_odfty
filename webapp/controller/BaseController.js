@@ -419,12 +419,12 @@ sap.ui.define([
                                     showSuggestion: true,
                                     maxSuggestionWidth: ci.valueHelp["suggestionItems"].additionalText !== undefined ? ci.valueHelp["suggestionItems"].maxSuggestionWidth : "1px",
                                     suggestionItems: {
-                                        path: ci.valueHelp["items"].path,
+                                        path: ci.valueHelp["suggestionItems"].path, //ci.valueHelp["items"].path,
                                         length: 1000,
                                         template: new sap.ui.core.ListItem({
-                                            key: "{" + ci.valueHelp["items"].value + "}",
-                                            text: "{" + ci.valueHelp["items"].value + "}",
-                                            additionalText: ci.valueHelp["suggestionItems"].additionalText !== undefined ? ci.valueHelp["suggestionItems"].additionalText : '',
+                                            key: ci.valueHelp["suggestionItems"].text, //"{" + ci.valueHelp["items"].value + "}", "{" + ci.valueHelp["suggestionItems"].text + "}", 
+                                            text: ci.valueHelp["suggestionItems"].text, //"{" + ci.valueHelp["items"].value + "}", "{" + ci.valueHelp["suggestionItems"].text + "}", 
+                                            //additionalText: ci.valueHelp["suggestionItems"].additionalText !== undefined ? ci.valueHelp["suggestionItems"].additionalText : '',
                                         }),
                                         templateShareable: false
                                     },
@@ -466,6 +466,7 @@ sap.ui.define([
         handleValueHelp: function(oEvent) {
             var oModel = this.getOwnerComponent().getModel();
             var oSource = oEvent.getSource();
+            console.log("handleValueHelp", oSource);
             var sEntity = oSource.getBindingInfo("suggestionItems").path;
             var sModel = oSource.getBindingInfo("value").parts[0].model;
 
@@ -485,6 +486,7 @@ sap.ui.define([
                 var sPath = oSource.getParent().oBindingContexts[sModel].sPath;
                 var oHu = _this.getView().getModel("hu").getProperty(sPath);
                 var oHdr = _this.getView().getModel("hdr").getData().results[0];
+                sEntity = "/InfoHUDestSet";
                 
                 sFilter = "HUTYPE eq '" + oHu.HUTYPE + "' and PLANTCD eq '" + oHdr.ISSPLANT + "' and SLOC eq '" + oHu.SLOC + 
                     "' and WAREHOUSE eq '" + oHdr.WAREHOUSE + "' and STORAGEAREA eq '" + oHdr.STORAGEAREA + "'";
@@ -500,7 +502,7 @@ sap.ui.define([
                     console.log("handleValueHelp", data)
                     data.results.forEach(item => {
                         item.VHTitle = item[vItemValue];
-                        item.VHDesc = item[vItemDesc];
+                        item.VHDesc = ""; //item[vItemDesc];
                         item.VHSelected = (item[vItemValue] === _this._inputValue);
                     });
 
@@ -532,6 +534,7 @@ sap.ui.define([
                     }                            
 
                     _this._valueHelpDialog.open();
+                    console.log(_this.getView())
                 },
                 error: function (err) { 
                     _this.closeLoadingDialog();
@@ -564,7 +567,7 @@ sap.ui.define([
 
                     if (this._inputValue !== oSelectedItem.getTitle()) {
                         var sRowPath = this._inputSource.getBindingInfo("value").binding.oContext.sPath;
-                        this.getView().getModel(sTable).setProperty(sRowPath + '/EDITED', true);
+                        this.getView().getModel(sTable).setProperty(sRowPath + '/Edited', true);
                     }
                 }
 
@@ -575,14 +578,13 @@ sap.ui.define([
 
         onValueHelpLiveInputChange: function(oEvent) {
             var oSource = oEvent.getSource();
-            //console.log("onInputChange", oEvent, oSource)
             var isInvalid = !oSource.getSelectedKey() && oSource.getValue().trim();
             oSource.setValueState(isInvalid ? "Error" : "None");
 
             if (!oSource.getSelectedKey()) {
                 oSource.getSuggestionItems().forEach(item => {
-                    // console.log(item.getProperty("key"), oSource.getValue().trim())
                     if (item.getProperty("key") === oSource.getValue().trim()) {
+                        console.log("test2", item.getProperty("key"))
                         isInvalid = false;
                         oSource.setValueState(isInvalid ? "Error" : "None");
                     }
@@ -595,7 +597,7 @@ sap.ui.define([
             var sModel = oSource.getBindingInfo("value").parts[0].model;
             var sColumn = oSource.getBindingInfo("value").parts[0].path;
             this.getView().getModel(sModel).setProperty(sRowPath + '/' + sColumn, oSource.mProperties.selectedKey);
-            this.getView().getModel(sModel).setProperty(sRowPath + '/EDITED', true);
+            this.getView().getModel(sModel).setProperty(sRowPath + '/Edited', true);
         },
 
         addRemoveValueState(pIsValid, pId) {
@@ -688,7 +690,7 @@ sap.ui.define([
             var sQuery = oEvent.getParameter("query");
             var oFilter = null;
             var aFilter = [];
-console.log("onFilterByGlobal", sTable, this._aFilterableColumns, this._aColumns)
+
             if (sQuery) {
                 this._aFilterableColumns[sTable].forEach(item => {
                     var sDataType = this._aColumns[sTable].filter(col => col.name === item.name)[0].type;

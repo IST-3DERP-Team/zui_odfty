@@ -139,8 +139,10 @@ sap.ui.define([
                 var sMvtType = oDataUI.mvtType;
                 var sSrcTbl = oDataUI.srcTbl;
                 var sVarCd = oDataUI.varCd;
+                var sDlvNo = (oDataUI.dlvNo == "empty" ? "" : oDataUI.dlvNo);
                 
-                var sFilter = "MVTTYPE eq '" + sMvtType + "' and SRCTBL eq '" + sSrcTbl + "' and VARCD eq '" + sVarCd + "'";    
+                var sFilter = "MVTTYPE eq '" + sMvtType + "' and SRCTBL eq '" + sSrcTbl + 
+                    "' and VARCD eq '" + sVarCd + "' and DLVNO eq '" + sDlvNo + "'";    
                 console.log("sFilter", sFilter)
                 oModel.read('/ReservationSet', {
                     urlParameters: {
@@ -213,18 +215,20 @@ sap.ui.define([
                 var aData = _this.getView().getModel("rsv").getData().results;
                 var aDataSel = [];
                 var aPlant = [];
+                var aSloc = [];
                 var isError = false;
                 aOrigSelIdx.forEach(i => {
                     var oData = aData[i];
                     aDataSel.push(oData);
 
                     if (!aPlant.includes(oData.ISSPLANT)) aPlant.push(oData.ISSPLANT);
-                    if (aPlant.length > 1) isError = true;
+                    if (!aSloc.includes(oData.ISSSLOC)) aSloc.push(oData.ISSSLOC);
+                    if (aPlant.length > 1 || aSloc.length > 1) isError = true;
                 });
 
                 if (isError) {
                     _this.closeLoadingDialog();
-                    MessageBox.warning(_oCaption.ISSPLANT + " " + _oCaption.INFO_SHOULD_BE_SAME);
+                    MessageBox.warning(_oCaption.ISSPLANT + " and " + _oCaption.ISSSLOC + " " + _oCaption.INFO_SHOULD_BE_UNIQUE);
                     return;
                 }
 
@@ -275,6 +279,7 @@ sap.ui.define([
                     DLVTYP: oDataUI.dlvType,
                     PLANDLVDT: sCurrentDate + "T00:00:00",
                     ISSPLNT: pData[0].ISSPLANT,
+                    ISSSLOC: pData[0].ISSSLOC,
                     RCVPLNT: pData[0].RCVPLANT,
                     RCVSLOC: pData[0].RCVSLOC,
                     POSTDT: sCurrentDate + "T00:00:00",
@@ -435,6 +440,7 @@ sap.ui.define([
 
                 // Label
                 oCaptionParam.push({CODE: "ISSPLANT"});
+                oCaptionParam.push({CODE: "ISSSLOC"});
 
                 // Smart Filter
                 oCaptionParam.push({CODE: "RSVNO"});
@@ -445,6 +451,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
                 oCaptionParam.push({CODE: "CONFIRM_PROCEED_CLOSE"});
                 oCaptionParam.push({CODE: "INFO_SHOULD_BE_SAME"});
+                oCaptionParam.push({CODE: "INFO_SHOULD_BE_UNIQUE"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

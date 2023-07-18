@@ -188,6 +188,7 @@ sap.ui.define([
                         _this.getShip();
                         _this.getStat();
                         _this.getMatDoc();
+                        _this.getHuDest();
                         //_this.getOthInfo();
 
                         _this.closeLoadingDialog();
@@ -664,7 +665,11 @@ sap.ui.define([
                             sErrType = "OVERQTY";
                         }
 
-                        if (item.HUTYPE == "CTN" && item.HUID == item.DESTHUID) sErrType = "HUTYPECTN";
+                        if (item.HUTYPE == "ROL") {
+                            if (item.NETAVAILQTY == item.ACTQTY && item.HUID != item.DESTHUID) sErrType = "HUNOEDIT";
+                            else if (item.NETAVAILQTY != item.ACTQTY && item.HUID == item.DESTHUID) sErrType = "HUNOEQUAL";
+                        }
+                        else sErrType = "HUNOEQUAL";
 
                         if (sErrType) {
                             sUom = item.UOM;
@@ -693,7 +698,9 @@ sap.ui.define([
                             sErrMsg = "Required Quantity is greater than Net Avail Quantity.";
                         } else if (sErrType == "REQQTYRESTRICT") {
                             sErrMsg = "Total Actual Quantity should not be more than Delivery Detail required quantity."
-                        } else if (sErrType == "HUTYPECTN") {
+                        } else if (sErrType == "HUNOEDIT") {
+                            sErrMsg = "Destination HUID is not editable."
+                        } else if (sErrType == "HUNOEQUAL") {
                             sErrMsg = "Destination HUID should not be equal to HUID."
                         }
 
@@ -748,6 +755,34 @@ sap.ui.define([
                 } else {
                     _this.onRefreshHu();
                 }
+            },
+
+            getHuDest() {
+                var oModel = this.getOwnerComponent().getModel();
+                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+                var oHdr = _this.getView().getModel("hdr").getData().results[0];
+                
+                var sFilter = "HUTYPE eq '' and PLANTCD eq '" + oHdr.ISSPLANT + "' and SLOC eq '' and WAREHOUSE eq '" + 
+                    oHdr.WAREHOUSE + "' and STORAGEAREA eq '" + oHdr.STORAGEAREA + "'";
+
+                oModel.read('/InfoHUDestSet', {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("InfoHUDestSet", data);
+
+                        var oJSONModel = new sap.ui.model.json.JSONModel();
+                        oJSONModel.setData(data);
+                        _this.getView().setModel(oJSONModel, "huDest");
+
+                        _this.closeLoadingDialog();
+                    },
+                    error: function (err) { 
+                        console.log("error", err)
+                        _this.closeLoadingDialog();
+                    }
+                })
             },
 
             getDtl() {
@@ -1506,11 +1541,11 @@ sap.ui.define([
                         // Material Document
                         this.byId("btnRefreshMatDoc").setEnabled(!pEditable);
 
-                        // Other Info
-                        this.byId("btnAddOthInfo").setEnabled(!pEditable);
-                        this.byId("btnEditOthInfo").setEnabled(!pEditable);
-                        this.byId("btnDeleteOthInfo").setEnabled(!pEditable);
-                        this.byId("btnRefreshOthInfo").setEnabled(!pEditable);
+                        // // Other Info
+                        // this.byId("btnAddOthInfo").setEnabled(!pEditable);
+                        // this.byId("btnEditOthInfo").setEnabled(!pEditable);
+                        // this.byId("btnDeleteOthInfo").setEnabled(!pEditable);
+                        // this.byId("btnRefreshOthInfo").setEnabled(!pEditable);
 
                     } else if (pType == "hu") {
                         _this.byId("btnEditHu").setVisible(!pEditable);
@@ -1525,27 +1560,28 @@ sap.ui.define([
                         _this.byId("btnSaveShip").setVisible(pEditable);
                         _this.byId("btnCancelShip").setVisible(pEditable);
 
-                    } else if (pType == "othInfo") {
-                        if (pAdd == true) {
-                            this.byId("btnAddOthInfo").setVisible(!pAdd);
-                            this.byId("btnEditOthInfo").setVisible(!pAdd);
-                            this.byId("btnAddRowOthInfo").setVisible(pAdd);
-                            this.byId("btnRemoveRowOthInfo").setVisible(pAdd);
-                            this.byId("btnSaveOthInfo").setVisible(pAdd);
-                            this.byId("btnCancelOthInfo").setVisible(pAdd);
-                            this.byId("btnDeleteOthInfo").setVisible(!pAdd);
-                            this.byId("btnRefreshOthInfo").setVisible(!pAdd);
-                        } else {
-                            this.byId("btnAddOthInfo").setVisible(!pEditable);
-                            this.byId("btnEditOthInfo").setVisible(!pEditable);
-                            this.byId("btnAddRowOthInfo").setVisible(pEditable);
-                            this.byId("btnRemoveRowOthInfo").setVisible(pEditable);
-                            this.byId("btnSaveOthInfo").setVisible(pEditable);
-                            this.byId("btnCancelOthInfo").setVisible(pEditable);
-                            this.byId("btnDeleteOthInfo").setVisible(!pEditable);
-                            this.byId("btnRefreshOthInfo").setVisible(!pEditable);
-                        }
-                    }
+                    } 
+                    // else if (pType == "othInfo") {
+                    //     if (pAdd == true) {
+                    //         this.byId("btnAddOthInfo").setVisible(!pAdd);
+                    //         this.byId("btnEditOthInfo").setVisible(!pAdd);
+                    //         this.byId("btnAddRowOthInfo").setVisible(pAdd);
+                    //         this.byId("btnRemoveRowOthInfo").setVisible(pAdd);
+                    //         this.byId("btnSaveOthInfo").setVisible(pAdd);
+                    //         this.byId("btnCancelOthInfo").setVisible(pAdd);
+                    //         this.byId("btnDeleteOthInfo").setVisible(!pAdd);
+                    //         this.byId("btnRefreshOthInfo").setVisible(!pAdd);
+                    //     } else {
+                    //         this.byId("btnAddOthInfo").setVisible(!pEditable);
+                    //         this.byId("btnEditOthInfo").setVisible(!pEditable);
+                    //         this.byId("btnAddRowOthInfo").setVisible(pEditable);
+                    //         this.byId("btnRemoveRowOthInfo").setVisible(pEditable);
+                    //         this.byId("btnSaveOthInfo").setVisible(pEditable);
+                    //         this.byId("btnCancelOthInfo").setVisible(pEditable);
+                    //         this.byId("btnDeleteOthInfo").setVisible(!pEditable);
+                    //         this.byId("btnRefreshOthInfo").setVisible(!pEditable);
+                    //     }
+                    // }
                 }
             },
 
@@ -1711,6 +1747,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_SEL_RECORD"});
                 oCaptionParam.push({CODE: "INFO_ALREADY_DELETED"});
                 oCaptionParam.push({CODE: "INFO_NO_BALANCE"});
+                oCaptionParam.push({CODE: "WARN_NO_DATA_MODIFIED"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",
