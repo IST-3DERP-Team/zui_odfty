@@ -131,6 +131,8 @@ sap.ui.define([
 
                 _this.getHdr();
 
+                this.byId("itbDetails").setSelectedKey("dtl");
+
                 _this.closeLoadingDialog();
             },
 
@@ -538,17 +540,28 @@ sap.ui.define([
                         console.log("InfoHUSet", data)
                         _this.setControlEditMode("hu", false);
 
-                        data.results.forEach(item => {
+                        data.results.forEach((item, idx) => {
                             if (item.CREATEDDT !== null)
                                 item.CREATEDDT = _this.formatDatePH(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
 
                             if (item.UPDATEDDT !== null)
                                 item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+
+                            if (idx == 0) item.ACTIVE = "X";
+                            else item.ACTIVE = "";
                         })
+
+                        var oTable = _this.getView().byId("huTab");
+                        var aFilterTab = [];
+                        if (oTable.getBinding("rows")) {
+                            aFilterTab = oTable.getBinding("rows").aFilters;
+                        }
 
                         var oJSONModel = new sap.ui.model.json.JSONModel();
                         oJSONModel.setData(data);
                         _this.getView().setModel(oJSONModel, "hu");
+
+                        _this.onFilterByCol("hu", aFilterTab);
 
                         _this.setRowReadMode("hu");
                         _this.closeLoadingDialog();
@@ -572,6 +585,7 @@ sap.ui.define([
                     _this.setControlEditMode("hu", true);
                     this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel("hu").getData());
                     _this.setRowEditMode("hu");
+                    _this.setActiveRowFocus("hu");
                 } else {
                     MessageBox.warning(_oCaption.INFO_NO_DATA_EDIT);
                 }
@@ -592,6 +606,11 @@ sap.ui.define([
                     return;
                 }
 
+                var aOrigSelIdx = [];
+                aSelIdx.forEach(i => {
+                    aOrigSelIdx.push(oTable.getBinding("rows").aIndices[i]);
+                })
+
                 MessageBox.confirm(_oCaption.INFO_PROCEED_DELETE, {
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
@@ -602,7 +621,7 @@ sap.ui.define([
                             var aData = _this.getView().getModel("hu").getData().results;
                             var iIdx = 0;
             
-                            aSelIdx.forEach((i, idx) => {
+                            aOrigSelIdx.forEach((i, idx) => {
                                 var oData = aData[i];
                                 var sEntitySet = "/InfoHUTblSet(DLVNO='" + oData.DLVNO + 
                                     "',DLVITEM='" + oData.DLVITEM + "',SEQNO='" + oData.SEQNO + "')";
@@ -619,7 +638,7 @@ sap.ui.define([
                                         success: function(data, oResponse) {
                                             console.log(sEntitySet, data, oResponse);
     
-                                            if (idx == aSelIdx.length - 1) {
+                                            if (idx == aOrigSelIdx.length - 1) {
                                                 _this.onRefreshDtl();
                                                 _this.onRefreshHu();
                                             }
@@ -805,9 +824,17 @@ sap.ui.define([
                                 item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
                         })
 
+                        var oTable = _this.getView().byId("dtlTab");
+                        var aFilterTab = [];
+                        if (oTable.getBinding("rows")) {
+                            aFilterTab = oTable.getBinding("rows").aFilters;
+                        }
+
                         var oJSONModel = new sap.ui.model.json.JSONModel();
                         oJSONModel.setData(data);
                         _this.getView().setModel(oJSONModel, "dtl");
+
+                        _this.onFilterByCol("dtl", aFilterTab);
 
                         _this.setRowReadMode("dtl");
 
@@ -870,14 +897,14 @@ sap.ui.define([
             },
 
             onPickDtlAuto() {
-                var oData = _this.getView().getModel("hdr").getData().results[0];
+                var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
 
-                if (oData.DELETED) {
+                if (oDataHdr.DELETED) {
                     MessageBox.warning(_oCaption.WARN_ALREADY_DELETED);
                     return;
                 }
 
-                if (oData.STATUS != "50") {
+                if (oDataHdr.STATUS != "50") {
                     MessageBox.warning(_oCaption.WARN_PICK_NOT_ALLOW);
                     return;
                 }
@@ -890,10 +917,15 @@ sap.ui.define([
                     return;
                 }
 
+                var aOrigSelIdx = [];
+                aSelIdx.forEach(i => {
+                    aOrigSelIdx.push(oTable.getBinding("rows").aIndices[i]);
+                })
+
                 var aData = _this.getView().getModel("dtl").getData().results;
                 var bErr = false;
-                for (var i = 0; i < aSelIdx.length; i ++) {
-                    var oData = aData[aSelIdx[i]];
+                for (var i = 0; i < aOrigSelIdx.length; i ++) {
+                    var oData = aData[aOrigSelIdx[i]];
 
                     if (oData.DELETED == true) {
                         MessageBox.information(_oCaption.INFO_SEL_RECORD + " " + _oCaption.INFO_ALREADY_DELETED);
@@ -915,11 +947,11 @@ sap.ui.define([
                         if (sAction === "Yes") {
                             _this.showLoadingDialog("Loading...");
 
-                            aSelIdx.forEach((i, idx) => {
+                            aOrigSelIdx.forEach((i, idx) => {
                                 var oData = aData[i];
                                 var bRefresh = false;
 
-                                if (idx == aSelIdx.length - 1) {
+                                if (idx == aOrigSelIdx.length - 1) {
                                     bRefresh = true;
                                 }
 
@@ -985,6 +1017,11 @@ sap.ui.define([
                     return;
                 }
 
+                var aOrigSelIdx = [];
+                aSelIdx.forEach(i => {
+                    aOrigSelIdx.push(oTable.getBinding("rows").aIndices[i]);
+                })
+
                 MessageBox.confirm(_oCaption.INFO_PROCEED_DELETE, {
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
@@ -995,7 +1032,7 @@ sap.ui.define([
                             var aData = _this.getView().getModel("dtl").getData().results;
                             var iIdx = 0;
             
-                            aSelIdx.forEach((i, idx) => {
+                            aOrigSelIdx.forEach((i, idx) => {
                                 var oData = aData[i];
                                 var sEntitySet = "/InfoDetailTblSet(DLVNO='" + oData.DLVNO + 
                                     "',DLVITEM='" + oData.DLVITEM + "')";
@@ -1012,7 +1049,7 @@ sap.ui.define([
                                         success: function(data, oResponse) {
                                             console.log(sEntitySet, data, oResponse, i);
     
-                                            if (idx == aSelIdx.length - 1) {
+                                            if (idx == aOrigSelIdx.length - 1) {
                                                 console.log("refrsh")
                                                 _this.onRefreshDtl();
                                                 _this.onRefreshHu();
@@ -1047,9 +1084,17 @@ sap.ui.define([
                         console.log("InfoShipSet", data)
                         _this.setControlEditMode("ship", false);
 
+                        var oTable = _this.getView().byId("shipTab");
+                        var aFilterTab = [];
+                        if (oTable.getBinding("rows")) {
+                            aFilterTab = oTable.getBinding("rows").aFilters;
+                        }
+
                         var oJSONModel = new sap.ui.model.json.JSONModel();
                         oJSONModel.setData(data);
                         _this.getView().setModel(oJSONModel, "ship");
+                        
+                        _this.onFilterByCol("ship", aFilterTab);
 
                         _this.setRowReadMode("ship");
                         _this.closeLoadingDialog();
@@ -1170,9 +1215,17 @@ sap.ui.define([
                                 item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
                         })
 
+                        var oTable = _this.getView().byId("statTab");
+                        var aFilterTab = [];
+                        if (oTable.getBinding("rows")) {
+                            aFilterTab = oTable.getBinding("rows").aFilters;
+                        }
+
                         var oJSONModel = new sap.ui.model.json.JSONModel();
                         oJSONModel.setData(data);
                         _this.getView().setModel(oJSONModel, "stat");
+
+                        _this.onFilterByCol("stat", aFilterTab);
 
                         _this.setRowReadMode("stat");
 
@@ -1209,9 +1262,17 @@ sap.ui.define([
                                 item.POSTDT = _this.formatDatePH(item.POSTDT);
                         })
 
+                        var oTable = _this.getView().byId("matDocTab");
+                        var aFilterTab = [];
+                        if (oTable.getBinding("rows")) {
+                            aFilterTab = oTable.getBinding("rows").aFilters;
+                        }
+
                         var oJSONModel = new sap.ui.model.json.JSONModel();
                         oJSONModel.setData(data);
                         _this.getView().setModel(oJSONModel, "matDoc");
+
+                        _this.onFilterByCol("matDoc", aFilterTab);
 
                         _this.setRowReadMode("matDoc");
 
@@ -1650,9 +1711,13 @@ sap.ui.define([
             },
 
             onKeyUp(oEvent) {
-                if ((oEvent.key == "ArrowUp" || oEvent.key == "ArrowDown") && oEvent.srcControl.sParentAggregationName == "rows") {
-                    var oTable = this.byId(oEvent.srcControl.sId).oParent;
+                if (oEvent.key == "ArrowUp" || oEvent.key == "ArrowDown") {
+                    var sRowId = "";
 
+                    if (oEvent.srcControl.sParentAggregationName == "rows") sRowId = oEvent.srcControl.sId;
+                    else if (oEvent.srcControl.sParentAggregationName == "cells") sRowId = oEvent.srcControl.oParent.sId;
+
+                    var oTable = this.byId(sRowId).oParent;
                     var sModel = "";
                     if (oTable.getId().indexOf("huTab") >= 0) sModel = "hu";
                     else if (oTable.getId().indexOf("dtlTab") >= 0) sModel = "dtl";
@@ -1660,8 +1725,8 @@ sap.ui.define([
                     else if (oTable.getId().indexOf("statTab") >= 0) sModel = "stat";
                     else if (oTable.getId().indexOf("matDocTab") >= 0) sModel = "matDoc";
 
-                    if (this.byId(oEvent.srcControl.sId).getBindingContext(sModel)) {
-                        var sRowPath = this.byId(oEvent.srcControl.sId).getBindingContext(sModel).sPath;
+                    if (this.byId(sRowId).getBindingContext(sModel)) {
+                        var sRowPath = this.byId(sRowId).getBindingContext(sModel).sPath;
 
                         oTable.getModel(sModel).getData().results.forEach(row => row.ACTIVE = "");
                         oTable.getModel(sModel).setProperty(sRowPath + "/ACTIVE", "X");
@@ -1672,8 +1737,37 @@ sap.ui.define([
                             }
                             else row.removeStyleClass("activeRow")
                         })
+
+                        if (sModel == "hu" && oEvent.ctrlKey == true) {
+                            _this.setActiveRowFocus("hu");
+                        }
                     }
-                }
+                } 
+                
+                // if ((oEvent.key == "ArrowUp" || oEvent.key == "ArrowDown") && oEvent.srcControl.sParentAggregationName == "rows") {
+                //     var oTable = this.byId(oEvent.srcControl.sId).oParent;
+
+                //     var sModel = "";
+                //     if (oTable.getId().indexOf("huTab") >= 0) sModel = "hu";
+                //     else if (oTable.getId().indexOf("dtlTab") >= 0) sModel = "dtl";
+                //     else if (oTable.getId().indexOf("shipTab") >= 0) sModel = "ship";
+                //     else if (oTable.getId().indexOf("statTab") >= 0) sModel = "stat";
+                //     else if (oTable.getId().indexOf("matDocTab") >= 0) sModel = "matDoc";
+
+                //     if (this.byId(oEvent.srcControl.sId).getBindingContext(sModel)) {
+                //         var sRowPath = this.byId(oEvent.srcControl.sId).getBindingContext(sModel).sPath;
+
+                //         oTable.getModel(sModel).getData().results.forEach(row => row.ACTIVE = "");
+                //         oTable.getModel(sModel).setProperty(sRowPath + "/ACTIVE", "X");
+
+                //         oTable.getRows().forEach(row => {
+                //             if (row.getBindingContext(sModel) && row.getBindingContext(sModel).sPath.replace("/results/", "") === sRowPath.replace("/results/", "")) {
+                //                 row.addStyleClass("activeRow");
+                //             }
+                //             else row.removeStyleClass("activeRow")
+                //         })
+                //     }
+                // } 
             },
 
             getCaption() {

@@ -811,6 +811,29 @@ sap.ui.define([
             }, 1);
         },
 
+        setActiveRowFocus(pModel) {
+            // Highligh first editable column on edit
+            var oTable = this.byId(pModel + "Tab");
+
+            setTimeout(() => {
+                var iActiveRowIndex = oTable.getModel(pModel).getData().results.findIndex(item => item.ACTIVE === "X");
+                var aRows = oTable.getRows();
+                var sInputId = ""
+
+                if (document.getElementsByClassName("sapMInputFocused").length > 0) {
+                    sInputId = document.getElementsByClassName("sapMInputFocused")[0].id;
+                } else {
+                    var oCell = aRows[iActiveRowIndex].getCells().filter(x => x.sId.includes("input"))[0];
+                    sInputId = oCell.sId;
+                }
+
+                //var sColumn = _this._aColumns[pModel].filter(x => x.updatable == true)[0]["name"];
+                
+                //oCell.focus();
+                document.getElementById(sInputId + "-inner").select();
+            }, 1);
+        },
+
         onCellClick: function(oEvent) {
             if (oEvent.getParameters().rowBindingContext) {
                 var oTable = oEvent.getSource();
