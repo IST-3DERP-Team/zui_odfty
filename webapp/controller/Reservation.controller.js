@@ -23,6 +23,7 @@ sap.ui.define([
         var _aSmartFilter;
         var _sSmartFilterGlobal;
         var _startUpInfo;
+        var _aTableProp = [];
 
         return BaseController.extend("zuiodfty.controller.Reservation", {
             onInit: function () {
@@ -75,15 +76,14 @@ sap.ui.define([
                     console.log(oModelStartUp, oModelStartUp.oData);
                 });
 
-                var aTableList = [];
-                aTableList.push({
+                _aTableProp.push({
                     modCode: "ODFTYRSVMOD",
                     tblSrc: "ZDV_ODF_RSV",
                     tblId: "rsvTab",
                     tblModel: "rsv"
                 });
 
-                _this.getColumns(aTableList);
+                _this.getColumns(_aTableProp);
 
                 
 
@@ -432,6 +432,53 @@ sap.ui.define([
                 }
             },
 
+            onSaveTableLayout: function (oEvent) {
+                var ctr = 1;
+                var oTable = oEvent.getSource().oParent.oParent;
+                var oColumns = oTable.getColumns();
+                var sSBU = _this.getView().getModel("ui").getData().sbu;
+
+                var oParam = {
+                    "SBU": sSBU,
+                    "TYPE": "",
+                    "TABNAME": "",
+                    "TableLayoutToItems": []
+                };
+
+                _aTableProp.forEach(item => {
+                    if (item.tblModel == oTable.getBindingInfo("rows").model) {
+                        oParam['TYPE'] = item.modCode;
+                        oParam['TABNAME'] = item.tblSrc;
+                    }
+                });
+
+                oColumns.forEach((column) => {
+                    oParam.TableLayoutToItems.push({
+                        COLUMNNAME: column.mProperties.sortProperty,
+                        ORDER: ctr.toString(),
+                        SORTED: column.mProperties.sorted,
+                        SORTORDER: column.mProperties.sortOrder,
+                        SORTSEQ: "1",
+                        VISIBLE: column.mProperties.visible,
+                        WIDTH: column.mProperties.width.replace('px','')
+                    });
+
+                    ctr++;
+                });
+
+                var oModel = _this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+                oModel.create("/TableLayoutSet", oParam, {
+                    method: "POST",
+                    success: function(data, oResponse) {
+                        MessageBox.information(_oCaption.INFO_LAYOUT_SAVE);
+                    },
+                    error: function(err) {
+                        MessageBox.error(err);
+                        _this.closeLoadingDialog();
+                    }
+                });                
+            },
+
             getCaption() {
                 var oJSONModel = new JSONModel();
                 var oCaptionParam = [];
@@ -441,6 +488,11 @@ sap.ui.define([
                 // Label
                 oCaptionParam.push({CODE: "ISSPLANT"});
                 oCaptionParam.push({CODE: "ISSSLOC"});
+
+                // Button
+                oCaptionParam.push({CODE: "ADD"});
+                oCaptionParam.push({CODE: "CANCEL"});
+                oCaptionParam.push({CODE: "SAVELAYOUT"});
 
                 // Smart Filter
                 oCaptionParam.push({CODE: "RSVNO"});
@@ -452,6 +504,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "CONFIRM_PROCEED_CLOSE"});
                 oCaptionParam.push({CODE: "INFO_SHOULD_BE_SAME"});
                 oCaptionParam.push({CODE: "INFO_SHOULD_BE_UNIQUE"});
+                oCaptionParam.push({CODE: "INFO_LAYOUT_SAVE"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

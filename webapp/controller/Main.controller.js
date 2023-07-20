@@ -17,6 +17,7 @@ sap.ui.define([
         var _oCaption = {};
         var _aSmartFilter;
         var _sSmartFilterGlobal;
+        var _aTableProp = [];
         
 
         return BaseController.extend("zuiodfty.controller.Main", {
@@ -41,22 +42,22 @@ sap.ui.define([
 
                 _this.showLoadingDialog("Loading...");
 
-                var aTableList = [];
-                aTableList.push({
+                
+                _aTableProp.push({
                     modCode: "ODFTYHDRMOD",
                     tblSrc: "ZDV_ODF_HDR",
                     tblId: "odFtyHdrTab",
                     tblModel: "odFtyHdr"
                 });
 
-                aTableList.push({
+                _aTableProp.push({
                     modCode: "ODFTYDTLMOD",
                     tblSrc: "ZDV_ODF_DTL",
                     tblId: "odFtyDtlTab",
                     tblModel: "odFtyDtl"
                 });
 
-                _this.getColumns(aTableList);
+                _this.getColumns(_aTableProp);
 
                 var oModel = this.getOwnerComponent().getModel("ZVB_3DERP_ODFTY_FILTER_CDS");
                 var oSmartFilter = this.getView().byId("sfbODFty");
@@ -66,9 +67,11 @@ sap.ui.define([
                 this.byId("btnAddODFtyHdr").setEnabled(false);
                 this.byId("btnEditODFtyHdr").setEnabled(false);
                 this.byId("btnRefreshODFtyHdr").setEnabled(false);
+                this.byId("btnTabLayoutODFtyHdr").setEnabled(false);
 
                 // Detail button
                 this.byId("btnRefreshODFtyDtl").setEnabled(false);
+                this.byId("btnTabLayoutODFtyDtl").setEnabled(false);
 
                 this._tableRendered = "";
                 var oTableEventDelegate = {
@@ -115,9 +118,11 @@ sap.ui.define([
                 this.byId("btnAddODFtyHdr").setEnabled(true);
                 this.byId("btnEditODFtyHdr").setEnabled(true);
                 this.byId("btnRefreshODFtyHdr").setEnabled(true);
+                this.byId("btnTabLayoutODFtyHdr").setEnabled(true);
 
                 // Detail button
                 this.byId("btnRefreshODFtyDtl").setEnabled(true);
+                this.byId("btnTabLayoutODFtyDtl").setEnabled(true);
             },
 
             getHeader(pFilters, pFilterGlobal) {
@@ -414,6 +419,18 @@ sap.ui.define([
                 this.clearSortFilter("odFtyDtlTab");
             },
 
+            onAddHotKey() {
+                if (_this.byId("btnAddODFtyHdr").getVisible()) _this.onAddODFtyHdr();
+            },
+
+            onEditHotKey() {
+                if (_this.byId("btnEditODFtyHdr").getVisible()) _this.onEditODFtyHdr();
+            },
+
+            onRefreshHotKey() {
+                if (_this.byId("btnRefreshODFtyHdr").getVisible()) _this.onRefreshODFtyHdr();
+            },
+
             onNavBack() {
                 var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");  
                 oCrossAppNavigator.toExternal({  
@@ -455,6 +472,53 @@ sap.ui.define([
                 }
             },
 
+            onSaveTableLayout: function (oEvent) {
+                var ctr = 1;
+                var oTable = oEvent.getSource().oParent.oParent;
+                var oColumns = oTable.getColumns();
+                var sSBU = _this.getView().getModel("ui").getData().sbu;
+
+                var oParam = {
+                    "SBU": sSBU,
+                    "TYPE": "",
+                    "TABNAME": "",
+                    "TableLayoutToItems": []
+                };
+
+                _aTableProp.forEach(item => {
+                    if (item.tblModel == oTable.getBindingInfo("rows").model) {
+                        oParam['TYPE'] = item.modCode;
+                        oParam['TABNAME'] = item.tblSrc;
+                    }
+                });
+
+                oColumns.forEach((column) => {
+                    oParam.TableLayoutToItems.push({
+                        COLUMNNAME: column.mProperties.sortProperty,
+                        ORDER: ctr.toString(),
+                        SORTED: column.mProperties.sorted,
+                        SORTORDER: column.mProperties.sortOrder,
+                        SORTSEQ: "1",
+                        VISIBLE: column.mProperties.visible,
+                        WIDTH: column.mProperties.width.replace('px','')
+                    });
+
+                    ctr++;
+                });
+
+                var oModel = _this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+                oModel.create("/TableLayoutSet", oParam, {
+                    method: "POST",
+                    success: function(data, oResponse) {
+                        MessageBox.information(_oCaption.INFO_LAYOUT_SAVE);
+                    },
+                    error: function(err) {
+                        MessageBox.error(err);
+                        _this.closeLoadingDialog();
+                    }
+                });                
+            },
+
             getCaption() {
                 var oJSONModel = new JSONModel();
                 var oCaptionParam = [];
@@ -482,9 +546,12 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "REFRESH"});
                 oCaptionParam.push({CODE: "SAVE"});
                 oCaptionParam.push({CODE: "CANCEL"});
+                oCaptionParam.push({CODE: "SAVELAYOUT"});
+                oCaptionParam.push({CODE: "DISPLAY_EDIT"});
 
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
+                oCaptionParam.push({CODE: "INFO_LAYOUT_SAVE"});
 
                 // Label
                 oCaptionParam.push({CODE: "ROWS"});

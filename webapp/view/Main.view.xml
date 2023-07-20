@@ -10,9 +10,9 @@
     height="100%">
     <Page id="page" enableScrolling="false" class="sapUiNoContentPadding" showHeader="false" showNavButton="true" navButtonPress="onNavBack">
         <dependents>
-            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute=".onAdd" />
-            <core:CommandExecution id="CE_EDIT" command="Edit" enabled="true" execute=".onEdit" />
-            <core:CommandExecution id="CE_REFRESH" command="Refresh" enabled="true" execute=".onRefresh" />
+            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute="onAddHotKey()" />
+            <core:CommandExecution id="CE_EDIT" command="Edit" enabled="true" execute="onEditHotKey()" />
+            <core:CommandExecution id="CE_REFRESH" command="Refresh" enabled="true" execute="onRefreshHotKey()" />
         </dependents>
         <content>
             <VBox id="vbODFty" fitContainer="true">
@@ -78,17 +78,25 @@
                             <Button id="btnAddODFtyHdr" 
                                 icon="sap-icon://add"
                                 press="onAddODFtyHdr"
+                                text="{caption>/ADD}"
                                 tooltip="{caption>/ADD}"
                                 visible="{base>/appChange}"/>
                             <Button id="btnEditODFtyHdr" 
                                 icon="sap-icon://edit"
                                 press="onEditODFtyHdr"
-                                tooltip="{caption>/EDIT}"
+                                text="{caption>/DISPLAY_EDIT}"
+                                tooltip="{caption>/DISPLAY_EDIT}"
                                 visible="{base>/appChange}"/>
                             <Button id="btnRefreshODFtyHdr" 
                                 icon="sap-icon://refresh"
                                 press="onRefreshODFtyHdr" 
+                                text="{caption>/REFRESH}"
                                 tooltip="{caption>/REFRESH}"
+                                visible="true" />
+                            <Button id="btnTabLayoutODFtyHdr"
+                                icon="sap-icon://grid" 
+                                press="onSaveTableLayout"
+                                tooltip="{caption>/SAVELAYOUT}" 
                                 visible="true" />
                         </Toolbar>
                     </uiT:extension>
@@ -123,7 +131,13 @@
                             <Button id="btnRefreshODFtyDtl" 
                                 icon="sap-icon://refresh"
                                 press="onRefreshODFtyDtl" 
+                                text="{caption>/REFRESH}"
                                 tooltip="{caption>/REFRESH}"
+                                visible="true" />
+                            <Button id="btnTabLayoutODFtyDtl"
+                                icon="sap-icon://grid" 
+                                press="onSaveTableLayout"
+                                tooltip="{caption>/SAVELAYOUT}" 
                                 visible="true" />
                         </Toolbar>
                     </uiT:extension>

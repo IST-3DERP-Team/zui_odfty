@@ -20,6 +20,7 @@ sap.ui.define([
         var _this;
         var _oCaption = {};
         var _startUpInfo;
+        var _aTableProp = [];
 
         return BaseController.extend("zuiodfty.controller.DeliveryInfo", {
             onInit: function () {
@@ -66,50 +67,49 @@ sap.ui.define([
                     console.log(oModelStartUp, oModelStartUp.oData);
                 });
 
-                var aTableList = [];
-                aTableList.push({
+                _aTableProp.push({
                     modCode: "ODFTYINFOHUMOD",
                     tblSrc: "ZDV_ODF_INF_HU",
                     tblId: "huTab",
                     tblModel: "hu"
                 });
 
-                aTableList.push({
+                _aTableProp.push({
                     modCode: "ODFTYINFODTLMOD",
                     tblSrc: "ZDV_ODF_INF_DTL",
                     tblId: "dtlTab",
                     tblModel: "dtl"
                 });
 
-                aTableList.push({
+                _aTableProp.push({
                     modCode: "ODFTYINFOSHIPMOD",
                     tblSrc: "ZDV_ODF_INF_SHIP",
                     tblId: "shipTab",
                     tblModel: "ship"
                 });
 
-                aTableList.push({
+                _aTableProp.push({
                     modCode: "ODFTYINFOSTATMOD",
                     tblSrc: "ZDV_ODF_INF_STAT",
                     tblId: "statTab",
                     tblModel: "stat"
                 });
 
-                aTableList.push({
+                _aTableProp.push({
                     modCode: "ODFTYINFOMDMOD",
                     tblSrc: "ZDV_ODF_INF_MD",
                     tblId: "matDocTab",
                     tblModel: "matDoc"
                 });
 
-                // aTableList.push({
+                // _aTableProp.push({
                 //     modCode: "ODFTYINFOOTHMOD",
                 //     tblSrc: "ZDV_ODF_INF_ATRB",
                 //     tblId: "othInfoTab",
                 //     tblModel: "othInfo"
                 // });
 
-                _this.getColumns(aTableList);
+                _this.getColumns(_aTableProp);
 
                 this._tableRendered = "";
                 var oTableEventDelegate = {
@@ -203,7 +203,13 @@ sap.ui.define([
 
             onEditHdr() {
                 var oData = _this.getView().getModel("hdr").getProperty("/results/0");
-                if (oData.STATUS == "54" || oData.DELETED == true) {
+
+                if (oData.DELETED) {
+                    MessageBox.warning(_oCaption.DLVNO + " " + oData.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
+
+                if (oData.STATUS == "54") {
                     MessageBox.warning(_oCaption.WARN_EDIT_NOT_ALLOW);
                     return;
                 }
@@ -215,7 +221,7 @@ sap.ui.define([
                 var oData = _this.getView().getModel("hdr").getProperty("/results/0");
 
                 if (oData.DELETED) {
-                    MessageBox.warning(_oCaption.WARN_ALREADY_DELETED);
+                    MessageBox.warning(_oCaption.DLVNO + " " + oData.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
                     return;
                 }
 
@@ -258,7 +264,7 @@ sap.ui.define([
                 var oData = _this.getView().getModel("hdr").getProperty("/results/0");
 
                 if (oData.DELETED) {
-                    MessageBox.warning(_oCaption.WARN_ALREADY_DELETED);
+                    MessageBox.warning(_oCaption.DLVNO + " " + oData.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
                     return;
                 }
 
@@ -325,9 +331,9 @@ sap.ui.define([
 
             onPostHdr() {
                 var oData = _this.getView().getModel("hdr").getProperty("/results/0");
-
+                
                 if (oData.DELETED) {
-                    MessageBox.warning(_oCaption.WARN_ALREADY_DELETED);
+                    MessageBox.warning(_oCaption.DLVNO + " " + oData.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
                     return;
                 }
 
@@ -373,7 +379,7 @@ sap.ui.define([
                 var oData = _this.getView().getModel("hdr").getProperty("/results/0");
 
                 if (oData.DELETED) {
-                    MessageBox.warning(_oCaption.WARN_ALREADY_DELETED);
+                    MessageBox.warning(_oCaption.DLVNO + " " + oData.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
                     return;
                 }
 
@@ -575,6 +581,12 @@ sap.ui.define([
 
             onEditHu() {
                 var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
+
+                if (oDataHdr.DELETED) {
+                    MessageBox.warning(_oCaption.DLVNO + " " + oDataHdr.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
+
                 if (oDataHdr.STATUS != "50") {
                     MessageBox.warning(_oCaption.WARN_EDIT_NOT_ALLOW);
                     return;
@@ -593,6 +605,12 @@ sap.ui.define([
 
             onDeleteHu() {
                 var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
+
+                if (oDataHdr.DELETED) {
+                    MessageBox.warning(_oCaption.DLVNO + " " + oDataHdr.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
+
                 if (oDataHdr.STATUS != "50") {
                     MessageBox.warning(_oCaption.WARN_DELETE_NOT_ALLOW);
                     return;
@@ -735,7 +753,7 @@ sap.ui.define([
                         var param = {
                             ACTQTYBSE: item.ACTQTY,
                             ACTQTYORD: item.ACTQTY,
-                            DESTHUID: item.DESTHUID,
+                            NEWHUID: item.DESTHUID,
                             DELETED: ""
                         };
 
@@ -848,10 +866,14 @@ sap.ui.define([
             },
 
             onAddDtl() {
-                var oData = _this.getView().getModel("hdr").getData().results[0];
+                var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
+
+                if (oDataHdr.DELETED) {
+                    MessageBox.warning(_oCaption.DLVNO + " " + oDataHdr.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
                 
-                if (oData.STATUS == "50") {
-                    var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
+                if (oDataHdr.STATUS == "50") {
                     var sRsvList = "";
                     var sVarCd = "";
 
@@ -900,7 +922,7 @@ sap.ui.define([
                 var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
 
                 if (oDataHdr.DELETED) {
-                    MessageBox.warning(_oCaption.WARN_ALREADY_DELETED);
+                    MessageBox.warning(_oCaption.DLVNO + " " + oDataHdr.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
                     return;
                 }
 
@@ -987,13 +1009,18 @@ sap.ui.define([
             },
 
             onPickDtlManual() {
-                var oData = _this.getView().getModel("hdr").getData().results[0];
+                var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
+
+                if (oDataHdr.DELETED) {
+                    MessageBox.warning(_oCaption.DLVNO + " " + oDataHdr.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
                 
-                if (oData.STATUS == "50") {
+                if (oDataHdr.STATUS == "50") {
                     _this._router.navTo("RoutePicking", {
                         sbu: _this.getView().getModel("ui").getData().sbu,
-                        dlvNo: oData.DLVNO,
-                        mvtType: oData.MVTTYPE
+                        dlvNo: oDataHdr.DLVNO,
+                        mvtType: oDataHdr.MVTTYPE
                     });
                 }
                 else {
@@ -1004,6 +1031,12 @@ sap.ui.define([
 
             onDeleteDtl() {
                 var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
+
+                if (oDataHdr.DELETED) {
+                    MessageBox.warning(_oCaption.DLVNO + " " + oDataHdr.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
+
                 if (oDataHdr.STATUS != "50") {
                     MessageBox.warning(_oCaption.WARN_DELETE_NOT_ALLOW);
                     return;
@@ -1108,6 +1141,12 @@ sap.ui.define([
 
             onEditShip() {
                 var oDataHdr = _this.getView().getModel("hdr").getData().results[0];
+
+                if (oDataHdr.DELETED) {
+                    MessageBox.warning(_oCaption.DLVNO + " " + oDataHdr.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
+
                 if (oDataHdr.STATUS == "54") {
                     MessageBox.warning(_oCaption.WARN_EDIT_NOT_ALLOW);
                     return;
@@ -1470,6 +1509,78 @@ sap.ui.define([
                 _this.getOthInfo();
             },
 
+            onAddHotKey() {
+                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
+                
+                if (sActiveTab == "dtl") {
+                    if (_this.byId("btnAddDtl").getVisible()) _this.onAddDtl();
+                }
+            },
+
+            onEditHotKey() {
+                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
+                
+                if (sActiveTab == "hu") {
+                    if (_this.byId("btnEditHu").getVisible()) _this.onEditHu();
+                }
+                else if (sActiveTab == "ship") {
+                    if (_this.byId("btnEditShip").getVisible()) _this.onEditShip();
+                }
+            },
+
+            onDeleteHotKey() {
+                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
+                
+                if (sActiveTab == "dtl") {
+                    if (_this.byId("btnDeleteDtl").getVisible()) _this.onDeleteDtl();
+                }
+                else if (sActiveTab == "hu") {
+                    if (_this.byId("btnDeleteHu").getVisible()) _this.onDeleteHu();
+                }
+            },
+
+            onRefreshHotKey() {
+                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
+                
+                if (sActiveTab == "dtl") {
+                    if (_this.byId("btnRefreshDtl").getVisible()) _this.onRefreshDtl();
+                }
+                else if (sActiveTab == "hu") {
+                    if (_this.byId("btnRefreshHu").getVisible()) _this.onRefreshHu();
+                }
+                else if (sActiveTab == "ship") {
+                    if (_this.byId("btnRefreshShip").getVisible()) _this.onRefreshShip();
+                }
+                else if (sActiveTab == "stat") {
+                    if (_this.byId("btnRefreshStat").getVisible()) _this.onRefreshStat();
+                }
+                else if (sActiveTab == "matDoc") {
+                    if (_this.byId("btnRefreshMatDoc").getVisible()) _this.onRefreshMatDoc();
+                }
+            },
+
+            onSaveHotKey() {
+                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
+                
+                if (sActiveTab == "hu") {
+                    if (_this.byId("btnSaveHu").getVisible()) _this.onSaveHu();
+                }
+                else if (sActiveTab == "ship") {
+                    if (_this.byId("btnSaveShip").getVisible()) _this.onSaveShip();
+                }
+            },
+
+            onCancelHotKey() {
+                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
+                
+                if (sActiveTab == "hu") {
+                    if (_this.byId("btnCancelHu").getVisible()) _this.onCancelHu();
+                }
+                else if (sActiveTab == "ship") {
+                    if (_this.byId("btnCancelShip").getVisible()) _this.onCancelShip();
+                }
+            },
+
             onNavBack() {
                 console.log("onNavBack");
                 //_this._router.navTo("RouteMain", {}, true);
@@ -1585,22 +1696,27 @@ sap.ui.define([
                         this.byId("btnEditHu").setEnabled(!pEditable);
                         this.byId("btnDeleteHu").setEnabled(!pEditable);
                         this.byId("btnRefreshHu").setEnabled(!pEditable);
+                        this.byId("btnTabLayoutHu").setEnabled(!pEditable);
     
                         // Detail
                         this.byId("btnAddDtl").setEnabled(!pEditable);
                         this.byId("btnPickDtl").setEnabled(!pEditable);
                         this.byId("btnDeleteDtl").setEnabled(!pEditable);
                         this.byId("btnRefreshDtl").setEnabled(!pEditable);
+                        this.byId("btnTabLayoutDtl").setEnabled(!pEditable);
     
                         // Shipment
                         this.byId("btnEditShip").setEnabled(!pEditable);
                         this.byId("btnRefreshShip").setEnabled(!pEditable);
+                        this.byId("btnTabLayoutShip").setEnabled(!pEditable);
                         
                         // Status
                         this.byId("btnRefreshStat").setEnabled(!pEditable);
+                        this.byId("btnTabLayoutStat").setEnabled(!pEditable);
     
                         // Material Document
                         this.byId("btnRefreshMatDoc").setEnabled(!pEditable);
+                        this.byId("btnTabLayoutMatDoc").setEnabled(!pEditable);
 
                         // // Other Info
                         // this.byId("btnAddOthInfo").setEnabled(!pEditable);
@@ -1614,12 +1730,14 @@ sap.ui.define([
                         _this.byId("btnRefreshHu").setVisible(!pEditable);
                         _this.byId("btnSaveHu").setVisible(pEditable);
                         _this.byId("btnCancelHu").setVisible(pEditable);
+                        _this.byId("btnTabLayoutHu").setEnabled(!pEditable);
     
                     } else if (pType == "ship") {
                         _this.byId("btnEditShip").setVisible(!pEditable);
                         _this.byId("btnRefreshShip").setVisible(!pEditable);
                         _this.byId("btnSaveShip").setVisible(pEditable);
                         _this.byId("btnCancelShip").setVisible(pEditable);
+                        _this.byId("btnTabLayoutShip").setEnabled(!pEditable);
 
                     } 
                     // else if (pType == "othInfo") {
@@ -1661,22 +1779,27 @@ sap.ui.define([
                 this.byId("btnEditHu").setVisible(pChange);
                 this.byId("btnDeleteHu").setVisible(pChange);
                 this.byId("btnRefreshHu").setVisible(true);
+                this.byId("btnTabLayoutHu").setVisible(true);
 
                 // Detail
                 this.byId("btnAddDtl").setVisible(pChange);
                 this.byId("btnPickDtl").setVisible(pChange);
                 this.byId("btnDeleteDtl").setVisible(pChange);
                 this.byId("btnRefreshDtl").setVisible(true);
+                this.byId("btnTabLayoutDtl").setVisible(true);
 
                 // Shipment
                 this.byId("btnEditShip").setVisible(pChange);
                 this.byId("btnRefreshShip").setVisible(true);
+                this.byId("btnTabLayoutShip").setVisible(true);
 
                 // Status
                 this.byId("btnRefreshStat").setVisible(true);
+                this.byId("btnTabLayoutStat").setVisible(true);
 
                 // Material Document
                 this.byId("btnRefreshMatDoc").setVisible(true);
+                this.byId("btnTabLayoutMatDoc").setVisible(true);
             },
 
             setReqField(pType, pEditable) {
@@ -1770,6 +1893,53 @@ sap.ui.define([
                 // } 
             },
 
+            onSaveTableLayout: function (oEvent) {
+                var ctr = 1;
+                var oTable = oEvent.getSource().oParent.oParent;
+                var oColumns = oTable.getColumns();
+                var sSBU = _this.getView().getModel("ui").getData().sbu;
+
+                var oParam = {
+                    "SBU": sSBU,
+                    "TYPE": "",
+                    "TABNAME": "",
+                    "TableLayoutToItems": []
+                };
+
+                _aTableProp.forEach(item => {
+                    if (item.tblModel == oTable.getBindingInfo("rows").model) {
+                        oParam['TYPE'] = item.modCode;
+                        oParam['TABNAME'] = item.tblSrc;
+                    }
+                });
+
+                oColumns.forEach((column) => {
+                    oParam.TableLayoutToItems.push({
+                        COLUMNNAME: column.mProperties.sortProperty,
+                        ORDER: ctr.toString(),
+                        SORTED: column.mProperties.sorted,
+                        SORTORDER: column.mProperties.sortOrder,
+                        SORTSEQ: "1",
+                        VISIBLE: column.mProperties.visible,
+                        WIDTH: column.mProperties.width.replace('px','')
+                    });
+
+                    ctr++;
+                });
+
+                var oModel = _this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+                oModel.create("/TableLayoutSet", oParam, {
+                    method: "POST",
+                    success: function(data, oResponse) {
+                        MessageBox.information(_oCaption.INFO_LAYOUT_SAVE);
+                    },
+                    error: function(err) {
+                        MessageBox.error(err);
+                        _this.closeLoadingDialog();
+                    }
+                });                
+            },
+
             getCaption() {
                 var oJSONModel = new JSONModel();
                 var oCaptionParam = [];
@@ -1818,6 +1988,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "PICK"});
                 oCaptionParam.push({CODE: "AUTOPICK"});
                 oCaptionParam.push({CODE: "MANUALPICK"});
+                oCaptionParam.push({CODE: "SAVELAYOUT"});
 
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
@@ -1842,6 +2013,8 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_ALREADY_DELETED"});
                 oCaptionParam.push({CODE: "INFO_NO_BALANCE"});
                 oCaptionParam.push({CODE: "WARN_NO_DATA_MODIFIED"});
+                oCaptionParam.push({CODE: "INFO_IS_ALREADY_DELETED"});
+                oCaptionParam.push({CODE: "INFO_LAYOUT_SAVE"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

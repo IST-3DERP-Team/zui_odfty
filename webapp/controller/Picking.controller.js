@@ -21,6 +21,7 @@ sap.ui.define([
         var _oCaption = {};
         var _aPickDtl = [];
         var _aPickDtlTo = [];
+        var _aTableProp = [];
 
         return BaseController.extend("zuiodfty.controller.Picking", {
             onInit: function () {
@@ -58,22 +59,21 @@ sap.ui.define([
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
                 _this.showLoadingDialog("Loading...");
 
-                var aTableList = [];
-                aTableList.push({
+                _aTableProp.push({
                     modCode: "ODFTYPICKHDRMOD",
                     tblSrc: "ZDV_ODF_PCK_HDR",
                     tblId: "pickHdrTab",
                     tblModel: "pickHdr"
                 });
 
-                aTableList.push({
+                _aTableProp.push({
                     modCode: "ODFTYPICKDTLMOD",
                     tblSrc: "ZDV_ODF_PCK_DTL",
                     tblId: "pickDtlTab",
                     tblModel: "pickDtl"
                 });
 
-                _this.getColumns(aTableList);
+                _this.getColumns(_aTableProp);
 
                 this._tableRendered = "";
                 var oTableEventDelegate = {
@@ -470,6 +470,7 @@ sap.ui.define([
                     _this.byId("btnRefreshPickDtl").setVisible(false);
                     _this.byId("btnSavePickDtl").setVisible(true);
                     _this.byId("btnCancelPickDtl").setVisible(true);
+                    _this.byId("btnTabLayoutPickDtl").setVisible(false);
     
                     this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel("pickDtl").getData());
                     _this.setRowEditMode("pickDtl");
@@ -568,6 +569,7 @@ sap.ui.define([
                     _this.byId("btnRefreshPickDtl").setVisible(true);
                     _this.byId("btnSavePickDtl").setVisible(false);
                     _this.byId("btnCancelPickDtl").setVisible(false);
+                    _this.byId("btnTabLayoutPickDtl").setVisible(true);
                 } else {
                     MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 }
@@ -587,6 +589,7 @@ sap.ui.define([
                                 _this.byId("btnRefreshPickDtl").setVisible(true);
                                 _this.byId("btnSavePickDtl").setVisible(false);
                                 _this.byId("btnCancelPickDtl").setVisible(false);
+                                _this.byId("btnTabLayoutPickDtl").setVisible(true);
 
                                 //_this.onRefreshPickDtl();
                                 _this.setRowReadMode("pickDtl");
@@ -600,6 +603,7 @@ sap.ui.define([
                     _this.byId("btnRefreshPickDtl").setVisible(true);
                     _this.byId("btnSavePickDtl").setVisible(false);
                     _this.byId("btnCancelPickDtl").setVisible(false);
+                    _this.byId("btnTabLayoutPickDtl").setVisible(true);
 
                     //_this.onRefreshPickDtl();
                     _this.setRowReadMode("pickDtl");
@@ -768,6 +772,53 @@ sap.ui.define([
                 }
             },
 
+            onSaveTableLayout: function (oEvent) {
+                var ctr = 1;
+                var oTable = oEvent.getSource().oParent.oParent;
+                var oColumns = oTable.getColumns();
+                var sSBU = _this.getView().getModel("ui").getData().sbu;
+
+                var oParam = {
+                    "SBU": sSBU,
+                    "TYPE": "",
+                    "TABNAME": "",
+                    "TableLayoutToItems": []
+                };
+
+                _aTableProp.forEach(item => {
+                    if (item.tblModel == oTable.getBindingInfo("rows").model) {
+                        oParam['TYPE'] = item.modCode;
+                        oParam['TABNAME'] = item.tblSrc;
+                    }
+                });
+
+                oColumns.forEach((column) => {
+                    oParam.TableLayoutToItems.push({
+                        COLUMNNAME: column.mProperties.sortProperty,
+                        ORDER: ctr.toString(),
+                        SORTED: column.mProperties.sorted,
+                        SORTORDER: column.mProperties.sortOrder,
+                        SORTSEQ: "1",
+                        VISIBLE: column.mProperties.visible,
+                        WIDTH: column.mProperties.width.replace('px','')
+                    });
+
+                    ctr++;
+                });
+
+                var oModel = _this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+                oModel.create("/TableLayoutSet", oParam, {
+                    method: "POST",
+                    success: function(data, oResponse) {
+                        MessageBox.information(_oCaption.INFO_LAYOUT_SAVE);
+                    },
+                    error: function(err) {
+                        MessageBox.error(err);
+                        _this.closeLoadingDialog();
+                    }
+                });                
+            },
+
             getCaption() {
                 var oJSONModel = new JSONModel();
                 var oCaptionParam = [];
@@ -781,6 +832,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "SAVE"});
                 oCaptionParam.push({CODE: "CANCEL"});
                 oCaptionParam.push({CODE: "AUTOPICK"});
+                oCaptionParam.push({CODE: "SAVELAYOUT"});
 
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});
@@ -789,6 +841,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "CONFIRM_DISREGARD_CHANGE"});
                 oCaptionParam.push({CODE: "WARN_NO_DATA_MODIFIED"});
                 oCaptionParam.push({CODE: "INFO_NO_ITEM_TO_PICK"});
+                oCaptionParam.push({CODE: "INFO_LAYOUT_SAVE"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

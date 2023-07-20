@@ -11,27 +11,35 @@
     height="100%">
 
     <Page id="page" enableScrolling="false" class="sapUiNoContentPadding" showHeader="false" showNavButton="true" navButtonPress="onNavBack">
+        <dependents>
+            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute="onAddHotKey()" />
+            <core:CommandExecution id="CE_EDIT" command="Edit" enabled="true" execute="onEditHotKey()" />
+            <core:CommandExecution id="CE_DELETE" command="Delete" enabled="true" execute="onDeleteHotKey()" />
+            <core:CommandExecution id="CE_SAVE" command="Save" enabled="true" execute="onSaveHotKey()" />
+            <core:CommandExecution id="CE_CANCEL" command="Cancel" enabled="true" execute="onCancelHotKey()" />
+            <core:CommandExecution id="CE_REFRESH" command="Refresh" enabled="true" execute="onRefreshHotKey()" />
+        </dependents>
         <content>
             <VBox id="vbMain" fitContainer="true">
                 <Toolbar id="TB1" style="Clear">
                     <ToolbarSpacer />
-                    <Button id="btnEditHdr" type="Ghost" icon="sap-icon://edit" press="onEditHdr" tooltip="{caption>/EDIT}" visible="true"/>
-                    <Button id="btnDeleteHdr" type="Ghost" icon="sap-icon://delete" press="onDeleteHdr" tooltip="{caption>/DELETE}" visible="true"/> 
-                    <MenuButton id="btnSetStatusHdr" type="Ghost" icon="sap-icon://settings" tooltip="{caption>/SETSTATUS}" visible="true">
+                    <Button id="btnEditHdr" type="Ghost" icon="sap-icon://edit" press="onEditHdr" text="{caption>/EDIT}" tooltip="{caption>/EDIT}" visible="true"/>
+                    <Button id="btnDeleteHdr" type="Ghost" icon="sap-icon://delete" press="onDeleteHdr" text="{caption>/DELETE}" tooltip="{caption>/DELETE}" visible="true"/> 
+                    <MenuButton id="btnSetStatusHdr" type="Ghost" icon="sap-icon://settings" text="{caption>/SETSTATUS}" tooltip="{caption>/SETSTATUS}" visible="true">
                         <menu>
                             <Menu id="menuSetStatusHdr">
-                                <MenuItem id="menuPickHdr" text="{caption>/PICK_COMPLETE}" visible="{ui>/useTo}" press="onPickHdr" />
-                                <MenuItem id="menuUndoPickHdr" text="{caption>/UNDO_PICK_COMPLETE}" visible="{ui>/useTo}" press="onUndoPickHdr" />
-                                <MenuItem id="menuPostHdr" text="{caption>/POST}" press="onPostHdr" />
-                                <MenuItem id="menuReverseHdr" text="{caption>/REVERSE}" press="onReverseHdr" />
+                                <MenuItem id="menuPickHdr" text="{caption>/PICK_COMPLETE}" tooltip="{caption>/PICK_COMPLETE}" visible="{ui>/useTo}" press="onPickHdr" />
+                                <MenuItem id="menuUndoPickHdr" text="{caption>/UNDO_PICK_COMPLETE}" tooltip="{caption>/UNDO_PICK_COMPLETE}" visible="{ui>/useTo}" press="onUndoPickHdr" />
+                                <MenuItem id="menuPostHdr" text="{caption>/POST}" tooltip="{caption>/POST}" press="onPostHdr" />
+                                <MenuItem id="menuReverseHdr" text="{caption>/REVERSE}" tooltip="{caption>/REVERSE}" press="onReverseHdr" />
                             </Menu>
                         </menu>
                     </MenuButton>
-                    <Button id="btnRefreshHdr" type="Ghost" icon="sap-icon://refresh" press="onRefreshHdr" tooltip="{caption>/REFRESH}" visible="true"/> 
-                    <Button id="btnPrintHdr" type="Ghost" icon="sap-icon://print" press="onPrintHdr" tooltip="{caption>/PRINT}" visible="true"/> 
-                    <Button id="btnCloseHdr" type="Ghost" icon="sap-icon://sys-cancel" press="onCloseHdr" tooltip="{caption>/CLOSE}" visible="true"/> 
-                    <Button id="btnSaveHdr" type="Ghost" icon="sap-icon://save" press="onSaveHdr" tooltip="{caption>/SAVE}" visible="false"/> 
-                    <Button id="btnCancelHdr" type="Ghost" icon="sap-icon://sys-cancel" press="onCancelHdr" tooltip="{caption>/CANCEL}" visible="false"/> 
+                    <Button id="btnRefreshHdr" type="Ghost" icon="sap-icon://refresh" press="onRefreshHdr" text="{caption>/REFRESH}" tooltip="{caption>/REFRESH}" visible="true"/> 
+                    <Button id="btnPrintHdr" type="Ghost" icon="sap-icon://print" press="onPrintHdr" text="{caption>/PRINT}" tooltip="{caption>/PRINT}" visible="true"/> 
+                    <Button id="btnCloseHdr" type="Ghost" icon="sap-icon://sys-cancel" press="onCloseHdr" text="{caption>/CLOSE}" tooltip="{caption>/CLOSE}" visible="true"/> 
+                    <Button id="btnSaveHdr" type="Ghost" icon="sap-icon://save" press="onSaveHdr" text="{caption>/SAVE}" tooltip="{caption>/SAVE}" visible="false"/> 
+                    <Button id="btnCancelHdr" type="Ghost" icon="sap-icon://sys-cancel" press="onCancelHdr" text="{caption>/CANCEL}" tooltip="{caption>/CANCEL}" visible="false"/> 
                 </Toolbar>
                     <f:Form id="frmHeader" editable="true" class="sapUiNoContentPadding" width="100%">
                         <f:layout>
@@ -201,13 +209,14 @@
                                             <Button id="btnAddDtl" 
                                                 icon="sap-icon://add"
                                                 press="onAddDtl"
+                                                text="{caption>/ADD}"
                                                 tooltip="{caption>/ADD}"
                                                 visible="true"/>
-                                            <MenuButton id="btnPickDtl" type="Ghost" icon="sap-icon://flag" tooltip="{caption>/PICK}" visible="true">
+                                            <MenuButton id="btnPickDtl" type="Ghost" icon="sap-icon://flag" text="{caption>/PICK}" tooltip="{caption>/PICK}" visible="true">
                                                 <menu>
                                                     <Menu id="menuPickDtl">
-                                                        <MenuItem id="menuPickDtlAuto" text="{caption>/AUTOPICK}" press="onPickDtlAuto" />
-                                                        <MenuItem id="menuPickDtlManual" text="{caption>/MANUALPICK}" press="onPickDtlManual" />
+                                                        <MenuItem id="menuPickDtlAuto" text="{caption>/AUTOPICK}" tooltip="{caption>/AUTOPICK}" press="onPickDtlAuto" />
+                                                        <MenuItem id="menuPickDtlManual" text="{caption>/MANUALPICK}" tooltip="{caption>/MANUALPICK}" press="onPickDtlManual" />
                                                     </Menu>
                                                 </menu>
                                             </MenuButton>
@@ -219,12 +228,19 @@
                                             <Button id="btnDeleteDtl" 
                                                 icon="sap-icon://delete"
                                                 press="onDeleteDtl" 
+                                                text="{caption>/DELETE}"
                                                 tooltip="{caption>/DELETE}"
                                                 visible="true" />
                                             <Button id="btnRefreshDtl" 
                                                 icon="sap-icon://refresh"
                                                 press="onRefreshDtl" 
+                                                text="{caption>/REFRESH}"
                                                 tooltip="{caption>/REFRESH}"
+                                                visible="true" />
+                                            <Button id="btnTabLayoutDtl"
+                                                icon="sap-icon://grid" 
+                                                press="onSaveTableLayout"
+                                                tooltip="{caption>/SAVELAYOUT}" 
                                                 visible="true" />
                                         </Toolbar>
                                     </uiT:extension>
@@ -257,28 +273,38 @@
                                             <Button id="btnEditHu" 
                                                 icon="sap-icon://edit"
                                                 press="onEditHu"
+                                                text="{caption>/EDIT}"
                                                 tooltip="{caption>/EDIT}"
                                                 visible="true"/>
                                             <Button id="btnDeleteHu" 
                                                 icon="sap-icon://delete"
                                                 press="onDeleteHu" 
+                                                text="{caption>/DELETE}"
                                                 tooltip="{caption>/DELETE}"
                                                 visible="true" />
                                             <Button id="btnRefreshHu" 
                                                 icon="sap-icon://refresh"
-                                                press="onRefreshHu" 
+                                                press="onRefreshHu"
+                                                text="{caption>/REFRESH}" 
                                                 tooltip="{caption>/REFRESH}"
                                                 visible="true" />
                                             <Button id="btnSaveHu" 
                                                 icon="sap-icon://save"
                                                 press="onSaveHu" 
+                                                text="{caption>/SAVE}"
                                                 tooltip="{caption>/SAVE}"
                                                 visible="false" />
                                             <Button id="btnCancelHu" 
                                                 icon="sap-icon://sys-cancel"
                                                 press="onCancelHu" 
+                                                text="{caption>/CANCEL}"
                                                 tooltip="{caption>/CANCEL}"
                                                 visible="false" />
+                                            <Button id="btnTabLayoutHu"
+                                                icon="sap-icon://grid" 
+                                                press="onSaveTableLayout"
+                                                tooltip="{caption>/SAVELAYOUT}" 
+                                                visible="true" />
                                         </Toolbar>
                                     </uiT:extension>
                                     <uiT:layoutData>
@@ -310,23 +336,32 @@
                                             <Button id="btnEditShip" 
                                                 icon="sap-icon://edit"
                                                 press="onEditShip"
+                                                text="{caption>/EDIT}"
                                                 tooltip="{caption>/EDIT}"
                                                 visible="true"/>
                                             <Button id="btnRefreshShip" 
                                                 icon="sap-icon://refresh"
                                                 press="onRefreshShip" 
+                                                text="{caption>/REFRESH}"
                                                 tooltip="{caption>/REFRESH}"
                                                 visible="true" />
                                             <Button id="btnSaveShip" 
                                                 icon="sap-icon://save"
                                                 press="onSaveShip" 
+                                                text="{caption>/SAVE}"
                                                 tooltip="{caption>/SAVE}"
                                                 visible="false" />
                                             <Button id="btnCancelShip" 
                                                 icon="sap-icon://sys-cancel"
                                                 press="onCancelShip" 
+                                                text="{caption>/CANCEL}"
                                                 tooltip="{caption>/CANCEL}"
                                                 visible="false" />
+                                            <Button id="btnTabLayoutShip"
+                                                icon="sap-icon://grid" 
+                                                press="onSaveTableLayout"
+                                                tooltip="{caption>/SAVELAYOUT}" 
+                                                visible="true" />
                                         </Toolbar>
                                     </uiT:extension>
                                     <uiT:layoutData>
@@ -358,7 +393,13 @@
                                             <Button id="btnRefreshStat" 
                                                 icon="sap-icon://refresh"
                                                 press="onRefreshStat" 
+                                                text="{caption>/REFRESH}"
                                                 tooltip="{caption>/REFRESH}"
+                                                visible="true" />
+                                            <Button id="btnTabLayoutStat"
+                                                icon="sap-icon://grid" 
+                                                press="onSaveTableLayout"
+                                                tooltip="{caption>/SAVELAYOUT}" 
                                                 visible="true" />
                                         </Toolbar>
                                     </uiT:extension>
@@ -391,7 +432,13 @@
                                             <Button id="btnRefreshMatDoc" 
                                                 icon="sap-icon://refresh"
                                                 press="onRefreshMatDoc" 
+                                                text="{caption>/REFRESH}"
                                                 tooltip="{caption>/REFRESH}"
+                                                visible="true" />
+                                            <Button id="btnTabLayoutMatDoc"
+                                                icon="sap-icon://grid" 
+                                                press="onSaveTableLayout"
+                                                tooltip="{caption>/SAVELAYOUT}" 
                                                 visible="true" />
                                         </Toolbar>
                                     </uiT:extension>
