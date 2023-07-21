@@ -21,7 +21,7 @@
         </dependents>
         <content>
             <VBox id="vbMain" fitContainer="true">
-                <Toolbar id="TB1" style="Clear">
+                <Toolbar id="tbHeader" style="Clear">
                     <ToolbarSpacer />
                     <Button id="btnEditHdr" type="Ghost" icon="sap-icon://edit" press="onEditHdr" text="{caption>/EDIT}" tooltip="{caption>/EDIT}" visible="true"/>
                     <Button id="btnDeleteHdr" type="Ghost" icon="sap-icon://delete" press="onDeleteHdr" text="{caption>/DELETE}" tooltip="{caption>/DELETE}" visible="true"/> 
@@ -237,6 +237,16 @@
                                                 text="{caption>/REFRESH}"
                                                 tooltip="{caption>/REFRESH}"
                                                 visible="true" />
+                                            <Button id="btnFullScreenDtl" 
+                                                icon="sap-icon://full-screen"
+                                                press="onTableResize('dtl','Max')"
+                                                tooltip="{caption>/FULLSCREEN}"
+                                                visible="true" />
+                                            <Button id="btnExitFullScreenDtl" 
+                                                icon="sap-icon://exit-full-screen"
+                                                press="onTableResize('dtl','Min')"
+                                                tooltip="{caption>/EXITFULLSCREEN}"
+                                                visible="false" />
                                             <Button id="btnTabLayoutDtl"
                                                 icon="sap-icon://grid" 
                                                 press="onSaveTableLayout"
@@ -300,6 +310,16 @@
                                                 text="{caption>/CANCEL}"
                                                 tooltip="{caption>/CANCEL}"
                                                 visible="false" />
+                                            <Button id="btnFullScreenHu" 
+                                                icon="sap-icon://full-screen"
+                                                press="onTableResize('hu','Max')"
+                                                tooltip="{caption>/FULLSCREEN}"
+                                                visible="true" />
+                                            <Button id="btnExitFullScreenHu" 
+                                                icon="sap-icon://exit-full-screen"
+                                                press="onTableResize('hu','Min')"
+                                                tooltip="{caption>/EXITFULLSCREEN}"
+                                                visible="false" />
                                             <Button id="btnTabLayoutHu"
                                                 icon="sap-icon://grid" 
                                                 press="onSaveTableLayout"
@@ -357,6 +377,16 @@
                                                 text="{caption>/CANCEL}"
                                                 tooltip="{caption>/CANCEL}"
                                                 visible="false" />
+                                            <Button id="btnFullScreenShip" 
+                                                icon="sap-icon://full-screen"
+                                                press="onTableResize('ship','Max')"
+                                                tooltip="{caption>/FULLSCREEN}"
+                                                visible="true" />
+                                            <Button id="btnExitFullScreenShip" 
+                                                icon="sap-icon://exit-full-screen"
+                                                press="onTableResize('ship','Min')"
+                                                tooltip="{caption>/EXITFULLSCREEN}"
+                                                visible="false" />
                                             <Button id="btnTabLayoutShip"
                                                 icon="sap-icon://grid" 
                                                 press="onSaveTableLayout"
@@ -396,6 +426,16 @@
                                                 text="{caption>/REFRESH}"
                                                 tooltip="{caption>/REFRESH}"
                                                 visible="true" />
+                                            <Button id="btnFullScreenStat" 
+                                                icon="sap-icon://full-screen"
+                                                press="onTableResize('stat','Max')"
+                                                tooltip="{caption>/FULLSCREEN}"
+                                                visible="true" />
+                                            <Button id="btnExitFullScreenStat" 
+                                                icon="sap-icon://exit-full-screen"
+                                                press="onTableResize('stat','Min')"
+                                                tooltip="{caption>/EXITFULLSCREEN}"
+                                                visible="false" />
                                             <Button id="btnTabLayoutStat"
                                                 icon="sap-icon://grid" 
                                                 press="onSaveTableLayout"
@@ -435,6 +475,16 @@
                                                 text="{caption>/REFRESH}"
                                                 tooltip="{caption>/REFRESH}"
                                                 visible="true" />
+                                            <Button id="btnFullScreenMatDoc" 
+                                                icon="sap-icon://full-screen"
+                                                press="onTableResize('matDoc','Max')"
+                                                tooltip="{caption>/FULLSCREEN}"
+                                                visible="true" />
+                                            <Button id="btnExitFullScreenMatDoc" 
+                                                icon="sap-icon://exit-full-screen"
+                                                press="onTableResize('matDoc','Min')"
+                                                tooltip="{caption>/EXITFULLSCREEN}"
+                                                visible="false" />
                                             <Button id="btnTabLayoutMatDoc"
                                                 icon="sap-icon://grid" 
                                                 press="onSaveTableLayout"

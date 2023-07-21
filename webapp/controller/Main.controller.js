@@ -67,10 +67,14 @@ sap.ui.define([
                 this.byId("btnAddODFtyHdr").setEnabled(false);
                 this.byId("btnEditODFtyHdr").setEnabled(false);
                 this.byId("btnRefreshODFtyHdr").setEnabled(false);
+                this.byId("btnFullScreenODFtyHdr").setEnabled(false);
+                this.byId("btnExitFullScreenODFtyHdr").setEnabled(false);
                 this.byId("btnTabLayoutODFtyHdr").setEnabled(false);
 
                 // Detail button
                 this.byId("btnRefreshODFtyDtl").setEnabled(false);
+                this.byId("btnFullScreenODFtyDtl").setEnabled(false);
+                this.byId("btnExitFullScreenODFtyDtl").setEnabled(false);
                 this.byId("btnTabLayoutODFtyDtl").setEnabled(false);
 
                 this._tableRendered = "";
@@ -118,10 +122,14 @@ sap.ui.define([
                 this.byId("btnAddODFtyHdr").setEnabled(true);
                 this.byId("btnEditODFtyHdr").setEnabled(true);
                 this.byId("btnRefreshODFtyHdr").setEnabled(true);
+                this.byId("btnFullScreenODFtyHdr").setEnabled(true);
+                this.byId("btnExitFullScreenODFtyHdr").setEnabled(true);
                 this.byId("btnTabLayoutODFtyHdr").setEnabled(true);
 
                 // Detail button
                 this.byId("btnRefreshODFtyDtl").setEnabled(true);
+                this.byId("btnFullScreenODFtyDtl").setEnabled(true);
+                this.byId("btnExitFullScreenODFtyDtl").setEnabled(true);
                 this.byId("btnTabLayoutODFtyDtl").setEnabled(true);
             },
 
@@ -472,6 +480,41 @@ sap.ui.define([
                 }
             },
 
+            onTableResize(pModel, pType) {
+                if (pModel === "odFtyHdr") {
+                    if (pType === "Max") {
+                        this.byId("btnFullScreenODFtyHdr").setVisible(false);
+                        this.byId("btnExitFullScreenODFtyHdr").setVisible(true);
+
+                        this.getView().byId("odFtyHdrTab").setVisible(true);
+                        this.getView().byId("odFtyDtlTab").setVisible(false);
+                    }
+                    else {
+                        this.byId("btnFullScreenODFtyHdr").setVisible(true);
+                        this.byId("btnExitFullScreenODFtyHdr").setVisible(false);
+
+                        this.getView().byId("odFtyHdrTab").setVisible(true);
+                        this.getView().byId("odFtyDtlTab").setVisible(true);
+                    }
+                }
+                else if (pModel === "odFtyDtl") {
+                    if (pType === "Max") {
+                        this.byId("btnFullScreenODFtyDtl").setVisible(false);
+                        this.byId("btnExitFullScreenODFtyDtl").setVisible(true);
+
+                        this.getView().byId("odFtyHdrTab").setVisible(false);
+                        this.getView().byId("odFtyDtlTab").setVisible(true);
+                    }
+                    else {
+                        this.byId("btnFullScreenODFtyDtl").setVisible(true);
+                        this.byId("btnExitFullScreenODFtyDtl").setVisible(false);
+
+                        this.getView().byId("odFtyHdrTab").setVisible(true);
+                        this.getView().byId("odFtyDtlTab").setVisible(true);
+                    }
+                }
+            },
+
             onSaveTableLayout: function (oEvent) {
                 var ctr = 1;
                 var oTable = oEvent.getSource().oParent.oParent;
@@ -546,6 +589,8 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "REFRESH"});
                 oCaptionParam.push({CODE: "SAVE"});
                 oCaptionParam.push({CODE: "CANCEL"});
+                oCaptionParam.push({CODE: "FULLSCREEN"});
+                oCaptionParam.push({CODE: "EXITFULLSCREEN"});
                 oCaptionParam.push({CODE: "SAVELAYOUT"});
                 oCaptionParam.push({CODE: "DISPLAY_EDIT"});
 

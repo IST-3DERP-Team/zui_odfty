@@ -1696,6 +1696,7 @@ sap.ui.define([
                         this.byId("btnEditHu").setEnabled(!pEditable);
                         this.byId("btnDeleteHu").setEnabled(!pEditable);
                         this.byId("btnRefreshHu").setEnabled(!pEditable);
+                        this.byId("btnFullScreenHu").setEnabled(!pEditable);
                         this.byId("btnTabLayoutHu").setEnabled(!pEditable);
     
                         // Detail
@@ -1703,19 +1704,23 @@ sap.ui.define([
                         this.byId("btnPickDtl").setEnabled(!pEditable);
                         this.byId("btnDeleteDtl").setEnabled(!pEditable);
                         this.byId("btnRefreshDtl").setEnabled(!pEditable);
+                        this.byId("btnFullScreenDtl").setEnabled(!pEditable);
                         this.byId("btnTabLayoutDtl").setEnabled(!pEditable);
     
                         // Shipment
                         this.byId("btnEditShip").setEnabled(!pEditable);
                         this.byId("btnRefreshShip").setEnabled(!pEditable);
+                        this.byId("btnFullScreenShip").setEnabled(!pEditable);
                         this.byId("btnTabLayoutShip").setEnabled(!pEditable);
                         
                         // Status
                         this.byId("btnRefreshStat").setEnabled(!pEditable);
+                        this.byId("btnFullScreenStat").setEnabled(!pEditable);
                         this.byId("btnTabLayoutStat").setEnabled(!pEditable);
     
                         // Material Document
                         this.byId("btnRefreshMatDoc").setEnabled(!pEditable);
+                        this.byId("btnFullScreenMatDoc").setEnabled(!pEditable);
                         this.byId("btnTabLayoutMatDoc").setEnabled(!pEditable);
 
                         // // Other Info
@@ -1730,15 +1735,40 @@ sap.ui.define([
                         _this.byId("btnRefreshHu").setVisible(!pEditable);
                         _this.byId("btnSaveHu").setVisible(pEditable);
                         _this.byId("btnCancelHu").setVisible(pEditable);
-                        _this.byId("btnTabLayoutHu").setEnabled(!pEditable);
-    
+                        _this.byId("btnTabLayoutHu").setVisible(!pEditable);
+
+                        if (_this.byId("btnEditHu").getVisible() == false) {
+                            _this.byId("btnFullScreenHu").setVisible(false);
+                            _this.byId("btnExitFullScreenHu").setVisible(false);
+                        } else {
+                            if (_this.byId("frmHeader").getVisible()) {
+                                _this.byId("btnFullScreenHu").setVisible(true);
+                                _this.byId("btnExitFullScreenHu").setVisible(false);
+                            } else {
+                                _this.byId("btnFullScreenHu").setVisible(false);
+                                _this.byId("btnExitFullScreenHu").setVisible(true);
+                            }
+                        }
                     } else if (pType == "ship") {
                         _this.byId("btnEditShip").setVisible(!pEditable);
                         _this.byId("btnRefreshShip").setVisible(!pEditable);
                         _this.byId("btnSaveShip").setVisible(pEditable);
                         _this.byId("btnCancelShip").setVisible(pEditable);
-                        _this.byId("btnTabLayoutShip").setEnabled(!pEditable);
+                        _this.byId("btnFullScreenShip").setVisible(!pEditable);
+                        _this.byId("btnTabLayoutShip").setVisible(!pEditable);
 
+                        if (_this.byId("btnEditShip").getVisible() == false) {
+                            _this.byId("btnFullScreenShip").setVisible(false);
+                            _this.byId("btnExitFullScreenShip").setVisible(false);
+                        } else {
+                            if (_this.byId("frmHeader").getVisible()) {
+                                _this.byId("btnFullScreenShip").setVisible(true);
+                                _this.byId("btnExitFullScreenShip").setVisible(false);
+                            } else {
+                                _this.byId("btnFullScreenShip").setVisible(false);
+                                _this.byId("btnExitFullScreenShip").setVisible(true);
+                            }
+                        }
                     } 
                     // else if (pType == "othInfo") {
                     //     if (pAdd == true) {
@@ -1779,6 +1809,7 @@ sap.ui.define([
                 this.byId("btnEditHu").setVisible(pChange);
                 this.byId("btnDeleteHu").setVisible(pChange);
                 this.byId("btnRefreshHu").setVisible(true);
+                this.byId("btnFullScreenHu").setVisible(true);
                 this.byId("btnTabLayoutHu").setVisible(true);
 
                 // Detail
@@ -1786,19 +1817,23 @@ sap.ui.define([
                 this.byId("btnPickDtl").setVisible(pChange);
                 this.byId("btnDeleteDtl").setVisible(pChange);
                 this.byId("btnRefreshDtl").setVisible(true);
+                this.byId("btnFullScreenDtl").setVisible(true);
                 this.byId("btnTabLayoutDtl").setVisible(true);
 
                 // Shipment
                 this.byId("btnEditShip").setVisible(pChange);
                 this.byId("btnRefreshShip").setVisible(true);
+                this.byId("btnFullScreenShip").setVisible(true);
                 this.byId("btnTabLayoutShip").setVisible(true);
 
                 // Status
                 this.byId("btnRefreshStat").setVisible(true);
+                this.byId("btnFullScreenStat").setVisible(true);
                 this.byId("btnTabLayoutStat").setVisible(true);
 
                 // Material Document
                 this.byId("btnRefreshMatDoc").setVisible(true);
+                this.byId("btnFullScreenMatDoc").setVisible(true);
                 this.byId("btnTabLayoutMatDoc").setVisible(true);
             },
 
@@ -1891,6 +1926,43 @@ sap.ui.define([
                 //         })
                 //     }
                 // } 
+            },
+
+            onTableResize(pModel, pType) {
+                if (pType === "Max") {
+                    this.byId("btnFullScreenDtl").setVisible(false);
+                    this.byId("btnFullScreenHu").setVisible(false);
+                    this.byId("btnFullScreenShip").setVisible(false);
+                    this.byId("btnFullScreenStat").setVisible(false);
+                    this.byId("btnFullScreenMatDoc").setVisible(false);
+
+                    this.byId("btnExitFullScreenDtl").setVisible(true);
+                    this.byId("btnExitFullScreenHu").setVisible(true);
+                    this.byId("btnExitFullScreenShip").setVisible(true);
+                    this.byId("btnExitFullScreenStat").setVisible(true);
+                    this.byId("btnExitFullScreenMatDoc").setVisible(true);
+
+                    this.getView().byId("tbHeader").setVisible(false);
+                    this.getView().byId("frmHeader").setVisible(false);
+                    this.getView().byId("itbDetails").setVisible(true);
+                }
+                else {
+                    this.byId("btnFullScreenDtl").setVisible(true);
+                    this.byId("btnFullScreenHu").setVisible(true);
+                    this.byId("btnFullScreenShip").setVisible(true);
+                    this.byId("btnFullScreenStat").setVisible(true);
+                    this.byId("btnFullScreenMatDoc").setVisible(true);
+
+                    this.byId("btnExitFullScreenDtl").setVisible(false);
+                    this.byId("btnExitFullScreenHu").setVisible(false);
+                    this.byId("btnExitFullScreenShip").setVisible(false);
+                    this.byId("btnExitFullScreenStat").setVisible(false);
+                    this.byId("btnExitFullScreenMatDoc").setVisible(false);
+
+                    this.getView().byId("tbHeader").setVisible(true);
+                    this.getView().byId("frmHeader").setVisible(true);
+                    this.getView().byId("itbDetails").setVisible(true);
+                }
             },
 
             onSaveTableLayout: function (oEvent) {
@@ -1988,6 +2060,8 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "PICK"});
                 oCaptionParam.push({CODE: "AUTOPICK"});
                 oCaptionParam.push({CODE: "MANUALPICK"});
+                oCaptionParam.push({CODE: "FULLSCREEN"});
+                oCaptionParam.push({CODE: "EXITFULLSCREEN"});
                 oCaptionParam.push({CODE: "SAVELAYOUT"});
 
                 // MessageBox

@@ -59,7 +59,7 @@
                         <Toolbar>
                             <ToolbarSpacer/>
                             <SearchField
-                                id="searchField"
+                                id="sfSearch"
                                 placeholder="Filter"
                                 value=""
                                 search="onFilterByGlobal"
@@ -73,8 +73,8 @@
                             <Button id="btnCancel" 
                                 icon="sap-icon://sys-cancel"
                                 press="onCancel" 
-                                text="{caption>/CANCEL}"
-                                tooltip="{caption>/CANCEL}"
+                                text="{caption>/CLOSE}"
+                                tooltip="{caption>/CLOSE}"
                                 visible="true" />
                             <Button id="btnTabLayout"
                                 icon="sap-icon://grid" 

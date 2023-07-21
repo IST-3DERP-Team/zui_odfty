@@ -73,7 +73,7 @@
                     rowSelectionChange="onRowSelectionChangeODFtyHdr">
                     <uiT:extension>
                         <Toolbar>
-                            <Text text="{ui>/rowCountMrpHdr} {caption>/ROWS}" />
+                            <!-- <Text text="{ui>/rowCountMrpHdr} {caption>/ROWS}" /> -->
                             <ToolbarSpacer/>
                             <Button id="btnAddODFtyHdr" 
                                 icon="sap-icon://add"
@@ -93,6 +93,16 @@
                                 text="{caption>/REFRESH}"
                                 tooltip="{caption>/REFRESH}"
                                 visible="true" />
+                            <Button id="btnFullScreenODFtyHdr" 
+                                icon="sap-icon://full-screen"
+                                press="onTableResize('odFtyHdr','Max')"
+                                tooltip="{caption>/FULLSCREEN}"
+                                visible="true" />
+                            <Button id="btnExitFullScreenODFtyHdr" 
+                                icon="sap-icon://exit-full-screen"
+                                press="onTableResize('odFtyHdr','Min')"
+                                tooltip="{caption>/EXITFULLSCREEN}"
+                                visible="false" />
                             <Button id="btnTabLayoutODFtyHdr"
                                 icon="sap-icon://grid" 
                                 press="onSaveTableLayout"
@@ -125,8 +135,8 @@
                     rowSelectionChange="onRowSelectionChangeODFtyDtl">
                     <uiT:extension>
                         <Toolbar>
-                            <Text text="{caption>/DLVDTL}" />
-                            <Text text="{ui>/rowCountMrpDtl} {caption>/ROWS}" />
+                            <!-- <Text text="{caption>/DLVDTL}" />
+                            <Text text="{ui>/rowCountMrpDtl} {caption>/ROWS}" /> -->
                             <ToolbarSpacer/>
                             <Button id="btnRefreshODFtyDtl" 
                                 icon="sap-icon://refresh"
@@ -134,6 +144,16 @@
                                 text="{caption>/REFRESH}"
                                 tooltip="{caption>/REFRESH}"
                                 visible="true" />
+                            <Button id="btnFullScreenODFtyDtl" 
+                                icon="sap-icon://full-screen"
+                                press="onTableResize('odFtyDtl','Max')"
+                                tooltip="{caption>/FULLSCREEN}"
+                                visible="true" />
+                            <Button id="btnExitFullScreenODFtyDtl" 
+                                icon="sap-icon://exit-full-screen"
+                                press="onTableResize('odFtyDtl','Min')"
+                                tooltip="{caption>/EXITFULLSCREEN}"
+                                visible="false" />
                             <Button id="btnTabLayoutODFtyDtl"
                                 icon="sap-icon://grid" 
                                 press="onSaveTableLayout"

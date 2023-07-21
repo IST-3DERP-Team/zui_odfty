@@ -470,6 +470,8 @@ sap.ui.define([
                     _this.byId("btnRefreshPickDtl").setVisible(false);
                     _this.byId("btnSavePickDtl").setVisible(true);
                     _this.byId("btnCancelPickDtl").setVisible(true);
+                    _this.byId("btnFullScreenPickDtl").setVisible(false);
+                    _this.byId("btnExitFullScreenPickDtl").setVisible(false);
                     _this.byId("btnTabLayoutPickDtl").setVisible(false);
     
                     this._oDataBeforeChange = jQuery.extend(true, {}, this.getView().getModel("pickDtl").getData());
@@ -570,6 +572,14 @@ sap.ui.define([
                     _this.byId("btnSavePickDtl").setVisible(false);
                     _this.byId("btnCancelPickDtl").setVisible(false);
                     _this.byId("btnTabLayoutPickDtl").setVisible(true);
+
+                    if (_this.byId("pickHdrTab").getVisible()) {
+                        _this.byId("btnFullScreenPickDtl").setVisible(true);
+                        _this.byId("btnExitFullScreenPickDtl").setVisible(false);
+                    } else {
+                        _this.byId("btnFullScreenPickDtl").setVisible(false);
+                        _this.byId("btnExitFullScreenPickDtl").setVisible(true);
+                    }
                 } else {
                     MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 }
@@ -591,6 +601,14 @@ sap.ui.define([
                                 _this.byId("btnCancelPickDtl").setVisible(false);
                                 _this.byId("btnTabLayoutPickDtl").setVisible(true);
 
+                                if (_this.byId("pickHdrTab").getVisible()) {
+                                    _this.byId("btnFullScreenPickDtl").setVisible(true);
+                                    _this.byId("btnExitFullScreenPickDtl").setVisible(false);
+                                } else {
+                                    _this.byId("btnFullScreenPickDtl").setVisible(false);
+                                    _this.byId("btnExitFullScreenPickDtl").setVisible(true);
+                                }
+
                                 //_this.onRefreshPickDtl();
                                 _this.setRowReadMode("pickDtl");
                                 _this.setPickDtl();
@@ -604,6 +622,14 @@ sap.ui.define([
                     _this.byId("btnSavePickDtl").setVisible(false);
                     _this.byId("btnCancelPickDtl").setVisible(false);
                     _this.byId("btnTabLayoutPickDtl").setVisible(true);
+
+                    if (_this.byId("pickHdrTab").getVisible()) {
+                        _this.byId("btnFullScreenPickDtl").setVisible(true);
+                        _this.byId("btnExitFullScreenPickDtl").setVisible(false);
+                    } else {
+                        _this.byId("btnFullScreenPickDtl").setVisible(false);
+                        _this.byId("btnExitFullScreenPickDtl").setVisible(true);
+                    }
 
                     //_this.onRefreshPickDtl();
                     _this.setRowReadMode("pickDtl");
@@ -772,6 +798,25 @@ sap.ui.define([
                 }
             },
 
+            onTableResize(pModel, pType) {
+                if (pModel === "pickDtl") {
+                    if (pType === "Max") {
+                        this.byId("btnFullScreenPickDtl").setVisible(false);
+                        this.byId("btnExitFullScreenPickDtl").setVisible(true);
+
+                        this.getView().byId("pickHdrTab").setVisible(false);
+                        this.getView().byId("pickDtlTab").setVisible(true);
+                    }
+                    else {
+                        this.byId("btnFullScreenPickDtl").setVisible(true);
+                        this.byId("btnExitFullScreenPickDtl").setVisible(false);
+
+                        this.getView().byId("pickHdrTab").setVisible(true);
+                        this.getView().byId("pickDtlTab").setVisible(true);
+                    }
+                }
+            },
+
             onSaveTableLayout: function (oEvent) {
                 var ctr = 1;
                 var oTable = oEvent.getSource().oParent.oParent;
@@ -832,6 +877,9 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "SAVE"});
                 oCaptionParam.push({CODE: "CANCEL"});
                 oCaptionParam.push({CODE: "AUTOPICK"});
+                oCaptionParam.push({CODE: "CLOSE"});
+                oCaptionParam.push({CODE: "FULLSCREEN"});
+                oCaptionParam.push({CODE: "EXITFULLSCREEN"});
                 oCaptionParam.push({CODE: "SAVELAYOUT"});
 
                 // MessageBox

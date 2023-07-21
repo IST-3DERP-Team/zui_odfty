@@ -85,8 +85,6 @@ sap.ui.define([
 
                 _this.getColumns(_aTableProp);
 
-                
-
                 this._tableRendered = "";
                 var oTableEventDelegate = {
                     onkeyup: function(oEvent){
@@ -98,9 +96,11 @@ sap.ui.define([
                     }
                 };
 
-                this.byId("rsvTab").addEventDelegate(oTableEventDelegate);
+                _this.byId("rsvTab").addEventDelegate(oTableEventDelegate);
                 _this.clearSortFilter("rsvTab");
                 _this.getRsv([], "");
+
+                _this.byId("sfSearch").setValue("");
 
                 // var oModel = _this.getOwnerComponent().getModel("ZVB_3DERP_ODFTY_RSV_FILTER_CDS");
                 // var oSmartFilter = _this.getView().byId("sfbODFtyRsv");
@@ -492,6 +492,7 @@ sap.ui.define([
                 // Button
                 oCaptionParam.push({CODE: "ADD"});
                 oCaptionParam.push({CODE: "CANCEL"});
+                oCaptionParam.push({CODE: "CLOSE"});
                 oCaptionParam.push({CODE: "SAVELAYOUT"});
 
                 // Smart Filter
