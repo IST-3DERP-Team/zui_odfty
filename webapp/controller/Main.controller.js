@@ -352,6 +352,14 @@ sap.ui.define([
                 }
             },
 
+            onRefreshODFtyHdr() {
+                _this.getHeader(_aSmartFilter, _sSmartFilterGlobal);
+            },
+
+            onRefreshODFtyDtl() {
+                _this.getDetail();
+            },
+
             onRowSelectionChangeDlvType: function (oEvent) {
                 var sPath = oEvent.getParameter("rowContext").getPath();
                 var oTable = this.getView().byId("dlvTypeTab");
