@@ -284,7 +284,8 @@ sap.ui.define([
                     RCVSLOC: pData[0].RCVSLOC,
                     POSTDT: sCurrentDate + "T00:00:00",
                     DOCDT: sCurrentDate + "T00:00:00",
-                    BWART: oDataUI.mvtType
+                    BWART: oDataUI.mvtType,
+                    VARCD: oDataUI.varCd
                 };
                 
                 console.log("InfoHeaderTblSet param", param);
