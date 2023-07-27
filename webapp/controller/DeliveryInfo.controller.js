@@ -293,7 +293,7 @@ sap.ui.define([
                                 method: "POST",
                                 success: function(oResult, oResponse) {
                                     console.log("ImportTODOCSet", oResult, oResponse);
-                                    if (oResult.N_TODOC_MSG.results[0].Type == "S") {
+                                    if (oResult.N_TODOC_MSG.results.length == 0 || oResult.N_TODOC_MSG.results[0].Type == "S") {
 
                                         var sEntitySet = "/InfoHeaderTblSet(DLVNO='" + oData.DLVNO + "')";
                                         var param = {
@@ -963,7 +963,7 @@ sap.ui.define([
 
                 if (bErr) return;
 
-                MessageBox.confirm(_oCaption.CONFIRM_PROCEED_EXECUTE, {
+                MessageBox.confirm(_oCaption.CONFIRM_AUTO_PICK, {
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
                         if (sAction === "Yes") {
@@ -2089,6 +2089,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "WARN_NO_DATA_MODIFIED"});
                 oCaptionParam.push({CODE: "INFO_IS_ALREADY_DELETED"});
                 oCaptionParam.push({CODE: "INFO_LAYOUT_SAVE"});
+                oCaptionParam.push({CODE: "CONFIRM_AUTO_PICK"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",
