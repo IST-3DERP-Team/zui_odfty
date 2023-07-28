@@ -388,43 +388,84 @@ sap.ui.define([
                     return;
                 }
 
-                MessageBox.confirm(_oCaption.CONFIRM_PROCEED_EXECUTE, {
-                    actions: ["Yes", "No"],
-                    onClose: function (sAction) {
-                        if (sAction === "Yes") {
-                            _this.showLoadingDialog("Loading...");
+                _this._Reverse = sap.ui.xmlfragment(_this.getView().getId(), "zuiodfty.view.fragments.dialog.Reverse", _this);
+                //_this._Reverse.setModel(oJSONModel);
+                _this.getView().addDependent(_this._Reverse);
 
-                            var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
-                            var oParam = {
-                                "iv_dlvno": oData.DLVNO,
-                                "iv_userid": _startUpInfo.id,
-                                "iv_pstngdt": _this.formatDate(new Date(oData.POSTDT)) + "T00:00:00", 
-                                "N_IDOD_ET_CANC": [],
-                                "N_IDOD_RETURN": []
-                            };
+                _this._Reverse.addStyleClass("sapUiSizeCompact");
+                _this._Reverse.open();
 
-                            console.log("IDOD_ReverseSet param", oParam);
-                            oModelRFC.create("/IDOD_ReverseSet", oParam, {
-                                method: "POST",
-                                success: function(oResult, oResponse) {
-                                    console.log("IDOD_ReverseSet", oResult, oResponse);
+                // MessageBox.confirm(_oCaption.CONFIRM_PROCEED_EXECUTE, {
+                //     actions: ["Yes", "No"],
+                //     onClose: function (sAction) {
+                //         if (sAction === "Yes") {
+                //             _this.showLoadingDialog("Loading...");
 
-                                    _this.closeLoadingDialog();
-                                    if (oResult.N_IDOD_ET_CANC.results) { //oResult.N_IDOD_ET_CANC.results[0].Type == "S"
+                //             var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
+                //             var oParam = {
+                //                 "iv_dlvno": oData.DLVNO,
+                //                 "iv_userid": _startUpInfo.id,
+                //                 "iv_pstngdt": _this.formatDate(new Date(oData.POSTDT)) + "T00:00:00", 
+                //                 "N_IDOD_ET_CANC": [],
+                //                 "N_IDOD_RETURN": []
+                //             };
 
-                                        MessageBox.information(oResult.N_IDOD_ET_CANC.results[0].Message);
-                                        //MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
-                                        _this.onRefreshHdr();
-                                    } else {
-                                        MessageBox.information(oResult.N_IDOD_RETURN.results[0].Message);
-                                    }
-                                },
-                                error: function(err) {
-                                    MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
-                                    _this.closeLoadingDialog();
-                                }
-                            });
+                //             console.log("IDOD_ReverseSet param", oParam);
+                //             oModelRFC.create("/IDOD_ReverseSet", oParam, {
+                //                 method: "POST",
+                //                 success: function(oResult, oResponse) {
+                //                     console.log("IDOD_ReverseSet", oResult, oResponse);
+
+                //                     _this.closeLoadingDialog();
+                //                     if (oResult.N_IDOD_ET_CANC.results) { //oResult.N_IDOD_ET_CANC.results[0].Type == "S"
+
+                //                         MessageBox.information(oResult.N_IDOD_ET_CANC.results[0].Message);
+                //                         //MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
+                //                         _this.onRefreshHdr();
+                //                     } else {
+                //                         MessageBox.information(oResult.N_IDOD_RETURN.results[0].Message);
+                //                     }
+                //                 },
+                //                 error: function(err) {
+                //                     MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
+                //                     _this.closeLoadingDialog();
+                //                 }
+                //             });
+                //         }
+                //     }
+                // });
+            },
+
+            onProceedReverse() {
+                var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
+                var oDataHdr = _this.getView().getModel("hdr").getProperty("/results/0");
+                var oParam = {
+                    "iv_dlvno": oDataHdr.DLVNO,
+                    "iv_userid": _startUpInfo.id,
+                    "iv_pstngdt": _this.formatDate(new Date(oDataHdr.POSTDT)) + "T00:00:00", 
+                    "N_IDOD_ET_CANC": [],
+                    "N_IDOD_RETURN": []
+                };
+
+                console.log("IDOD_ReverseSet param", oParam);
+                oModelRFC.create("/IDOD_ReverseSet", oParam, {
+                    method: "POST",
+                    success: function(oResult, oResponse) {
+                        console.log("IDOD_ReverseSet", oResult, oResponse);
+
+                        _this.closeLoadingDialog();
+                        if (oResult.N_IDOD_ET_CANC.results) { //oResult.N_IDOD_ET_CANC.results[0].Type == "S"
+
+                            MessageBox.information(oResult.N_IDOD_ET_CANC.results[0].Message);
+                            //MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
+                            _this.onRefreshHdr();
+                        } else {
+                            MessageBox.information(oResult.N_IDOD_RETURN.results[0].Message);
                         }
+                    },
+                    error: function(err) {
+                        MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
+                        _this.closeLoadingDialog();
                     }
                 });
             },
@@ -1579,6 +1620,10 @@ sap.ui.define([
                 else if (sActiveTab == "ship") {
                     if (_this.byId("btnCancelShip").getVisible()) _this.onCancelShip();
                 }
+            },
+
+            onCancelReverse() {
+                _this._Reverse.destroy(true);
             },
 
             onNavBack() {
