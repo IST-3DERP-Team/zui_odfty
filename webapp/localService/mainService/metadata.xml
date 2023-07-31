@@ -74,6 +74,16 @@
                 <Property Name="WAREHOUSE" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Warehouse Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="STORAGEAREA" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="STORAGEAREA" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
             </EntityType>
+            <EntityType Name="Reverse" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="BUKRS"/>
+                    <PropertyRef Name="USNAM"/>
+                </Key>
+                <Property Name="BUKRS" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Company Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="USNAM" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="User Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BUPER_FROM" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Period Fr" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BUPER_TO" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Period To" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
             <EntityType Name="Header" sap:content-version="1">
                 <Key>
                     <PropertyRef Name="DLVNO"/>
@@ -384,8 +394,8 @@
                 <Key>
                     <PropertyRef Name="DLVNO"/>
                 </Key>
-                <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="VARCD" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Variation Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVTYP" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="Delivery Type" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="PLANDLVDT" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Pln Dlv Dt" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="RCVPLNT" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -491,6 +501,7 @@
                 <EntitySet Name="InfoAttribTblSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoAttribTbl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="InfoDetailAutoSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoDetailAuto" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="InfoHUDestSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoHUDest" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="ReverseSet" EntityType="ZGW_3DERP_ODFTY_SRV.Reverse" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="HeaderSet" EntityType="ZGW_3DERP_ODFTY_SRV.Header" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="DetailSet" EntityType="ZGW_3DERP_ODFTY_SRV.Detail" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="DlvTypeSet" EntityType="ZGW_3DERP_ODFTY_SRV.DlvType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>

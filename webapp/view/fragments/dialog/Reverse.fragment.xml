@@ -5,7 +5,10 @@
         <Label text="{caption>/POSTDT}:" design="Bold"/>
         <DatePicker
             id="dpReversePostDt"
-            editable="true">
+            editable="true"
+            valueFormat="yyyy-MM-dd"
+            displayFormat="MM/dd/yyyy"
+            value="{/postDt}">
             <layoutData>
                 <FlexItemData growFactor="1" baseSize="0%"/>
             </layoutData>

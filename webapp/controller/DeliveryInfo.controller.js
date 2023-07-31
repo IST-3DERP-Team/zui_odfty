@@ -262,9 +262,14 @@ sap.ui.define([
 
             onPickHdr() {
                 var oData = _this.getView().getModel("hdr").getProperty("/results/0");
-
                 if (oData.DELETED) {
                     MessageBox.warning(_oCaption.DLVNO + " " + oData.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
+
+                var aDataHu = _this.getView().getModel("hu").getData().results;
+                if (aDataHu.filter(x => x.DELETED = false).length == 0) {
+                    MessageBox.warning(_oCaption.INFO_NO_VALID_DLVHU);
                     return;
                 }
 
@@ -388,8 +393,13 @@ sap.ui.define([
                     return;
                 }
 
+                var oJSONModel = new JSONModel();
+                oJSONModel.setData({
+                    postDt: oData.POSTDT
+                })
+
                 _this._Reverse = sap.ui.xmlfragment(_this.getView().getId(), "zuiodfty.view.fragments.dialog.Reverse", _this);
-                //_this._Reverse.setModel(oJSONModel);
+                _this._Reverse.setModel(oJSONModel);
                 _this.getView().addDependent(_this._Reverse);
 
                 _this._Reverse.addStyleClass("sapUiSizeCompact");
@@ -436,38 +446,69 @@ sap.ui.define([
                 // });
             },
 
-            onProceedReverse() {
-                var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
-                var oDataHdr = _this.getView().getModel("hdr").getProperty("/results/0");
-                var oParam = {
-                    "iv_dlvno": oDataHdr.DLVNO,
-                    "iv_userid": _startUpInfo.id,
-                    "iv_pstngdt": _this.formatDate(new Date(oDataHdr.POSTDT)) + "T00:00:00", 
-                    "N_IDOD_ET_CANC": [],
-                    "N_IDOD_RETURN": []
-                };
+            onProceedReverse(oEvent) {
+                _this.showLoadingDialog();
 
-                console.log("IDOD_ReverseSet param", oParam);
-                oModelRFC.create("/IDOD_ReverseSet", oParam, {
-                    method: "POST",
-                    success: function(oResult, oResponse) {
-                        console.log("IDOD_ReverseSet", oResult, oResponse);
+                var oModel = this.getOwnerComponent().getModel();
+                var sUser = _startUpInfo.id;
+                var sPostDt = _this.byId("dpReversePostDt").getValue();
+                var sBuperDt = sPostDt.toString().substr(0, 7).replace("-", "");
+                var sFilter = "USNAM eq '" + sUser + "' and BUPER_FROM eq '" + sBuperDt + "'";
+                
+                oModel.read("/ReverseSet", {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("ReverseSet read", data);
+
+                        if (data.results.length > 0) {
+                            var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
+                            var oDataHdr = _this.getView().getModel("hdr").getProperty("/results/0");
+                            var oParam = {
+                                "iv_dlvno": oDataHdr.DLVNO,
+                                "iv_userid": _startUpInfo.id,
+                                "iv_pstngdt": _this.formatDate(new Date(oDataHdr.POSTDT)) + "T00:00:00", 
+                                "N_IDOD_ET_CANC": [],
+                                "N_IDOD_RETURN": []
+                            };
+
+                            console.log("IDOD_ReverseSet param", oParam);
+                            oModelRFC.create("/IDOD_ReverseSet", oParam, {
+                                method: "POST",
+                                success: function(oResult, oResponse) {
+                                    console.log("IDOD_ReverseSet", oResult, oResponse);
+
+                                    _this.closeLoadingDialog();
+                                    if (oResult.N_IDOD_ET_CANC.results) { //oResult.N_IDOD_ET_CANC.results[0].Type == "S"
+                                        MessageBox.information(oResult.N_IDOD_ET_CANC.results[0].Message);
+                                        //MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
+                                        _this.onRefreshHdr();
+                                        _this.onCancelReverse();
+                                    } else {
+                                        MessageBox.information(oResult.N_IDOD_RETURN.results[0].Message);
+                                    }
+                                },
+                                error: function(err) {
+                                    MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
+                                    _this.closeLoadingDialog();
+                                }
+                            });
+                        }
+                        else {
+                            MessageBox.information(_oCaption.POSTDT + " " + _oCaption.INFO_IS_NOT_VALID);
+                        }
 
                         _this.closeLoadingDialog();
-                        if (oResult.N_IDOD_ET_CANC.results) { //oResult.N_IDOD_ET_CANC.results[0].Type == "S"
-
-                            MessageBox.information(oResult.N_IDOD_ET_CANC.results[0].Message);
-                            //MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
-                            _this.onRefreshHdr();
-                        } else {
-                            MessageBox.information(oResult.N_IDOD_RETURN.results[0].Message);
-                        }
                     },
-                    error: function(err) {
-                        MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
+                    error: function (err) {
                         _this.closeLoadingDialog();
                     }
-                });
+                })
+            },
+
+            onCancelReverse() {
+                _this._Reverse.destroy(true);
             },
 
             onUndoPickHdr() {
@@ -987,22 +1028,33 @@ sap.ui.define([
 
                 var aData = _this.getView().getModel("dtl").getData().results;
                 var bErr = false;
+                var iValidRows = 0;
+                var iDeleteRows = 0;
                 for (var i = 0; i < aOrigSelIdx.length; i ++) {
                     var oData = aData[aOrigSelIdx[i]];
 
                     if (oData.DELETED == true) {
-                        MessageBox.information(_oCaption.INFO_SEL_RECORD + " " + _oCaption.INFO_ALREADY_DELETED);
-                        bErr = true;
-                        break;
+                        iDeleteRows += 1;
+                        // MessageBox.information(_oCaption.INFO_SEL_RECORD + " " + _oCaption.INFO_ALREADY_DELETED);
+                        // bErr = true;
+                        // break;
                     }
                     else if (parseFloat(oData.REQQTY) <= parseFloat(oData.ACTQTY)) {
                         MessageBox.information(_oCaption.INFO_SEL_RECORD + " " + _oCaption.INFO_NO_BALANCE);
                         bErr = true;
                         break;
                     }
+                    else {
+                        iValidRows += 1;
+                    }
                 }
 
                 if (bErr) return;
+
+                if (iDeleteRows > 0 && iValidRows == 0) {
+                    MessageBox.information(_oCaption.INFO_SEL_RECORD + " " + _oCaption.INFO_ALREADY_DELETED);
+                    return;
+                }
 
                 MessageBox.confirm(_oCaption.CONFIRM_AUTO_PICK, {
                     actions: ["Yes", "No"],
@@ -1012,13 +1064,15 @@ sap.ui.define([
 
                             aOrigSelIdx.forEach((i, idx) => {
                                 var oData = aData[i];
-                                var bRefresh = false;
+                                if (oData.DELETED == false) {
+                                    var bRefresh = false;
 
-                                if (idx == aOrigSelIdx.length - 1) {
-                                    bRefresh = true;
+                                    if (idx == aOrigSelIdx.length - 1) {
+                                        bRefresh = true;
+                                    }
+    
+                                    _this.setPickAuto(oData, bRefresh);
                                 }
-
-                                _this.setPickAuto(oData, bRefresh);
                             })
                         }
                     }
@@ -1622,10 +1676,6 @@ sap.ui.define([
                 }
             },
 
-            onCancelReverse() {
-                _this._Reverse.destroy(true);
-            },
-
             onNavBack() {
                 console.log("onNavBack");
                 //_this._router.navTo("RouteMain", {}, true);
@@ -2135,6 +2185,8 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_IS_ALREADY_DELETED"});
                 oCaptionParam.push({CODE: "INFO_LAYOUT_SAVE"});
                 oCaptionParam.push({CODE: "CONFIRM_AUTO_PICK"});
+                oCaptionParam.push({CODE: "INFO_IS_NOT_VALID"});
+                oCaptionParam.push({CODE: "INFO_NO_VALID_DLVHU"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",
