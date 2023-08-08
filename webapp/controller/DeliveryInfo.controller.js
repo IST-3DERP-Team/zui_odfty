@@ -268,7 +268,7 @@ sap.ui.define([
                 }
 
                 var aDataHu = _this.getView().getModel("hu").getData().results;
-                if (aDataHu.filter(x => x.DELETED = false).length == 0) {
+                if (aDataHu.filter(x => x.DELETED == false).length == 0) {
                     MessageBox.warning(_oCaption.INFO_NO_VALID_DLVHU);
                     return;
                 }
