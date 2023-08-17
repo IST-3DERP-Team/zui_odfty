@@ -61,6 +61,7 @@ sap.ui.define([
         
                 _this.showLoadingDialog("Loading...");
 
+                var oModel = this.getOwnerComponent().getModel();
                 var oModelStartUp= new sap.ui.model.json.JSONModel();
                 oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
                     _startUpInfo = oModelStartUp.oData
@@ -131,8 +132,8 @@ sap.ui.define([
 
                 _this.getHdr();
 
-                this.byId("itbDetails").setSelectedKey("dtl");
-
+                _this.byId("itbDetails").setSelectedKey("dtl");
+               
                 _this.closeLoadingDialog();
             },
 
@@ -190,7 +191,7 @@ sap.ui.define([
                         _this.getShip();
                         _this.getStat();
                         _this.getMatDoc();
-                        _this.getHuDest();
+                        //_this.getHuDest();
                         //_this.getOthInfo();
 
                         _this.closeLoadingDialog();
@@ -268,7 +269,7 @@ sap.ui.define([
                 }
 
                 var aDataHu = _this.getView().getModel("hu").getData().results;
-                if (aDataHu.filter(x => x.DELETED = false).length == 0) {
+                if (aDataHu.filter(x => x.DELETED == false).length == 0) {
                     MessageBox.warning(_oCaption.INFO_NO_VALID_DLVHU);
                     return;
                 }

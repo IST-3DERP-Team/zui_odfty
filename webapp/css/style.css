@@ -7,4 +7,7 @@
 .requiredField {
     color: red !important;
 }
-/* Enter your custom styles here */
+
+.sapMDialogScroll {
+    height: 98%;
+}

@@ -2,8 +2,14 @@
     "hu": [
         {"name": "DESTHUID", "position": 1, "type": "Edm.String", "visible": true, "required": true, "width": "160px", "hideOnChange": false, "showable": true, "sort": "Ascending",
         "valueHelp": {"show": true, "items": {"path": "/InfoHUDestSet", "value": "HUID", "text": "HUID"},
-        "suggestionItems": {"path": "huDest>/results", "text": "{huDest>HUID}", "additionalText": "{huDest>HUID}", "maxSuggestionWidth": "350px"},
-        "filter": "", "entitySet": ""}}
+            "suggestionItems": {"path": "desthuid>/results", "text": "{desthuid>HUID}", "additionalText": "", "maxSuggestionWidth": "220px"},
+            "filter": "", "entitySet": ""
+        },
+        "ValueHelp": {"show": true, "items": {"path": "desthuid", "value": "HUID", "text": "HUID"},
+            "SuggestionItems": {"path": "desthuid>/", "text": "{desthuid>HUID}", "additionalText": "", "maxSuggestionWidth": "220px"},
+            "columns": "tvh_desthuid"
+        }
+    }
     ],
     "othInfo": [
         {"name": "ATTRIBTYPE", "position": 1, "type": "Edm.String", "visible": true, "required": true, "width": "160px", "hideOnChange": false, "showable": true, "sort": "Ascending",
@@ -14,5 +20,14 @@
             "valueHelp": {"show": true, "items": {"path": "/AttribTypeDtlSet", "value": "ATTRIBCD", "text": "DESC1"},
             "suggestionItems": {"path": "/AttribTypeDtlSet", "text": "{ATTRIBCD}", "additionalText": "{DESC1}", "maxSuggestionWidth": "350px"},
             "filter": "", "entitySet": ""}}
+    ],
+
+    "tvh_desthuid": [
+        {"ColumnName": "HUID", "DataType": "STRING", "ColumnWidth": "250px", "Visible": true, "Key": true, "Value": true},
+        {"ColumnName": "HUTYPE", "DataType": "STRING", "ColumnWidth": "100px", "Visible": false, "Key": false, "Value": false},
+        {"ColumnName": "PLANTCD", "DataType": "STRING", "ColumnWidth": "100px", "Visible": false, "Key": false, "Value": false},
+        {"ColumnName": "SLOC", "DataType": "STRING", "ColumnWidth": "100px", "Visible": false, "Key": false, "Value": false},
+        {"ColumnName": "STORAGEAREA", "DataType": "STRING", "ColumnWidth": "100px", "Visible": false, "Key": false, "Value": false},
+        {"ColumnName": "WAREHOUSE", "DataType": "STRING", "ColumnWidth": "100px", "Visible": false, "Key": false, "Value": false}
     ]
 }

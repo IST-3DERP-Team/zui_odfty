@@ -28,8 +28,23 @@ sap.ui.define([
 
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
+                this._router.getRoute("RouteMain").attachPatternMatched(this._routePatternMatched, this);
 
+                var oModel = this.getOwnerComponent().getModel("ZVB_3DERP_ODFTY_FILTER_CDS");
+                var oSmartFilter = this.getView().byId("sfbODFty");
+                oSmartFilter.setModel(oModel);
+
+                //_this.initializeComponent();
+            },
+
+            _routePatternMatched: function (oEvent) {
                 _this.initializeComponent();
+
+                if (sap.ui.getCore().byId("backBtn")) {
+                    sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = function(oEvent) {
+                        _this.onNavBack();
+                    }
+                }
             },
 
             initializeComponent() {
@@ -59,23 +74,26 @@ sap.ui.define([
 
                 _this.getColumns(_aTableProp);
 
-                var oModel = this.getOwnerComponent().getModel("ZVB_3DERP_ODFTY_FILTER_CDS");
-                var oSmartFilter = this.getView().byId("sfbODFty");
-                oSmartFilter.setModel(oModel);
+                // var oModel = this.getOwnerComponent().getModel("ZVB_3DERP_ODFTY_FILTER_CDS");
+                // var oSmartFilter = this.getView().byId("sfbODFty");
+                // oSmartFilter.setModel(oModel);
 
-                // Header button
-                this.byId("btnAddODFtyHdr").setEnabled(false);
-                this.byId("btnEditODFtyHdr").setEnabled(false);
-                this.byId("btnRefreshODFtyHdr").setEnabled(false);
-                this.byId("btnFullScreenODFtyHdr").setEnabled(false);
-                this.byId("btnExitFullScreenODFtyHdr").setEnabled(false);
-                this.byId("btnTabLayoutODFtyHdr").setEnabled(false);
+                var aSmartFilter = this.getView().byId("sfbODFty").getFilters();
+                if (aSmartFilter.length == 0) {
+                    // Header button
+                    this.byId("btnAddODFtyHdr").setEnabled(false);
+                    this.byId("btnEditODFtyHdr").setEnabled(false);
+                    this.byId("btnRefreshODFtyHdr").setEnabled(false);
+                    this.byId("btnFullScreenODFtyHdr").setEnabled(false);
+                    this.byId("btnExitFullScreenODFtyHdr").setEnabled(false);
+                    this.byId("btnTabLayoutODFtyHdr").setEnabled(false);
 
-                // Detail button
-                this.byId("btnRefreshODFtyDtl").setEnabled(false);
-                this.byId("btnFullScreenODFtyDtl").setEnabled(false);
-                this.byId("btnExitFullScreenODFtyDtl").setEnabled(false);
-                this.byId("btnTabLayoutODFtyDtl").setEnabled(false);
+                    // Detail button
+                    this.byId("btnRefreshODFtyDtl").setEnabled(false);
+                    this.byId("btnFullScreenODFtyDtl").setEnabled(false);
+                    this.byId("btnExitFullScreenODFtyDtl").setEnabled(false);
+                    this.byId("btnTabLayoutODFtyDtl").setEnabled(false);
+                }
 
                 this._tableRendered = "";
                 var oTableEventDelegate = {

@@ -49,7 +49,6 @@ sap.ui.define([
         },
 
         onColFilter: function(oEvent, sColumnLabel, oThis) {
-            console.log("onColFilter", sColumnLabel)
             var me = oThis;
             // var oDDText = me.getView().getModel("ddtext").getData();
             var sTableId = "";
@@ -123,7 +122,7 @@ sap.ui.define([
             else {
                 oDialog.getModel().setProperty("/btnRemoveFilterEnable", true);
             }
-console.log("oTableColumns", oTableColumns, oColumnValues, aData)
+
             oTableColumns.forEach((col, idx) => {
                 if (col.ColumnName === "CREATEDDT" || col.ColumnName === "UPDATEDDT") { col.DataType = "DATETIME" }                   
 
@@ -210,7 +209,7 @@ console.log("oTableColumns", oTableColumns, oColumnValues, aData)
 
                 oSearchValues[col.ColumnName] = "";
             })
-console.log("test", oColumnValues, "test1", vSelectedColumn)
+
             oDialog.getModel().setProperty("/sourceTabId", sTableId);
             oDialog.getModel().setProperty("/items", oTableColumns);
             oDialog.getModel().setProperty("/values", oColumnValues);
@@ -482,7 +481,7 @@ console.log("test", oColumnValues, "test1", vSelectedColumn)
             else {
                 oFilter = "";
             }
-
+console.log("sSourceTabId", oFilter)
             // console.log(oFilter)
             me.byId(sSourceTabId).getBinding("rows").filter(oFilter, "Application");
             me._colFilters[sSourceTabId] = jQuery.extend(true, {}, oDialog.getModel().getData());
