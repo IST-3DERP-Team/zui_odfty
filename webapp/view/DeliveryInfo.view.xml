@@ -58,16 +58,28 @@
                                             <Input id="iptMvtType" editable="false" />
                                         </f:fields>
                                     </f:FormElement>
-                                    <f:FormElement label="{caption>/STATUS}">  
+                                    <f:FormElement label="{caption>/TOMETHOD}">  
                                         <f:fields>
-                                            <Input id="iptStatus" editable="false" />
+                                            <ComboBox
+                                                id="cmbToMethod"
+                                                showSecondaryValues= "true"
+                                                items="{
+                                                    path: 'toMethod>/results',
+                                                    sorter: { path: 'TOMETHOD' }
+                                                }"
+                                                editable="{ui>/editModeHdrTo}"
+                                                selectionChange="onDropdownSelectionChange">
+                                                <core:ListItem id="liToMethod" key="{toMethod>TOMETHOD}" text="{toMethod>TOMETHOD} - ({toMethod>DESCRIP})"/>
+                                            </ComboBox>
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement id="feDocDt" label="{caption>/DOCDT}">  
                                         <f:fields>
                                             <DatePicker
                                                 id="dpDocDt"
-                                                editable="{ui>/editModeHdr}"/>
+                                                editable="{ui>/editModeHdr}"
+                                                valueFormat="MM/dd/yyyy" 
+                                                displayFormat="MM/dd/yyyy" />
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement id="feReqDt" label="{caption>/REQDT}">  
@@ -112,14 +124,18 @@
                                         <f:fields>
                                             <DatePicker
                                                 id="dpPostDt"
-                                                editable="{ui>/editModeHdr}"/>
+                                                editable="{ui>/editModeHdr}"
+                                                valueFormat="MM/dd/yyyy" 
+                                                displayFormat="MM/dd/yyyy" />
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement label="{caption>/ACTISSDT}">  
                                         <f:fields>
                                             <DatePicker
                                                 id="dpActIssDt"
-                                                editable="{ui>/editModeHdr}"/>
+                                                editable="{ui>/editModeHdr}"
+                                                valueFormat="MM/dd/yyyy" 
+                                                displayFormat="MM/dd/yyyy" />
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement label="{caption>/REFDOCNO}">  
@@ -131,7 +147,9 @@
                                         <f:fields>
                                             <DatePicker
                                                 id="dpRefDocDt"
-                                                editable="{ui>/editModeHdr}"/>
+                                                editable="{ui>/editModeHdr}"
+                                                valueFormat="MM/dd/yyyy" 
+                                                displayFormat="MM/dd/yyyy" />
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement label="{caption>/HDRTEXT}">  
@@ -143,11 +161,9 @@
                             </f:FormContainer>
                             <f:FormContainer ariaLabelledBy="Grp4" class="sapUiNoContentPadding" >
                                 <f:formElements>
-                                    <f:FormElement label="{caption>/DELETED}">  
+                                    <f:FormElement label="{caption>/STATUS}">  
                                         <f:fields>
-                                            <CheckBox 
-                                                id="chkDeleted"
-                                                editable="false"/>
+                                            <Input id="iptStatus" editable="false" />
                                         </f:fields>
                                     </f:FormElement>
                                     <f:FormElement label="{caption>/CREATEDBY}">  
@@ -168,6 +184,13 @@
                                     <f:FormElement label="{caption>/UPDATEDDT}">  
                                         <f:fields>
                                             <Input id="iptUpdatedDt" editable="false" />
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement label="{caption>/DELETED}">  
+                                        <f:fields>
+                                            <CheckBox 
+                                                id="chkDeleted"
+                                                editable="false"/>
                                         </f:fields>
                                     </f:FormElement>
                                 </f:formElements>

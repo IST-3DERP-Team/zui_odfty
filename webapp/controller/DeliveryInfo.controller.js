@@ -38,6 +38,7 @@ sap.ui.define([
                     sbu: oEvent.getParameter("arguments").sbu,
                     dlvNo: oEvent.getParameter("arguments").dlvNo,
                     editModeHdr: false,
+                    editModeHdrTo: false,
                     useTo: true
                 }), "ui");
 
@@ -191,6 +192,7 @@ sap.ui.define([
                         _this.getShip();
                         _this.getStat();
                         _this.getMatDoc();
+                        _this.getResources("InfoToSet", "toMethod", "DLVTYPE eq '" + data.results[0].DLVTYPE + "'");
                         //_this.getHuDest();
                         //_this.getOthInfo();
 
@@ -571,6 +573,8 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
 
                 var param = {};
+                param.TOMETHOD = _this.byId("cmbToMethod").getSelectedKey();
+
                 if (_this.byId("dpDocDt").getValue()) 
                     param.DOCDT = _this.formatDate(new Date(_this.byId("dpDocDt").getValue())) + "T00:00:00";
 
@@ -611,6 +615,7 @@ sap.ui.define([
                     onClose: function (sAction) {
                         if (sAction == "Yes") {
                             _this.setControlEditMode("hdr", false);
+                            _this.setHeaderValue();
                         }
                     }
                 });
@@ -1605,6 +1610,24 @@ sap.ui.define([
                 _this.getOthInfo();
             },
 
+            getResources(pEntitySet, pModel, pFilter) {
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new JSONModel();
+                var oEntitySet = "/" + pEntitySet;
+                var oFilter = (pFilter ? { "$filter": pFilter } : {} )
+
+                oModel.read(oEntitySet, {
+                    urlParameters: oFilter,
+                    success: function (data, response) {
+                        //console.log("getResources", pEntitySet, pModel, data, pFilter)
+                        oJSONModel.setData(data);
+                        _this.getView().setModel(oJSONModel, pModel);
+                    },
+                    error: function (err) {
+                    }
+                })
+            },
+
             onAddHotKey() {
                 var sActiveTab = _this.byId("itbDetails").getSelectedKey();
                 
@@ -1743,7 +1766,7 @@ sap.ui.define([
 
                 _this.byId("iptDlvNo").setValue(oHeader.DLVNO);
                 _this.byId("iptMvtType").setValue(oHeader.MVTTYPE);
-                _this.byId("iptStatus").setValue(oHeader.STATUSDESC);
+                _this.byId("cmbToMethod").setSelectedKey(oHeader.TOMETHOD);
                 _this.byId("dpDocDt").setValue(oHeader.DOCDT);
                 _this.byId("iptReqDt").setValue(oHeader.REQDT);
 
@@ -1759,11 +1782,12 @@ sap.ui.define([
                 _this.byId("dpRefDocDt").setValue(oHeader.REFDOCDT);
                 _this.byId("iptHdrText").setValue(oHeader.HDRTEXT);
 
-                _this.byId("chkDeleted").setSelected(oHeader.DELETED);
+                _this.byId("iptStatus").setValue(oHeader.STATUSDESC);
                 _this.byId("iptCreatedBy").setValue(oHeader.CREATEDBY);
                 _this.byId("iptCreatedDt").setValue(oHeader.CREATEDDT);
                 _this.byId("iptUpdatedBy").setValue(oHeader.UPDATEDBY);
                 _this.byId("iptUpdatedDt").setValue(oHeader.UPDATEDDT);
+                _this.byId("chkDeleted").setSelected(oHeader.DELETED);
             },
 
             setControlEditMode(pType, pEditable, pAdd) {
@@ -1773,6 +1797,7 @@ sap.ui.define([
                 if (bAppChange) {
                     if (sap.ushell.Container) sap.ushell.Container.setDirtyFlag(pEditable);
 
+                    var oDataHdr = _this.getView().getModel("hdr").getProperty("/results/0");
                     if (pType == "hdr") {
     
                         // Header
@@ -1787,6 +1812,13 @@ sap.ui.define([
     
                         this.setReqField("hdr", pEditable);
                         this.getView().getModel("ui").setProperty("/editModeHdr", pEditable);
+
+                        if (pEditable == true && oDataHdr.STATUS == "50") {
+                            this.getView().getModel("ui").setProperty("/editModeHdrTo", true);
+                        }
+                        else {
+                            this.getView().getModel("ui").setProperty("/editModeHdrTo", false);
+                        }
     
                         // HU
                         this.byId("btnEditHu").setEnabled(!pEditable);
@@ -2117,7 +2149,7 @@ sap.ui.define([
                 // Form
                 oCaptionParam.push({CODE: "DLVNO"});
                 oCaptionParam.push({CODE: "MVTTYPE"});
-                oCaptionParam.push({CODE: "STATUS"});
+                oCaptionParam.push({CODE: "TOMETHOD"});
                 oCaptionParam.push({CODE: "DOCDT"});
                 oCaptionParam.push({CODE: "REQDT"});
 
@@ -2133,11 +2165,12 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "REFDOCDT"});
                 oCaptionParam.push({CODE: "HDRTEXT"});
 
-                oCaptionParam.push({CODE: "DELETED"});
+                oCaptionParam.push({CODE: "STATUS"});
                 oCaptionParam.push({CODE: "CREATEDBY"});
                 oCaptionParam.push({CODE: "CREATEDDT"});
                 oCaptionParam.push({CODE: "UPDATEDBY"});
                 oCaptionParam.push({CODE: "UPDATEDDT"});
+                oCaptionParam.push({CODE: "DELETED"});
 
                 // Button
                 oCaptionParam.push({CODE: "PICK_COMPLETE"});

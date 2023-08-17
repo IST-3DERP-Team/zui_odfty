@@ -138,7 +138,7 @@ sap.ui.define([
                 oModel.read("/ColumnsSet", {
                     success: function (oData, oResponse) {
                         oJSONColumnsModel.setData(oData);
-                        
+                        console.log("ColumnsSet", oData)
                         if (oData.results.length > 0) {
                             oData.results.forEach(col => {
                                 if (col.ColumnName == "COMPLETE")
@@ -618,7 +618,7 @@ sap.ui.define([
             this._inputField = oSource.getBindingInfo("value").parts[0].path;
 
             var vCellPath = _this._inputField;
-            var vColProp = _this._aColumns[sModel].filter(item => item.name === vCellPath);
+            var vColProp = _this._aColumns[sModel].filter(item => item.ColumnName === vCellPath);
             var vItemValue = vColProp[0].valueHelp.items.value;
             var vItemDesc = vColProp[0].valueHelp.items.text;
 
@@ -807,7 +807,7 @@ sap.ui.define([
                     if (Object.keys(x).includes("aFilters")) {
                         x.aFilters.forEach(y => {
                             console.log("aFilters", y, this._aColumns[pModel])
-                            var sName = this._aColumns[pModel].filter(item => item.name.toUpperCase() == y.sPath.toUpperCase())[0].name;
+                            var sName = this._aColumns[pModel].filter(item => item.ColumnName.toUpperCase() == y.sPath.toUpperCase())[0].ColumnName;
                             aFilter.push(new Filter(sName, FilterOperator.Contains, y.oValue1));
 
                             //if (!aFilterCol.includes(sName)) aFilterCol.push(sName);
@@ -816,7 +816,7 @@ sap.ui.define([
                         aFilterGrp.push(oFilterGrp);
                         aFilter = [];
                     } else {
-                        var sName = this._aColumns[pModel].filter(item => item.name.toUpperCase() == x.sPath.toUpperCase())[0].name;
+                        var sName = this._aColumns[pModel].filter(item => item.ColumnName.toUpperCase() == x.sPath.toUpperCase())[0].ColumnName;
                         aFilter.push(new Filter(sName, FilterOperator.Contains, x.oValue1));
                         var oFilterGrp = new Filter(aFilter, false);
                         aFilterGrp.push(oFilterGrp);
@@ -833,9 +833,8 @@ sap.ui.define([
 
             if (pFilterGlobal) {
                 this._aColumns[pModel].forEach(item => {
-                    var sDataType = this._aColumns[pModel].filter(col => col.name === item.name)[0].type;
-                    if (sDataType === "Edm.Boolean") aFilter.push(new Filter(item.name, FilterOperator.EQ, pFilterGlobal));
-                    else aFilter.push(new Filter(item.name, FilterOperator.Contains, pFilterGlobal));
+                    if (item.DataType === "BOOLEAN") aFilter.push(new Filter(item.ColumnName, FilterOperator.EQ, pFilterGlobal));
+                    else aFilter.push(new Filter(item.ColumnName, FilterOperator.Contains, pFilterGlobal));
                 })
 
                 var oFilterGrp = new Filter(aFilter, false);
@@ -854,7 +853,7 @@ sap.ui.define([
         onFilterByCol(pModel, pFilterTab) {
             if (pFilterTab.length > 0) {
                 pFilterTab.forEach(item => {
-                    var iColIdx = _this._aColumns[pModel].findIndex(x => x.name == item.sPath);
+                    var iColIdx = _this._aColumns[pModel].findIndex(x => x.ColumnName == item.sPath);
                     _this.getView().byId(pModel + "Tab").filter(_this.getView().byId(pModel + "Tab").getColumns()[iColIdx], 
                         item.oValue1);
                 });
@@ -869,10 +868,11 @@ sap.ui.define([
             var aFilter = [];
 
             if (sQuery) {
-                this._aFilterableColumns[sTable].forEach(item => {
-                    var sDataType = this._aColumns[sTable].filter(col => col.name === item.name)[0].type;
-                    if (sDataType === "BOOLEAN") aFilter.push(new Filter(item.name, FilterOperator.EQ, sQuery));
-                    else aFilter.push(new Filter(item.name, FilterOperator.Contains, sQuery));
+                this._aColumns[sTable].forEach(item => {
+                    if (item.Visible) {
+                        if (item.DataType === "BOOLEAN") aFilter.push(new Filter(item.ColumnName, FilterOperator.EQ, sQuery));
+                        else aFilter.push(new Filter(item.ColumnName, FilterOperator.Contains, sQuery));
+                    }
                 })
 
                 oFilter = new Filter(aFilter, false);
@@ -989,26 +989,26 @@ sap.ui.define([
         },
 
         setActiveRowFocus(pModel) {
-//             // Highligh first editable column on edit
-//             var oTable = this.byId(pModel + "Tab");
+            // Highligh first editable column on edit
+            var oTable = this.byId(pModel + "Tab");
 
-//             setTimeout(() => {
-//                 var iActiveRowIndex = oTable.getModel(pModel).getData().results.findIndex(item => item.ACTIVE === "X");
-//                 var aRows = oTable.getRows();
-//                 var sInputId = ""
-// console.log(aRows, iActiveRowIndex, "test", aRows[iActiveRowIndex].getCells())
-//                 if (document.getElementsByClassName("sapMInputFocused").length > 0) {
-//                     sInputId = document.getElementsByClassName("sapMInputFocused")[0].id;
-//                 } else {
-//                     var oCell = aRows[iActiveRowIndex].getCells().filter(x => x.sId.includes("input"))[0];
-//                     sInputId = oCell.sId;
-//                 }
+            setTimeout(() => {
+                var iActiveRowIndex = oTable.getModel(pModel).getData().results.findIndex(item => item.ACTIVE === "X");
+                var aRows = oTable.getRows();
+                var sInputId = ""
 
-//                 //var sColumn = _this._aColumns[pModel].filter(x => x.updatable == true)[0]["name"];
+                if (document.getElementsByClassName("sapMInputFocused").length > 0) {
+                    sInputId = document.getElementsByClassName("sapMInputFocused")[0].id;
+                } else {
+                    var oCell = aRows[iActiveRowIndex].getCells().filter(x => x.sId.includes("input"))[0];
+                    sInputId = oCell.sId;
+                }
+
+                //var sColumn = _this._aColumns[pModel].filter(x => x.updatable == true)[0]["name"];
                 
-//                 //oCell.focus();
-//                 document.getElementById(sInputId + "-inner").select();
-//             }, 1);
+                //oCell.focus();
+                document.getElementById(sInputId + "-inner").select();
+            }, 1);
         },
 
         onCellClick: function(oEvent) {
