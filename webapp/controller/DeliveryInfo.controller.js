@@ -39,7 +39,8 @@ sap.ui.define([
                     dlvNo: oEvent.getParameter("arguments").dlvNo,
                     editModeHdr: false,
                     editModeHdrTo: false,
-                    useTo: true
+                    useTo: true,
+                    forPick: true
                 }), "ui");
 
                 _this.initializeComponent();
@@ -179,6 +180,13 @@ sap.ui.define([
                                 item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
 
                             _this.getView().getModel("ui").setProperty("/useTo", item.USETO);
+
+                            if (item.USETO && item.RFIND) {
+                                _this.getView().getModel("ui").setProperty("/forPick", true);
+                            }
+                            else {
+                                _this.getView().getModel("ui").setProperty("/forPick", false);
+                            }
                         });
 
                         var oJSONModel = new JSONModel();
@@ -261,6 +269,10 @@ sap.ui.define([
                         }
                     }
                 });
+            },
+
+            onForPickHdr() {
+
             },
 
             onPickHdr() {
@@ -2186,6 +2198,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "PRINT"});
                 oCaptionParam.push({CODE: "CLOSE"});
                 oCaptionParam.push({CODE: "SETSTATUS"});
+                oCaptionParam.push({CODE: "FORPICK"});
                 oCaptionParam.push({CODE: "PICK"});
                 oCaptionParam.push({CODE: "AUTOPICK"});
                 oCaptionParam.push({CODE: "MANUALPICK"});
