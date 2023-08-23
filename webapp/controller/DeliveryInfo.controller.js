@@ -687,7 +687,7 @@ sap.ui.define([
                     return;
                 }
 
-                if (oDataHdr.STATUS != "50") {
+                if (oDataHdr.STATUS != "50" || oDataHdr.RFIND) {
                     MessageBox.warning(_oCaption.WARN_EDIT_NOT_ALLOW);
                     return;
                 }
@@ -1026,7 +1026,7 @@ sap.ui.define([
                     return;
                 }
 
-                if (oDataHdr.STATUS != "50") {
+                if (oDataHdr.STATUS != "50" || oDataHdr.RFIND) {
                     MessageBox.warning(_oCaption.WARN_PICK_NOT_ALLOW);
                     return;
                 }
@@ -1129,7 +1129,7 @@ sap.ui.define([
                     return;
                 }
                 
-                if (oDataHdr.STATUS == "50") {
+                if (oDataHdr.STATUS == "50" && !oDataHdr.RFIND) {
                     _this._router.navTo("RoutePicking", {
                         sbu: _this.getView().getModel("ui").getData().sbu,
                         dlvNo: oDataHdr.DLVNO,
@@ -1777,16 +1777,16 @@ sap.ui.define([
                 var oHeader = _this.getView().getModel("hdr").getData().results[0];
 
                 _this.byId("iptDlvNo").setValue(oHeader.DLVNO);
-                _this.byId("iptMvtType").setValue(oHeader.MVTTYPE);
+                _this.byId("iptMvtType").setValue(oHeader.MVTTYPEDESC);
                 _this.byId("cmbToMethod").setSelectedKey(oHeader.TOMETHOD);
                 _this.byId("dpDocDt").setValue(oHeader.DOCDT);
                 _this.byId("iptReqDt").setValue(oHeader.REQDT);
 
                 _this.byId("iptWarehouse").setValue(oHeader.WAREHOUSE);
-                _this.byId("iptIssPlant").setValue(oHeader.ISSPLANT);
-                _this.byId("iptIssSloc").setValue(oHeader.ISSSLOC);
-                _this.byId("iptRcvPlant").setValue(oHeader.RCVPLANT);
-                _this.byId("iptRcvSloc").setValue(oHeader.RCVSLOC);
+                _this.byId("iptIssPlant").setValue(oHeader.ISSPLANTDESC);
+                _this.byId("iptIssSloc").setValue(oHeader.ISSSLOCDESC);
+                _this.byId("iptRcvPlant").setValue(oHeader.RCVPLANTDESC);
+                _this.byId("iptRcvSloc").setValue(oHeader.RCVSLOCDESC);
 
                 _this.byId("dpPostDt").setValue(oHeader.POSTDT);
                 _this.byId("dpActIssDt").setValue(oHeader.ACTISSDT);
