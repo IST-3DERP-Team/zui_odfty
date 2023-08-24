@@ -111,11 +111,14 @@ sap.ui.define([
 
                 // Double click
                 var oTable = this.getView().byId("odFtyHdrTab");
-                oTable.attachBrowserEvent('dblclick', function (e) {
-                    e.preventDefault();
-
-                    _this.onEditODFtyHdr();
-                });
+                
+                if (!oTable.aBindParameters || oTable.aBindParameters.filter(x => x.sEventType == "dblclick").length == 0) {
+                    oTable.attachBrowserEvent('dblclick', function (e) {
+                        e.preventDefault();
+    
+                        _this.onEditODFtyHdr();
+                    });
+                }
 
                 _this.closeLoadingDialog();
             },
