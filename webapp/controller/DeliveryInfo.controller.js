@@ -67,7 +67,6 @@ sap.ui.define([
                 var oModelStartUp= new sap.ui.model.json.JSONModel();
                 oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
                     _startUpInfo = oModelStartUp.oData
-                    console.log(oModelStartUp, oModelStartUp.oData);
                 });
 
                 _aTableProp.push({
@@ -272,7 +271,76 @@ sap.ui.define([
             },
 
             onForPickHdr() {
+                var oData = _this.getView().getModel("hdr").getProperty("/results/0");
+                if (oData.DELETED) {
+                    MessageBox.warning(_oCaption.DLVNO + " " + oData.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
 
+                var aDataHu = _this.getView().getModel("hu").getData().results;
+                if (aDataHu.filter(x => x.DELETED == false).length == 0) {
+                    MessageBox.warning(_oCaption.INFO_NO_VALID_DLVHU);
+                    return;
+                }
+
+                MessageBox.confirm(_oCaption.CONFIRM_OD_PICK, {
+                    actions: ["Yes", "No"],
+                    onClose: function (sAction) {
+                        if (sAction === "Yes") {
+                            _this.showLoadingDialog("Loading...");
+
+                            var oModelRFC = _this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
+                            var oParamGetNumber = {};
+            
+                            oParamGetNumber["N_GetNumberParam"] = [{
+                                IUserid: _startUpInfo.id,
+                                INorangecd: oData.NORANGECD,
+                                IKeycd: ""
+                            }];
+                            oParamGetNumber["N_GetNumberReturn"] = [];
+            
+                            oModelRFC.create("/GetNumberSet", oParamGetNumber, {
+                                method: "POST",
+                                success: function(oResult, oResponse) {
+                                    console.log("GetNumberSet", oResult, oResponse);
+            
+                                    if (oResult.EReturnno.length > 0) {
+                                        _this.onPopulateTo(oResult.EReturnno);
+                                    } else {
+                                        var sMessage = oResult.N_GetNumberReturn.results[0].Type + ' - ' + oResult.N_GetNumberReturn.results[0].Message;
+                                        MessageBox.error(sMessage);
+                                        _this.closeLoadingDialog();
+                                    }
+                                },
+                                error: function(err) {
+                                    MessageBox.error(_oCaption.INFO_EXECUTE_FAIL);
+                                    _this.closeLoadingDialog();
+                                }
+                            });
+                        }
+                    }
+                });
+            },
+
+            onPopulateTo(pToNo) {
+                var oModel = this.getOwnerComponent().getModel();
+                var sDlvNo = _this.getView().getModel("ui").getData().dlvNo;
+                var sFilter = "DLVNO eq '" + sDlvNo + "' and TONO eq '" + pToNo + "'";
+
+                oModel.read('/ToHdrTblSet', {
+                    urlParameters: {
+                        "$filter": sFilter
+                    },
+                    success: function (data, response) {
+                        console.log("ToHdrTblSet", data)
+                        MessageBox.information(_oCaption.INFO_OD_FORPICK_COMPLETE);
+                        _this.onRefreshHdr();
+                    },
+                    error: function (err) { 
+                        console.log("error", err)
+                        _this.closeLoadingDialog();
+                    }
+                })
             },
 
             onPickHdr() {
@@ -2225,6 +2293,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_OD_PICKED"});
                 oCaptionParam.push({CODE: "CONFIRM_OD_POST"});
                 oCaptionParam.push({CODE: "CONFIRM_OD_PICK"});
+                oCaptionParam.push({CODE: "CONFIRM_OD_FORPICK"});
                 oCaptionParam.push({CODE: "INFO_SEL_RECORD"});
                 oCaptionParam.push({CODE: "INFO_ALREADY_DELETED"});
                 oCaptionParam.push({CODE: "INFO_NO_BALANCE"});
@@ -2234,6 +2303,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "CONFIRM_AUTO_PICK"});
                 oCaptionParam.push({CODE: "INFO_IS_NOT_VALID"});
                 oCaptionParam.push({CODE: "INFO_NO_VALID_DLVHU"});
+                oCaptionParam.push({CODE: "INFO_OD_FORPICK_COMPLETE"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",
