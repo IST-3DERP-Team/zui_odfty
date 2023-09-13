@@ -22,7 +22,7 @@ sap.ui.define([
         var _oCaption = {};
         var _aSmartFilter;
         var _sSmartFilterGlobal;
-        var _startUpInfo;
+        var _startUpInfo = {};
         var _aTableProp = [];
 
         return BaseController.extend("zuiodfty.controller.Reservation", {
@@ -70,11 +70,15 @@ sap.ui.define([
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
                 _this.showLoadingDialog("Loading...");
 
-                var oModelStartUp= new sap.ui.model.json.JSONModel();
-                oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
-                    _startUpInfo = oModelStartUp.oData
-                    console.log(oModelStartUp, oModelStartUp.oData);
-                });
+                if (sap.ushell.Container) {
+                    var oModelStartUp= new sap.ui.model.json.JSONModel();
+                    oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
+                        _startUpInfo = oModelStartUp.oData;
+                    });
+                }
+                else {
+                    _startUpInfo.id = "BAS_CONN";
+                }
 
                 _aTableProp.push({
                     modCode: "ODFTYRSVMOD",
