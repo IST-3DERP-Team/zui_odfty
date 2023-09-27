@@ -30,7 +30,7 @@
                             <Menu id="menuSetStatusHdr">
                                 <MenuItem id="menuForPickHdr" text="{caption>/FORPICK}" tooltip="{caption>/FORPICK}" visible="{ui>/forPick}" press="onForPickHdr" />
                                 <MenuItem id="menuPickHdr" text="{caption>/PICK_COMPLETE}" tooltip="{caption>/PICK_COMPLETE}" visible="{ui>/useTo}" press="onPickHdr" />
-                                <MenuItem id="menuUndoPickHdr" text="{caption>/UNDO_PICK_COMPLETE}" tooltip="{caption>/UNDO_PICK_COMPLETE}" visible="{ui>/useTo}" press="onUndoPickHdr" />
+                                <!-- <MenuItem id="menuUndoPickHdr" text="{caption>/UNDO_PICK_COMPLETE}" tooltip="{caption>/UNDO_PICK_COMPLETE}" visible="{ui>/useTo}" press="onUndoPickHdr" /> -->
                                 <MenuItem id="menuPostHdr" text="{caption>/POST}" tooltip="{caption>/POST}" press="onPostHdr" />
                                 <MenuItem id="menuReverseHdr" text="{caption>/REVERSE}" tooltip="{caption>/REVERSE}" press="onReverseHdr" />
                             </Menu>

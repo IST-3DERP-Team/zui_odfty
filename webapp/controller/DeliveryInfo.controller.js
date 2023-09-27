@@ -282,11 +282,21 @@ sap.ui.define([
                     return;
                 }
 
+                var aDataStat = _this.getView().getModel("stat").getData().results;
+                var oDataStatNext = aDataStat.filter(x => x.DLVSTATCD == "51")[0];
+                if (oDataStatNext.PREVSTATCD != oData.STATUS) {
+                    var oDataStatPrev = aDataStat.filter(x => x.DLVSTATCD == oDataStatNext.PREVSTATCD)[0];
+                    MessageBox.warning("Status should be " + oDataStatPrev.SHORTTEXT + ".");
+                    return;
+                }
+
                 var aDataHu = _this.getView().getModel("hu").getData().results;
                 if (aDataHu.filter(x => x.DELETED == false).length == 0) {
                     MessageBox.warning(_oCaption.INFO_NO_VALID_DLVHU);
                     return;
                 }
+
+                
 
                 MessageBox.confirm(_oCaption.CONFIRM_OD_PICK, {
                     actions: ["Yes", "No"],
@@ -352,6 +362,14 @@ sap.ui.define([
                 var oData = _this.getView().getModel("hdr").getProperty("/results/0");
                 if (oData.DELETED) {
                     MessageBox.warning(_oCaption.DLVNO + " " + oData.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
+
+                var aDataStat = _this.getView().getModel("stat").getData().results;
+                var oDataStatNext = aDataStat.filter(x => x.DLVSTATCD == "52")[0];
+                if (oDataStatNext.PREVSTATCD != oData.STATUS) {
+                    var oDataStatPrev = aDataStat.filter(x => x.DLVSTATCD == oDataStatNext.PREVSTATCD)[0];
+                    MessageBox.warning("Status should be " + oDataStatPrev.SHORTTEXT + ".");
                     return;
                 }
 
@@ -427,6 +445,14 @@ sap.ui.define([
                 
                 if (oData.DELETED) {
                     MessageBox.warning(_oCaption.DLVNO + " " + oData.DLVNO + " " + _oCaption.INFO_IS_ALREADY_DELETED);
+                    return;
+                }
+
+                var aDataStat = _this.getView().getModel("stat").getData().results;
+                var oDataStatNext = aDataStat.filter(x => x.DLVSTATCD == "54")[0];
+                if (oDataStatNext.PREVSTATCD != oData.STATUS) {
+                    var oDataStatPrev = aDataStat.filter(x => x.DLVSTATCD == oDataStatNext.PREVSTATCD)[0];
+                    MessageBox.warning("Status should be " + oDataStatPrev.SHORTTEXT + ".");
                     return;
                 }
 
