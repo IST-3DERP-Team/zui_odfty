@@ -565,10 +565,13 @@ sap.ui.define([
 
                 var oModel = this.getOwnerComponent().getModel();
                 var sUser = _startUpInfo.id;
-                var sPostDt = _this.byId("dpReversePostDt").getValue();
-                var sBuperDt = sPostDt.toString().substr(0, 7).replace("-", "");
+                //var sPostDt = _this.byId("dpReversePostDt").getValue();
+                var sPostDt = new Date(_this.byId("dpReversePostDt").getValue());
+                //var sBuperDt = sPostDt.toString().substr(0, 7).replace("-", "").replace("/", "");
+                var sBuperDt =  sPostDt.getFullYear() +  ('0' + (sPostDt.getMonth() + 1)).slice(-2)
                 var sFilter = "USNAM eq '" + sUser + "' and BUPER_FROM eq '" + sBuperDt + "'";
-                
+
+                console.log("ReverseSet param", sFilter);
                 oModel.read("/ReverseSet", {
                     urlParameters: {
                         "$filter": sFilter
@@ -594,7 +597,7 @@ sap.ui.define([
                                     console.log("IDOD_ReverseSet", oResult, oResponse);
 
                                     _this.closeLoadingDialog();
-                                    if (oResult.N_IDOD_ET_CANC.results) { //oResult.N_IDOD_ET_CANC.results[0].Type == "S"
+                                    if (oResult.N_IDOD_ET_CANC.results && oResult.N_IDOD_ET_CANC.results.length > 0) { //oResult.N_IDOD_ET_CANC.results[0].Type == "S"
                                         MessageBox.information(oResult.N_IDOD_ET_CANC.results[0].Message);
                                         //MessageBox.information(_oCaption.INFO_EXECUTE_SUCCESS);
                                         _this.onRefreshHdr();
