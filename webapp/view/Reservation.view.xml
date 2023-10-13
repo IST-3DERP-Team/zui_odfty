@@ -19,7 +19,7 @@
                     persistencyKey="3DERP_ODFtyRsvKey" filterContainerWidth="14rem" useToolbar="true" showClearOnFB="true" initialise="onSFBInitialise">
                     <sfb:controlConfiguration>
                         <sfb:ControlConfiguration id="filterRsvNo" key="RSVNO" groupId="_BASIC" label="{caption>/RSVNO}"
-                            preventInitialDataFetchInValueHelpDialog="true" displayBehaviour="idOnly" mandatory="notMandatory" index="0">
+                            preventInitialDataFetchInValueHelpDialog="false" displayBehaviour="idOnly" mandatory="notMandatory" index="0">
                         </sfb:ControlConfiguration>
                     </sfb:controlConfiguration>
                     <sfb:controlConfiguration>

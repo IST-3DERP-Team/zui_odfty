@@ -326,48 +326,53 @@ sap.ui.define([
                     var sDlvNo = this.getView().getModel("ui").getData().dlvNo;
                     var bAppChange = _this.getView().getModel("base").getProperty("/appChange");
                     
-                    if (bAppChange) {
+                    _this._router.navTo("RouteDeliveryInfo", {
+                        sbu: _this.getView().getModel("ui").getData().sbu,
+                        dlvNo: sDlvNo
+                    });
+                    
+                    // if (bAppChange) {
 
-                        _this.showLoadingDialog("Loading...");
-                        var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
+                    //     _this.showLoadingDialog("Loading...");
+                    //     var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
 
-                        var oParamLock = {
-                            Dlvno: sDlvNo,
-                            Lock_Unlock_Ind: "X",
-                            IV_Count: 600,
-                            N_LOCK_UNLOCK_DLVHDR_RET: [],
-                            N_LOCK_UNLOCK_DLVHDR_MSG: []
-                        }
+                    //     var oParamLock = {
+                    //         Dlvno: sDlvNo,
+                    //         Lock_Unlock_Ind: "X",
+                    //         IV_Count: 600,
+                    //         N_LOCK_UNLOCK_DLVHDR_RET: [],
+                    //         N_LOCK_UNLOCK_DLVHDR_MSG: []
+                    //     }
 
-                        console.log("Lock_Unlock_DlvHdrSet param", oParamLock)
-                        oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
-                            method: "POST",
-                            success: function(data, oResponse) {
-                                console.log("Lock_Unlock_DlvHdrSet", data);
-                                _this.closeLoadingDialog();
+                    //     console.log("Lock_Unlock_DlvHdrSet param", oParamLock)
+                    //     oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
+                    //         method: "POST",
+                    //         success: function(data, oResponse) {
+                    //             console.log("Lock_Unlock_DlvHdrSet", data);
+                    //             _this.closeLoadingDialog();
 
-                                if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
-                                    _this._router.navTo("RouteDeliveryInfo", {
-                                        sbu: _this.getView().getModel("ui").getData().sbu,
-                                        dlvNo: sDlvNo
-                                    });
-                                } else {
-                                    var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
-                                    MessageBox.warning(oFilter.Message);
+                    //             if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
+                    //                 _this._router.navTo("RouteDeliveryInfo", {
+                    //                     sbu: _this.getView().getModel("ui").getData().sbu,
+                    //                     dlvNo: sDlvNo
+                    //                 });
+                    //             } else {
+                    //                 var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
+                    //                 MessageBox.warning(oFilter.Message);
                                     
-                                }
-                            },
-                            error: function(err) {
-                                MessageBox.error(err);
-                                _this.closeLoadingDialog();
-                            }
-                        });     
-                    } else {
-                        _this._router.navTo("RouteDeliveryInfo", {
-                            sbu: _this.getView().getModel("ui").getData().sbu,
-                            dlvNo: sDlvNo
-                        });
-                    }
+                    //             }
+                    //         },
+                    //         error: function(err) {
+                    //             MessageBox.error(err);
+                    //             _this.closeLoadingDialog();
+                    //         }
+                    //     });     
+                    // } else {
+                    //     _this._router.navTo("RouteDeliveryInfo", {
+                    //         sbu: _this.getView().getModel("ui").getData().sbu,
+                    //         dlvNo: sDlvNo
+                    //     });
+                    // }
                 } else {
                     MessageBox.information(_oCaption.INFO_NO_SELECTED);
                 }

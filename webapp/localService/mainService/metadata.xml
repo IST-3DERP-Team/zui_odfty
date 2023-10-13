@@ -2,6 +2,18 @@
 <edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
     <edmx:DataServices m:DataServiceVersion="2.0">
         <Schema Namespace="ZGW_3DERP_ODFTY_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+            <EntityType Name="ToHdrTbl" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="TONO"/>
+                </Key>
+                <Property Name="TONO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="To No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TOTYP" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="TO Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TOMETHOD" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="TO Method" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="WHSECD" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Warehouse Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="STORAREACD" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Store Area Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
             <EntityType Name="InfoAttrib" sap:content-version="1">
                 <Key>
                     <PropertyRef Name="DLVNO"/>
@@ -278,6 +290,9 @@
                     <PropertyRef Name="STATUS"/>
                 </Key>
                 <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DLVSTATCD" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlvry Status Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PREVSTATCD" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Previous Status Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SHORTTEXT" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:label="Short Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="STATUS" Type="Edm.String" Nullable="false" MaxLength="61" sap:unicode="false" sap:label="STATUS" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="STARTDT" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="STARTDT" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="STARTTM" Type="Edm.String" MaxLength="8" sap:unicode="false" sap:label="STARTTM" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -330,9 +345,9 @@
                 <Property Name="ISSSLOC" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="ISSSLOC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="RCVPLANT" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="RCVPLANT" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="RCVSLOC" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="RCVSLOC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="REQQTY" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="UOM" sap:label="REQQTY" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="ISSQTY" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="UOM" sap:label="ISSQTY" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="BALANCE" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:unit="UOM" sap:label="BALANCE" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="REQQTY" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="REQQTY" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ISSQTY" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="ISSQTY" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BALANCE" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:label="BALANCE" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="PICKQTY" Type="Edm.Double" Nullable="false" sap:unicode="false" sap:label="PICKQTY" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="UOM" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="UOM" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
             </EntityType>
@@ -369,16 +384,16 @@
                 <Key>
                     <PropertyRef Name="DLVNO"/>
                 </Key>
-                <Property Name="MVTTYPEDESC" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:label="Short Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="RFIND" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="RFIND" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MVTTYPEDESC" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:label="Short Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="ISSPLANTDESC" Type="Edm.String" Nullable="false" MaxLength="35" sap:unicode="false" sap:label="ISSPLANTDESC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="STORAGEAREA" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Store Area Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="RFIND" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="RFIND" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="ISSSLOCDESC" Type="Edm.String" Nullable="false" MaxLength="21" sap:unicode="false" sap:label="ISSSLOCDESC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="TOMETHOD" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="TO Method" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="STORAGEAREA" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Store Area Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="RCVPLANTDESC" Type="Edm.String" Nullable="false" MaxLength="35" sap:unicode="false" sap:label="RCVPLANTDESC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="RCVSLOCDESC" Type="Edm.String" Nullable="false" MaxLength="21" sap:unicode="false" sap:label="RCVSLOCDESC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TOMETHOD" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="TO Method" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="STATUSDESC" Type="Edm.String" Nullable="false" MaxLength="61" sap:unicode="false" sap:label="STATUSDESC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="RCVSLOCDESC" Type="Edm.String" Nullable="false" MaxLength="21" sap:unicode="false" sap:label="RCVSLOCDESC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="DLVTYPE" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Delivery Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="SRCTBL" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Source Table" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="USEHU" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="USEHU" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -511,18 +526,8 @@
                 <Property Name="DIMUOM" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Base Unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
                 <Property Name="BINCD" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Bin Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
             </EntityType>
-            <EntityType Name="ToHdrTbl" sap:content-version="1">
-                <Key>
-                    <PropertyRef Name="TONO"/>
-                </Key>
-                <Property Name="TONO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="To No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="TOTYP" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="TO Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="TOMETHOD" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="TO Method" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="WHSECD" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Warehouse Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="STORAREACD" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Store Area Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="DLVNO" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dlv No" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-            </EntityType>
             <EntityContainer Name="ZGW_3DERP_ODFTY_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="ToHdrTblSet" EntityType="ZGW_3DERP_ODFTY_SRV.ToHdrTbl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="InfoAttribSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoAttrib" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="AttribTypeSet" EntityType="ZGW_3DERP_ODFTY_SRV.AttribType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="AttribTypeDtlSet" EntityType="ZGW_3DERP_ODFTY_SRV.AttribTypeDtl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
@@ -546,7 +551,6 @@
                 <EntitySet Name="InfoHeaderTblSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoHeaderTbl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="InfoDetailTblSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoDetailTbl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="InfoHUTblSet" EntityType="ZGW_3DERP_ODFTY_SRV.InfoHUTbl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
-                <EntitySet Name="ToHdrTblSet" EntityType="ZGW_3DERP_ODFTY_SRV.ToHdrTbl" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
             </EntityContainer>
             <atom:link rel="self" href="http://190.92.230.65:8000/sap/opu/odata/sap/ZGW_3DERP_ODFTY_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
             <atom:link rel="latest-version" href="http://190.92.230.65:8000/sap/opu/odata/sap/ZGW_3DERP_ODFTY_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>

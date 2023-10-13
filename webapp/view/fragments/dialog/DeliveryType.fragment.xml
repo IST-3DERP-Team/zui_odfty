@@ -27,16 +27,16 @@
 						 <Text text="{dlvType>DLVTYPE}" />
                     </uiT:template>
                 </uiT:Column>
+                <uiT:Column width="35%">
+                    <Label text="{caption>/MVTTYPE}" />
+                    <uiT:template>
+						 <Text text="{dlvType>BTEXT}"   />
+                    </uiT:template>
+                </uiT:Column>
                 <uiT:Column width="40%">
                     <Label text="{caption>/DESCRIP}" />
                     <uiT:template>
 						 <Text text="{dlvType>DESCRIP}"   />
-                    </uiT:template>
-                </uiT:Column>
-                 <uiT:Column width="35%">
-                    <Label text="{caption>/MVTTYPE}" />
-                    <uiT:template>
-						 <Text text="{dlvType>BTEXT}"   />
                     </uiT:template>
                 </uiT:Column>
             </uiT:columns>

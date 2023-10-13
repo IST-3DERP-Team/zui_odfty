@@ -252,7 +252,7 @@ sap.ui.define([
                 }
 
                 var oSorter = new sap.ui.model.Sorter(sPath, bDescending ); //sorter(columnData, If Ascending(false) or Descending(True))
-                var oColumn = oColumns.filter(fItem => fItem.ColumnName === oEvent.getParameter("column").getProperty("sortProperty"));
+                var oColumn = pColumn.filter(fItem => fItem.ColumnName === oEvent.getParameter("column").getProperty("sortProperty"));
                 var columnType = oColumn[0].DataType;
 
                 if (columnType === "DATETIME") {
@@ -434,22 +434,22 @@ sap.ui.define([
 
                                 col.setTemplate(oInput);
                             }
-                            else if (ci.type === "BOOLEAN") {
+                            else if (ci.DataType === "BOOLEAN") {
                                 col.setTemplate(new sap.m.CheckBox({selected: "{" + pModel + ">" + sColName + "}",  
                                     editable: true
                                 }));
                             }
-                            else if (ci.type === "NUMBER") {
+                            else if (ci.DataType === "NUMBER") {
                                 col.setTemplate(new sap.m.Input({
                                     type: sap.m.InputType.Number,
                                     textAlign: sap.ui.core.TextAlign.Right,
                                     // value: "{" + pModel + ">" + sColName + "}",
-                                    value: "{path:'" + pModel + ">" + sColName + "', formatOptions:{ minFractionDigits:" + ci.scale + ", maxFractionDigits:" + ci.scale + " }, constraints:{ precision:" + ci.precision + ", scale:" + ci.scale + " }}",
+                                    value: "{path:'" + pModel + ">" + sColName + "', formatOptions:{ minFractionDigits:" + ci.Decimal + ", maxFractionDigits:" + ci.Decimal + " }, constraints:{ precision:" + ci.Length + ", scale:" + ci.Decimal + " }}",
                                     liveChange: this.onNumberLiveChange.bind(this), 
                                     enabled: true
                                 }));
                             }
-                            else if (ci.type === "DATE") {
+                            else if (ci.DataType === "DATE") {
                                 col.setTemplate(new sap.m.DatePicker({
                                     value: "{" + pModel + ">" + sColName + "}",
                                     displayFormat: "MM/dd/yyyy",
@@ -470,9 +470,9 @@ sap.ui.define([
                             col.getLabel().addStyleClass("sapMLabelRequired");
                         }
 
-                        if (ci.type === "STRING") oNewRow[ci.name] = "";
-                        //else if (ci.type === "NUMBER") oNewRow[ci.name] = "0";
-                        else if (ci.type === "BOOLEAN") oNewRow[ci.name] = false;
+                        if (ci.DataType === "STRING") oNewRow[ci.name] = "";
+                        //else if (ci.DataType === "NUMBER") oNewRow[ci.name] = "0";
+                        else if (ci.DataType === "BOOLEAN") oNewRow[ci.name] = false;
                     })                
             })
 
@@ -564,22 +564,22 @@ sap.ui.define([
 
                                 col.setTemplate(oInput);
                             }
-                            else if (ci.type === "BOOLEAN") {
+                            else if (ci.DataType === "BOOLEAN") {
                                 col.setTemplate(new sap.m.CheckBox({selected: "{" + pModel + ">" + sColName + "}",  
                                     editable: true
                                 }));
                             }
-                            else if (ci.type === "NUMBER") {
+                            else if (ci.DataType === "NUMBER") {
                                 col.setTemplate(new sap.m.Input({
                                     type: sap.m.InputType.Number,
                                     textAlign: sap.ui.core.TextAlign.Right,
                                     // value: "{" + pModel + ">" + sColName + "}",
-                                    value: "{path:'" + pModel + ">" + sColName + "', formatOptions:{ minFractionDigits:" + ci.scale + ", maxFractionDigits:" + ci.scale + " }, constraints:{ precision:" + ci.precision + ", scale:" + ci.scale + " }}",
+                                    value: "{path:'" + pModel + ">" + sColName + "', formatOptions:{ minFractionDigits:" + ci.Decimal + ", maxFractionDigits:" + ci.Decimal + " }, constraints:{ precision:" + ci.Length + ", scale:" + ci.Decimal + " }}",
                                     liveChange: this.onNumberLiveChange.bind(this), 
                                     enabled: true
                                 }));
                             }
-                            else if (ci.type === "DATE") {
+                            else if (ci.DataType === "DATE") {
                                 col.setTemplate(new sap.m.DatePicker({
                                     value: "{" + pModel + ">" + sColName + "}",
                                     displayFormat: "MM/dd/yyyy",
