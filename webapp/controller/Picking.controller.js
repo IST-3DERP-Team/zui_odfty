@@ -43,7 +43,9 @@ sap.ui.define([
                     matNo: "",
                     batch: "",
                     sloc: "",
-                    dlvItem: ""
+                    dlvItem: "",
+                    rowCountPickHdr: 0,
+                    rowCountPickDtl: 0
                 }), "ui");
 
                 _this.initializeComponent();
@@ -59,6 +61,7 @@ sap.ui.define([
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
                 _this.showLoadingDialog("Loading...");
 
+                _aTableProp = [];
                 _aTableProp.push({
                     modCode: "ODFTYPICKHDRMOD",
                     tblSrc: "ZDV_ODF_PCK_HDR",
@@ -99,8 +102,10 @@ sap.ui.define([
 
                 _aPickDtl = [];
                 _aPickDtlTo = [];
-                
-                _this.getPickHdr();
+
+                setTimeout(() => {
+                    _this.getPickHdr();
+                }, 300);
 
                 _this.closeLoadingDialog();
             },
@@ -130,8 +135,6 @@ sap.ui.define([
                         oJSONModel.setData(data);
                         _this.getView().setModel(oJSONModel, "pickHdr");
 
-                        _this.setRowReadMode("pickHdr");
-
                         var oTable = _this.byId("pickHdrTab");
                         if (oTable.getBinding("rows").aIndices.length > 0) {
                             var aIndices = oTable.getBinding("rows").aIndices;
@@ -146,6 +149,12 @@ sap.ui.define([
                         } else {
                             _this.getView().getModel("pickDtl").setProperty("/results", []);
                         }
+
+                        _this._tableRendered = "pickHdr";
+                        _this.setRowReadMode("pickHdr");
+
+                        // Set row count
+                        _this.getView().getModel("ui").setProperty("/rowCountPickHdr", data.results.length);
 
                         _this.closeLoadingDialog();
                     },
@@ -409,20 +418,27 @@ sap.ui.define([
                 aPickDtlFiltered.results.push(...aPickDtl.filter(x => x.PLANTCD == oDataUI.plantCd && 
                     x.MATNO == oDataUI.matNo && x.BATCH == oDataUI.batch && x.SLOC == oDataUI.sloc));
 
-                aPickDtlFiltered.results.forEach(item => {
+                aPickDtlFiltered.results.forEach((item, idx) => {
                     var iIdx = _aPickDtlTo.findIndex(x => x.huId == item.HUID && x.huItem == item.HUITEM);
                     if (iIdx > -1) {
                         item.TOQTY = parseFloat(_aPickDtlTo[iIdx].toQty).toString();
                     }
 
                     item.BALANCE = (parseFloat(item.QTY) - parseFloat(item.TOQTY)).toString();
+
+                    if (idx == 0) item.ACTIVE = "X";
+                    else item.ACTIVE = "";
                 })
-                
+
                 var oJSONModel = new sap.ui.model.json.JSONModel();
                 oJSONModel.setData(aPickDtlFiltered);
                 _this.getView().setModel(oJSONModel, "pickDtl");
+                _this._tableRendered = "pickDtl";
 
                 _this.setRowReadMode("pickDtl");
+
+                // Set row count
+                _this.getView().getModel("ui").setProperty("/rowCountPickDtl", aPickDtlFiltered.results.length);
             },
 
             onAutoPickDtl() {
@@ -798,8 +814,24 @@ sap.ui.define([
                 }
             },
 
-            onTableResize(pModel, pType) {
-                if (pModel === "pickDtl") {
+            onTableResize(pGroup, pType) {
+                if (pGroup === "hdr") {
+                    if (pType === "Max") {
+                        this.byId("btnFullScreenPickHdr").setVisible(false);
+                        this.byId("btnExitFullScreenPickHdr").setVisible(true);
+
+                        this.getView().byId("pickHdrTab").setVisible(true);
+                        this.getView().byId("pickDtlTab").setVisible(false);
+                    }
+                    else {
+                        this.byId("btnFullScreenPickHdr").setVisible(true);
+                        this.byId("btnExitFullScreenPickHdr").setVisible(false);
+
+                        this.getView().byId("pickHdrTab").setVisible(true);
+                        this.getView().byId("pickDtlTab").setVisible(true);
+                    }
+                }
+                else if (pGroup === "dtl") {
                     if (pType === "Max") {
                         this.byId("btnFullScreenPickDtl").setVisible(false);
                         this.byId("btnExitFullScreenPickDtl").setVisible(true);
@@ -881,6 +913,9 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "FULLSCREEN"});
                 oCaptionParam.push({CODE: "EXITFULLSCREEN"});
                 oCaptionParam.push({CODE: "SAVELAYOUT"});
+
+                // Label
+                oCaptionParam.push({CODE: "ITEM(S)"});
 
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});

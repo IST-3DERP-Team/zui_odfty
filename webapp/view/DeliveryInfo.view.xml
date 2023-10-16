@@ -23,24 +23,24 @@
             <VBox id="vbMain" fitContainer="true">
                 <Toolbar id="tbHeader" style="Clear">
                     <ToolbarSpacer />
-                    <Button id="btnEditHdr" type="Ghost" icon="sap-icon://edit" press="onEditHdr" text="{caption>/EDIT}" tooltip="{caption>/EDIT}" visible="true"/>
-                    <Button id="btnDeleteHdr" type="Ghost" icon="sap-icon://delete" press="onDeleteHdr" text="{caption>/DELETE}" tooltip="{caption>/DELETE}" visible="true"/> 
+                    <Button id="btnEditHdr" type="Ghost" icon="sap-icon://edit" press="onEditHdr" text="" tooltip="{caption>/EDIT}" visible="true"/>
+                    <Button id="btnDeleteHdr" type="Ghost" icon="sap-icon://delete" press="onDeleteHdr" text="" tooltip="{caption>/DELETE}" visible="true"/> 
                     <MenuButton id="btnSetStatusHdr" type="Ghost" icon="sap-icon://settings" text="{caption>/SETSTATUS}" tooltip="{caption>/SETSTATUS}" visible="true">
                         <menu>
                             <Menu id="menuSetStatusHdr">
-                                <MenuItem id="menuForPickHdr" text="{caption>/FORPICK}" tooltip="{caption>/FORPICK}" visible="{ui>/forPick}" press="onForPickHdr" />
-                                <MenuItem id="menuPickHdr" text="{caption>/PICK_COMPLETE}" tooltip="{caption>/PICK_COMPLETE}" visible="{ui>/useTo}" press="onPickHdr" />
+                                <MenuItem id="menuForPickHdr" icon="sap-icon://multiple-bar-chart" text="{caption>/FORPICK}" tooltip="{caption>/FORPICK}" visible="{ui>/forPick}" press="onForPickHdr" />
+                                <MenuItem id="menuPickHdr" icon="sap-icon://flag" text="{caption>/PICK_COMPLETE}" tooltip="{caption>/PICK_COMPLETE}" visible="{ui>/useTo}" press="onPickHdr" />
                                 <!-- <MenuItem id="menuUndoPickHdr" text="{caption>/UNDO_PICK_COMPLETE}" tooltip="{caption>/UNDO_PICK_COMPLETE}" visible="{ui>/useTo}" press="onUndoPickHdr" /> -->
-                                <MenuItem id="menuPostHdr" text="{caption>/POST}" tooltip="{caption>/POST}" press="onPostHdr" />
-                                <MenuItem id="menuReverseHdr" text="{caption>/REVERSE}" tooltip="{caption>/REVERSE}" press="onReverseHdr" />
+                                <MenuItem id="menuPostHdr" icon="sap-icon://complete" text="{caption>/POST}" tooltip="{caption>/POST}" press="onPostHdr" />
+                                <MenuItem id="menuReverseHdr" icon="sap-icon://undo" text="{caption>/REVERSE}" tooltip="{caption>/REVERSE}" press="onReverseHdr" />
                             </Menu>
                         </menu>
                     </MenuButton>
-                    <Button id="btnRefreshHdr" type="Ghost" icon="sap-icon://refresh" press="onRefreshHdr" text="{caption>/REFRESH}" tooltip="{caption>/REFRESH}" visible="true"/> 
-                    <Button id="btnPrintHdr" type="Ghost" icon="sap-icon://print" press="onPrintHdr" text="{caption>/PRINT}" tooltip="{caption>/PRINT}" visible="true"/> 
-                    <Button id="btnCloseHdr" type="Ghost" icon="sap-icon://sys-cancel" press="onCloseHdr" text="{caption>/CLOSE}" tooltip="{caption>/CLOSE}" visible="true"/> 
-                    <Button id="btnSaveHdr" type="Ghost" icon="sap-icon://save" press="onSaveHdr" text="{caption>/SAVE}" tooltip="{caption>/SAVE}" visible="false"/> 
-                    <Button id="btnCancelHdr" type="Ghost" icon="sap-icon://sys-cancel" press="onCancelHdr" text="{caption>/CANCEL}" tooltip="{caption>/CANCEL}" visible="false"/> 
+                    <Button id="btnRefreshHdr" type="Ghost" icon="sap-icon://refresh" press="onRefreshHdr" text="" tooltip="{caption>/REFRESH}" visible="true"/> 
+                    <Button id="btnPrintHdr" type="Ghost" icon="sap-icon://print" press="onPrintHdr" text="" tooltip="{caption>/PRINT}" visible="true"/> 
+                    <Button id="btnCloseHdr" type="Ghost" icon="sap-icon://sys-cancel" press="onCloseHdr" text="" tooltip="{caption>/CLOSE}" visible="true"/> 
+                    <Button id="btnSaveHdr" type="Ghost" icon="sap-icon://save" press="onSaveHdr" text="" tooltip="{caption>/SAVE}" visible="false"/> 
+                    <Button id="btnCancelHdr" type="Ghost" icon="sap-icon://decline" press="onCancelHdr" text="" tooltip="{caption>/CANCEL}" visible="false"/> 
                 </Toolbar>
                     <f:Form id="frmHeader" editable="true" class="sapUiNoContentPadding" width="100%">
                         <f:layout>
@@ -229,18 +229,19 @@
                                     rowSelectionChange="onRowSelectionChange">
                                     <uiT:extension>
                                         <Toolbar>
+                                            <Text text="{ui>/rowCountDtl} {caption>/ITEM(S)}" />
                                             <ToolbarSpacer/>
                                             <Button id="btnAddDtl" 
                                                 icon="sap-icon://add"
                                                 press="onAddDtl"
-                                                text="{caption>/ADD}"
+                                                text=""
                                                 tooltip="{caption>/ADD}"
                                                 visible="true"/>
                                             <MenuButton id="btnPickDtl" type="Ghost" icon="sap-icon://flag" text="{caption>/PICK}" tooltip="{caption>/PICK}" visible="true">
                                                 <menu>
                                                     <Menu id="menuPickDtl">
-                                                        <MenuItem id="menuPickDtlAuto" text="{caption>/AUTOPICK}" tooltip="{caption>/AUTOPICK}" press="onPickDtlAuto" />
-                                                        <MenuItem id="menuPickDtlManual" text="{caption>/MANUALPICK}" tooltip="{caption>/MANUALPICK}" press="onPickDtlManual" />
+                                                        <MenuItem id="menuPickDtlAuto" icon="sap-icon://sys-enter" text="{caption>/AUTOPICK}" tooltip="{caption>/AUTOPICK}" press="onPickDtlAuto" />
+                                                        <MenuItem id="menuPickDtlManual" icon="sap-icon://sys-minus" text="{caption>/MANUALPICK}" tooltip="{caption>/MANUALPICK}" press="onPickDtlManual" />
                                                     </Menu>
                                                 </menu>
                                             </MenuButton>
@@ -252,13 +253,13 @@
                                             <Button id="btnDeleteDtl" 
                                                 icon="sap-icon://delete"
                                                 press="onDeleteDtl" 
-                                                text="{caption>/DELETE}"
+                                                text=""
                                                 tooltip="{caption>/DELETE}"
                                                 visible="true" />
                                             <Button id="btnRefreshDtl" 
                                                 icon="sap-icon://refresh"
                                                 press="onRefreshDtl" 
-                                                text="{caption>/REFRESH}"
+                                                text=""
                                                 tooltip="{caption>/REFRESH}"
                                                 visible="true" />
                                             <Button id="btnFullScreenDtl" 
@@ -303,45 +304,46 @@
                                     rowSelectionChange="onRowSelectionChange">
                                     <uiT:extension>
                                         <Toolbar>
+                                            <Text text="{ui>/rowCountHu} {caption>/ITEM(S)}" />
                                             <ToolbarSpacer/>
                                             <Button id="btnEditHu" 
                                                 icon="sap-icon://edit"
                                                 press="onEditHu"
-                                                text="{caption>/EDIT}"
+                                                text=""
                                                 tooltip="{caption>/EDIT}"
                                                 visible="true"/>
                                             <Button id="btnDeleteHu" 
                                                 icon="sap-icon://delete"
                                                 press="onDeleteHu" 
-                                                text="{caption>/DELETE}"
+                                                text=""
                                                 tooltip="{caption>/DELETE}"
                                                 visible="true" />
                                             <Button id="btnRefreshHu" 
                                                 icon="sap-icon://refresh"
                                                 press="onRefreshHu"
-                                                text="{caption>/REFRESH}" 
+                                                text="" 
                                                 tooltip="{caption>/REFRESH}"
                                                 visible="true" />
                                             <Button id="btnSaveHu" 
                                                 icon="sap-icon://save"
                                                 press="onSaveHu" 
-                                                text="{caption>/SAVE}"
+                                                text=""
                                                 tooltip="{caption>/SAVE}"
                                                 visible="false" />
                                             <Button id="btnCancelHu" 
-                                                icon="sap-icon://sys-cancel"
+                                                icon="sap-icon://decline"
                                                 press="onCancelHu" 
-                                                text="{caption>/CANCEL}"
+                                                text=""
                                                 tooltip="{caption>/CANCEL}"
                                                 visible="false" />
                                             <Button id="btnFullScreenHu" 
                                                 icon="sap-icon://full-screen"
-                                                press="onTableResize('hu','Max')"
+                                                press="onTableResize('dtl','Max')"
                                                 tooltip="{caption>/FULLSCREEN}"
                                                 visible="true" />
                                             <Button id="btnExitFullScreenHu" 
                                                 icon="sap-icon://exit-full-screen"
-                                                press="onTableResize('hu','Min')"
+                                                press="onTableResize('dtl','Min')"
                                                 tooltip="{caption>/EXITFULLSCREEN}"
                                                 visible="false" />
                                             <Button id="btnTabLayoutHu"
@@ -376,39 +378,40 @@
                                     rowSelectionChange="onRowSelectionChange">
                                     <uiT:extension>
                                         <Toolbar>
+                                            <Text text="{ui>/rowCountShip} {caption>/ITEM(S)}" />
                                             <ToolbarSpacer/>
                                             <Button id="btnEditShip" 
                                                 icon="sap-icon://edit"
                                                 press="onEditShip"
-                                                text="{caption>/EDIT}"
+                                                text=""
                                                 tooltip="{caption>/EDIT}"
                                                 visible="true"/>
                                             <Button id="btnRefreshShip" 
                                                 icon="sap-icon://refresh"
                                                 press="onRefreshShip" 
-                                                text="{caption>/REFRESH}"
+                                                text=""
                                                 tooltip="{caption>/REFRESH}"
                                                 visible="true" />
                                             <Button id="btnSaveShip" 
                                                 icon="sap-icon://save"
                                                 press="onSaveShip" 
-                                                text="{caption>/SAVE}"
+                                                text=""
                                                 tooltip="{caption>/SAVE}"
                                                 visible="false" />
                                             <Button id="btnCancelShip" 
-                                                icon="sap-icon://sys-cancel"
+                                                icon="sap-icon://decline"
                                                 press="onCancelShip" 
-                                                text="{caption>/CANCEL}"
+                                                text=""
                                                 tooltip="{caption>/CANCEL}"
                                                 visible="false" />
                                             <Button id="btnFullScreenShip" 
                                                 icon="sap-icon://full-screen"
-                                                press="onTableResize('ship','Max')"
+                                                press="onTableResize('dtl','Max')"
                                                 tooltip="{caption>/FULLSCREEN}"
                                                 visible="true" />
                                             <Button id="btnExitFullScreenShip" 
                                                 icon="sap-icon://exit-full-screen"
-                                                press="onTableResize('ship','Min')"
+                                                press="onTableResize('dtl','Min')"
                                                 tooltip="{caption>/EXITFULLSCREEN}"
                                                 visible="false" />
                                             <Button id="btnTabLayoutShip"
@@ -443,21 +446,22 @@
                                     rowSelectionChange="onRowSelectionChange">
                                     <uiT:extension>
                                         <Toolbar>
+                                            <Text text="{ui>/rowCountStat} {caption>/ITEM(S)}" />
                                             <ToolbarSpacer/>
                                             <Button id="btnRefreshStat" 
                                                 icon="sap-icon://refresh"
                                                 press="onRefreshStat" 
-                                                text="{caption>/REFRESH}"
+                                                text=""
                                                 tooltip="{caption>/REFRESH}"
                                                 visible="true" />
                                             <Button id="btnFullScreenStat" 
                                                 icon="sap-icon://full-screen"
-                                                press="onTableResize('stat','Max')"
+                                                press="onTableResize('dtl','Max')"
                                                 tooltip="{caption>/FULLSCREEN}"
                                                 visible="true" />
                                             <Button id="btnExitFullScreenStat" 
                                                 icon="sap-icon://exit-full-screen"
-                                                press="onTableResize('stat','Min')"
+                                                press="onTableResize('dtl','Min')"
                                                 tooltip="{caption>/EXITFULLSCREEN}"
                                                 visible="false" />
                                             <Button id="btnTabLayoutStat"
@@ -492,21 +496,22 @@
                                     rowSelectionChange="onRowSelectionChange">
                                     <uiT:extension>
                                         <Toolbar>
+                                            <Text text="{ui>/rowCountMatDoc} {caption>/ITEM(S)}" />
                                             <ToolbarSpacer/>
                                             <Button id="btnRefreshMatDoc" 
                                                 icon="sap-icon://refresh"
                                                 press="onRefreshMatDoc" 
-                                                text="{caption>/REFRESH}"
+                                                text=""
                                                 tooltip="{caption>/REFRESH}"
                                                 visible="true" />
                                             <Button id="btnFullScreenMatDoc" 
                                                 icon="sap-icon://full-screen"
-                                                press="onTableResize('matDoc','Max')"
+                                                press="onTableResize('dtl','Max')"
                                                 tooltip="{caption>/FULLSCREEN}"
                                                 visible="true" />
                                             <Button id="btnExitFullScreenMatDoc" 
                                                 icon="sap-icon://exit-full-screen"
-                                                press="onTableResize('matDoc','Min')"
+                                                press="onTableResize('dtl','Min')"
                                                 tooltip="{caption>/EXITFULLSCREEN}"
                                                 visible="false" />
                                             <Button id="btnTabLayoutMatDoc"
@@ -568,7 +573,7 @@
                                                 tooltip="{caption>/SAVE}"
                                                 visible="false" />
                                             <Button id="btnCancelOthInfo" 
-                                                icon="sap-icon://sys-cancel"
+                                                icon="sap-icon://decline"
                                                 press="onCancelOthInfo" 
                                                 tooltip="{caption>/CANCEL}"
                                                 visible="false" />                                        

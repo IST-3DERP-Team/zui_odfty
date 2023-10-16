@@ -51,7 +51,8 @@ sap.ui.define([
                     noRangeCd: oEvent.getParameter("arguments").noRangeCd,
                     rsvList: oEvent.getParameter("arguments").rsvList,
                     dtlMaxCount: oEvent.getParameter("arguments").dtlMaxCount,
-                    dlvNoInit: oEvent.getParameter("arguments").dlvNo
+                    dlvNoInit: oEvent.getParameter("arguments").dlvNo,
+                    rowCountRsv: 0
                 }), "ui");
 
                 var oSmartFilter = this.getView().byId("sfbODFtyRsv");
@@ -80,6 +81,7 @@ sap.ui.define([
                     _startUpInfo.id = "BAS_CONN";
                 }
 
+                _aTableProp = [];
                 _aTableProp.push({
                     modCode: "ODFTYRSVMOD",
                     tblSrc: "ZDV_ODF_RSV",
@@ -102,7 +104,10 @@ sap.ui.define([
 
                 _this.byId("rsvTab").addEventDelegate(oTableEventDelegate);
                 _this.clearSortFilter("rsvTab");
-                _this.getRsv([], "");
+
+                setTimeout(() => {
+                    _this.getRsv([], "");
+                }, 300);
 
                 _this.byId("sfSearch").setValue("");
 
@@ -165,8 +170,11 @@ sap.ui.define([
                             })
                         }
 
-                        data.results.forEach(item => {
+                        data.results.forEach((item, idx) => {
                             item.REQDT = _this.formatDatePH(item.REQDT);
+
+                            if (idx == 0) item.ACTIVE = "X";
+                            else item.ACTIVE = "";
                         })
 
                         var aFilterTab = [];
@@ -183,6 +191,9 @@ sap.ui.define([
                         _this.onFilterBySmart("rsv", pFilters, pFilterGlobal, aFilterTab);
 
                         _this.setRowReadMode("rsv");
+
+                        // Set row count
+                        _this.getView().getModel("ui").setProperty("/rowCountRsv", data.results.length);
 
                         oTable.getColumns().forEach((col, idx) => {   
                             if (col._oSorter) {
@@ -493,6 +504,7 @@ sap.ui.define([
                 // Label
                 oCaptionParam.push({CODE: "ISSPLANT"});
                 oCaptionParam.push({CODE: "ISSSLOC"});
+                oCaptionParam.push({CODE: "ITEM(S)"});
 
                 // Button
                 oCaptionParam.push({CODE: "ADD"});

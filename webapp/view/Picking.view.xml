@@ -36,6 +36,7 @@
                     rowSelectionChange="onRowSelectionChangePickHdr">
                     <uiT:extension>
                         <Toolbar>
+                            <Text text="{ui>/rowCountPickHdr} {caption>/ITEM(S)}" />
                             <ToolbarSpacer/>
                             <Button id="btnAutoPickHdr" 
                                 icon="sap-icon://flag"
@@ -46,21 +47,31 @@
                             <Button id="btnAddPickHdr" 
                                 icon="sap-icon://add"
                                 press="onAddPickHdr"
-                                text="{caption>/ADD}"
+                                text=""
                                 tooltip="{caption>/ADD}"
                                 visible="true"/>
                             <Button id="btnRefreshPickHdr" 
                                 icon="sap-icon://refresh"
                                 press="onRefreshPickHdr" 
-                                text="{caption>/REFRESH}"
+                                text=""
                                 tooltip="{caption>/REFRESH}"
                                 visible="true" />
                             <Button id="btnCancelPickHdr" 
                                 icon="sap-icon://sys-cancel"
                                 press="onCancelPickHdr"
-                                text="{caption>/CLOSE}"
+                                text=""
                                 tooltip="{caption>/CLOSE}"
                                 visible="true"/>
+                            <Button id="btnFullScreenPickHdr" 
+                                icon="sap-icon://full-screen"
+                                press="onTableResize('hdr','Max')"
+                                tooltip="{caption>/FULLSCREEN}"
+                                visible="true" />
+                            <Button id="btnExitFullScreenPickHdr" 
+                                icon="sap-icon://exit-full-screen"
+                                press="onTableResize('hdr','Min')"
+                                tooltip="{caption>/EXITFULLSCREEN}"
+                                visible="false" />
                             <Button id="btnTabLayoutPickHdr"
                                 icon="sap-icon://grid" 
                                 press="onSaveTableLayout"
@@ -93,6 +104,7 @@
                     rowSelectionChange="onRowSelectionChange">
                     <uiT:extension>
                         <Toolbar>
+                            <Text text="{ui>/rowCountPickDtl} {caption>/ITEM(S)}" />
                             <ToolbarSpacer/>
                             <Button id="btnAutoPickDtl" 
                                 icon="sap-icon://flag"
@@ -103,35 +115,35 @@
                             <Button id="btnEditPickDtl" 
                                 icon="sap-icon://edit"
                                 press="onEditPickDtl"
-                                text="{caption>/EDIT}"
+                                text=""
                                 tooltip="{caption>/EDIT}"
                                 visible="true"/>
                             <Button id="btnRefreshPickDtl" 
                                 icon="sap-icon://refresh"
                                 press="onRefreshPickDtl" 
-                                text="{caption>/REFRESH}"
+                                text=""
                                 tooltip="{caption>/REFRESH}"
                                 visible="true" />
                             <Button id="btnSavePickDtl" 
                                 icon="sap-icon://save"
                                 press="onSavePickDtl" 
-                                text="{caption>/SAVE}"
+                                text=""
                                 tooltip="{caption>/SAVE}"
                                 visible="false" />
                             <Button id="btnCancelPickDtl" 
-                                icon="sap-icon://sys-cancel"
+                                icon="sap-icon://decline"
                                 press="onCancelPickDtl"
-                                text="{caption>/CANCEL}"
+                                text=""
                                 tooltip="{caption>/CANCEL}"
                                 visible="false"/>
                             <Button id="btnFullScreenPickDtl" 
                                 icon="sap-icon://full-screen"
-                                press="onTableResize('pickDtl','Max')"
+                                press="onTableResize('dtl','Max')"
                                 tooltip="{caption>/FULLSCREEN}"
                                 visible="true" />
                             <Button id="btnExitFullScreenPickDtl" 
                                 icon="sap-icon://exit-full-screen"
-                                press="onTableResize('pickDtl','Min')"
+                                press="onTableResize('dtl','Min')"
                                 tooltip="{caption>/EXITFULLSCREEN}"
                                 visible="false" />
                             <Button id="btnTabLayoutPickDtl"

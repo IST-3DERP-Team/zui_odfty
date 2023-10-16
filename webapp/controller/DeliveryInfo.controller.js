@@ -40,7 +40,12 @@ sap.ui.define([
                     editModeHdr: false,
                     editModeHdrTo: false,
                     useTo: true,
-                    forPick: true
+                    forPick: true,
+                    rowCountDtl: 0,
+                    rowCountHu: 0,
+                    rowCountShip: 0,
+                    rowCountStat: 0,
+                    rowCountMatDoc: 0
                 }), "ui");
 
                 _this.initializeComponent();
@@ -74,6 +79,7 @@ sap.ui.define([
                     _startUpInfo.id = "BAS_CONN";
                 }
 
+                _aTableProp = [];
                 _aTableProp.push({
                     modCode: "ODFTYINFOHUMOD",
                     tblSrc: "ZDV_ODF_INF_HU",
@@ -772,6 +778,10 @@ sap.ui.define([
                         _this.onFilterByCol("hu", aFilterTab);
 
                         _this.setRowReadMode("hu");
+
+                        // Set row count
+                        _this.getView().getModel("ui").setProperty("/rowCountHu", data.results.length);
+
                         _this.closeLoadingDialog();
                     },
                     error: function (err) { 
@@ -1036,12 +1046,15 @@ sap.ui.define([
                     success: function (data, response) {
                         console.log("InfoDetailSet", data)
 
-                        data.results.forEach(item => {
+                        data.results.forEach((item, idx) => {
                             if (item.CREATEDDT !== null)
                                 item.CREATEDDT = _this.formatDatePH(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
 
                             if (item.UPDATEDDT !== null)
                                 item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+
+                            if (idx == 0) item.ACTIVE = "X";
+                            else item.ACTIVE = "";
                         })
 
                         var oTable = _this.getView().byId("dtlTab");
@@ -1053,10 +1066,14 @@ sap.ui.define([
                         var oJSONModel = new sap.ui.model.json.JSONModel();
                         oJSONModel.setData(data);
                         _this.getView().setModel(oJSONModel, "dtl");
+                        _this._tableRendered = "dtlTab";
 
                         _this.onFilterByCol("dtl", aFilterTab);
 
                         _this.setRowReadMode("dtl");
+
+                        // Set row count
+                        _this.getView().getModel("ui").setProperty("/rowCountDtl", data.results.length);
 
                         _this.closeLoadingDialog();
                     },
@@ -1329,7 +1346,13 @@ sap.ui.define([
                         "$filter": sFilter
                     },
                     success: function (data, response) {
-                        console.log("InfoShipSet", data)
+                        console.log("InfoShipSet", data);
+
+                        data.results.forEach((item, idx) => {
+                            if (idx == 0) item.ACTIVE = "X";
+                            else item.ACTIVE = "";
+                        })
+
                         _this.setControlEditMode("ship", false);
 
                         var oTable = _this.getView().byId("shipTab");
@@ -1345,6 +1368,10 @@ sap.ui.define([
                         _this.onFilterByCol("ship", aFilterTab);
 
                         _this.setRowReadMode("ship");
+
+                        // Set row count
+                        _this.getView().getModel("ui").setProperty("/rowCountShip", data.results.length);
+
                         _this.closeLoadingDialog();
                     },
                     error: function (err) { 
@@ -1458,7 +1485,7 @@ sap.ui.define([
                     success: function (data, response) {
                         console.log("InfoStatusSet", data)
 
-                        data.results.forEach(item => {
+                        data.results.forEach((item, idx) => {
                             if (item.STARTDT !== null)
                                 item.STARTDT = _this.formatDatePH(item.STARTDT) + " " + _this.formatTime(item.STARTTM);
 
@@ -1467,6 +1494,9 @@ sap.ui.define([
 
                             if (item.UPDATEDDT !== null)
                                 item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+
+                            if (idx == 0) item.ACTIVE = "X";
+                            else item.ACTIVE = "";
                         })
 
                         var oTable = _this.getView().byId("statTab");
@@ -1482,6 +1512,9 @@ sap.ui.define([
                         _this.onFilterByCol("stat", aFilterTab);
 
                         _this.setRowReadMode("stat");
+
+                        // Set row count
+                        _this.getView().getModel("ui").setProperty("/rowCountStat", data.results.length);
 
                         _this.closeLoadingDialog();
                     },
@@ -1508,12 +1541,15 @@ sap.ui.define([
                     success: function (data, response) {
                         console.log("InfoMatDocSet", data)
 
-                        data.results.forEach(item => {
+                        data.results.forEach((item, idx) => {
                             if (item.DOCDT !== null)
                                 item.DOCDT = _this.formatDatePH(item.DOCDT);
 
                             if (item.POSTDT !== null)
                                 item.POSTDT = _this.formatDatePH(item.POSTDT);
+
+                            if (idx == 0) item.ACTIVE = "X";
+                            else item.ACTIVE = "";
                         })
 
                         var oTable = _this.getView().byId("matDocTab");
@@ -1529,6 +1565,9 @@ sap.ui.define([
                         _this.onFilterByCol("matDoc", aFilterTab);
 
                         _this.setRowReadMode("matDoc");
+
+                        // Set row count
+                        _this.getView().getModel("ui").setProperty("/rowCountMatDoc", data.results.length);
 
                         _this.closeLoadingDialog();
                     },
@@ -2170,40 +2209,45 @@ sap.ui.define([
                 // } 
             },
 
-            onTableResize(pModel, pType) {
-                if (pType === "Max") {
-                    this.byId("btnFullScreenDtl").setVisible(false);
-                    this.byId("btnFullScreenHu").setVisible(false);
-                    this.byId("btnFullScreenShip").setVisible(false);
-                    this.byId("btnFullScreenStat").setVisible(false);
-                    this.byId("btnFullScreenMatDoc").setVisible(false);
+            onTableResize(pGroup, pType) {
+                if (pGroup === "hdr") {
 
-                    this.byId("btnExitFullScreenDtl").setVisible(true);
-                    this.byId("btnExitFullScreenHu").setVisible(true);
-                    this.byId("btnExitFullScreenShip").setVisible(true);
-                    this.byId("btnExitFullScreenStat").setVisible(true);
-                    this.byId("btnExitFullScreenMatDoc").setVisible(true);
-
-                    this.getView().byId("tbHeader").setVisible(false);
-                    this.getView().byId("frmHeader").setVisible(false);
-                    this.getView().byId("itbDetails").setVisible(true);
                 }
-                else {
-                    this.byId("btnFullScreenDtl").setVisible(true);
-                    this.byId("btnFullScreenHu").setVisible(true);
-                    this.byId("btnFullScreenShip").setVisible(true);
-                    this.byId("btnFullScreenStat").setVisible(true);
-                    this.byId("btnFullScreenMatDoc").setVisible(true);
-
-                    this.byId("btnExitFullScreenDtl").setVisible(false);
-                    this.byId("btnExitFullScreenHu").setVisible(false);
-                    this.byId("btnExitFullScreenShip").setVisible(false);
-                    this.byId("btnExitFullScreenStat").setVisible(false);
-                    this.byId("btnExitFullScreenMatDoc").setVisible(false);
-
-                    this.getView().byId("tbHeader").setVisible(true);
-                    this.getView().byId("frmHeader").setVisible(true);
-                    this.getView().byId("itbDetails").setVisible(true);
+                else if (pGroup === "dtl") {
+                    if (pType === "Max") {
+                        this.byId("btnFullScreenDtl").setVisible(false);
+                        this.byId("btnFullScreenHu").setVisible(false);
+                        this.byId("btnFullScreenShip").setVisible(false);
+                        this.byId("btnFullScreenStat").setVisible(false);
+                        this.byId("btnFullScreenMatDoc").setVisible(false);
+    
+                        this.byId("btnExitFullScreenDtl").setVisible(true);
+                        this.byId("btnExitFullScreenHu").setVisible(true);
+                        this.byId("btnExitFullScreenShip").setVisible(true);
+                        this.byId("btnExitFullScreenStat").setVisible(true);
+                        this.byId("btnExitFullScreenMatDoc").setVisible(true);
+    
+                        this.getView().byId("tbHeader").setVisible(false);
+                        this.getView().byId("frmHeader").setVisible(false);
+                        this.getView().byId("itbDetails").setVisible(true);
+                    }
+                    else {
+                        this.byId("btnFullScreenDtl").setVisible(true);
+                        this.byId("btnFullScreenHu").setVisible(true);
+                        this.byId("btnFullScreenShip").setVisible(true);
+                        this.byId("btnFullScreenStat").setVisible(true);
+                        this.byId("btnFullScreenMatDoc").setVisible(true);
+    
+                        this.byId("btnExitFullScreenDtl").setVisible(false);
+                        this.byId("btnExitFullScreenHu").setVisible(false);
+                        this.byId("btnExitFullScreenShip").setVisible(false);
+                        this.byId("btnExitFullScreenStat").setVisible(false);
+                        this.byId("btnExitFullScreenMatDoc").setVisible(false);
+    
+                        this.getView().byId("tbHeader").setVisible(true);
+                        this.getView().byId("frmHeader").setVisible(true);
+                        this.getView().byId("itbDetails").setVisible(true);
+                    }
                 }
             },
 
@@ -2307,6 +2351,9 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "FULLSCREEN"});
                 oCaptionParam.push({CODE: "EXITFULLSCREEN"});
                 oCaptionParam.push({CODE: "SAVELAYOUT"});
+
+                // Label
+                oCaptionParam.push({CODE: "ITEM(S)"});
 
                 // MessageBox
                 oCaptionParam.push({CODE: "INFO_NO_RECORD_SELECT"});

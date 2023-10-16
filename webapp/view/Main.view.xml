@@ -10,9 +10,9 @@
     height="100%">
     <Page id="page" enableScrolling="false" class="sapUiNoContentPadding" showHeader="false" showNavButton="true" navButtonPress="onNavBack">
         <dependents>
-            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute="onAddHotKey()" />
-            <core:CommandExecution id="CE_EDIT" command="Edit" enabled="true" execute="onEditHotKey()" />
-            <core:CommandExecution id="CE_REFRESH" command="Refresh" enabled="true" execute="onRefreshHotKey()" />
+            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute="onAddHK()" />
+            <core:CommandExecution id="CE_EDIT" command="Edit" enabled="true" execute="onEditHK()" />
+            <core:CommandExecution id="CE_REFRESH" command="Refresh" enabled="true" execute="onRefreshHK()" />
         </dependents>
         <content>
             <VBox id="vbODFty" fitContainer="true">
@@ -73,34 +73,34 @@
                     rowSelectionChange="onRowSelectionChangeODFtyHdr">
                     <uiT:extension>
                         <Toolbar>
-                            <!-- <Text text="{ui>/rowCountMrpHdr} {caption>/ROWS}" /> -->
+                            <Text text="{ui>/rowCountODFtyHdr} {caption>/ITEM(S)}" />
                             <ToolbarSpacer/>
                             <Button id="btnAddODFtyHdr" 
-                                icon="sap-icon://add"
+                                icon="sap-icon://add-document"
                                 press="onAddODFtyHdr"
-                                text="{caption>/ADD}"
+                                text=""
                                 tooltip="{caption>/ADD}"
                                 visible="{base>/appChange}"/>
                             <Button id="btnEditODFtyHdr" 
                                 icon="sap-icon://edit"
                                 press="onEditODFtyHdr"
-                                text="{caption>/DISPLAY_EDIT}"
+                                text=""
                                 tooltip="{caption>/DISPLAY_EDIT}"
                                 visible="{base>/appChange}"/>
                             <Button id="btnRefreshODFtyHdr" 
                                 icon="sap-icon://refresh"
                                 press="onRefreshODFtyHdr" 
-                                text="{caption>/REFRESH}"
+                                text=""
                                 tooltip="{caption>/REFRESH}"
                                 visible="true" />
                             <Button id="btnFullScreenODFtyHdr" 
                                 icon="sap-icon://full-screen"
-                                press="onTableResize('odFtyHdr','Max')"
+                                press="onTableResize('hdr','Max')"
                                 tooltip="{caption>/FULLSCREEN}"
                                 visible="true" />
                             <Button id="btnExitFullScreenODFtyHdr" 
                                 icon="sap-icon://exit-full-screen"
-                                press="onTableResize('odFtyHdr','Min')"
+                                press="onTableResize('hdr','Min')"
                                 tooltip="{caption>/EXITFULLSCREEN}"
                                 visible="false" />
                             <Button id="btnTabLayoutODFtyHdr"
@@ -135,23 +135,22 @@
                     rowSelectionChange="onRowSelectionChangeODFtyDtl">
                     <uiT:extension>
                         <Toolbar>
-                            <!-- <Text text="{caption>/DLVDTL}" />
-                            <Text text="{ui>/rowCountMrpDtl} {caption>/ROWS}" /> -->
+                            <Text text="{ui>/rowCountODFtyDtl} {caption>/ITEM(S)}" />
                             <ToolbarSpacer/>
                             <Button id="btnRefreshODFtyDtl" 
                                 icon="sap-icon://refresh"
                                 press="onRefreshODFtyDtl" 
-                                text="{caption>/REFRESH}"
+                                text=""
                                 tooltip="{caption>/REFRESH}"
                                 visible="true" />
                             <Button id="btnFullScreenODFtyDtl" 
                                 icon="sap-icon://full-screen"
-                                press="onTableResize('odFtyDtl','Max')"
+                                press="onTableResize('dtl','Max')"
                                 tooltip="{caption>/FULLSCREEN}"
                                 visible="true" />
                             <Button id="btnExitFullScreenODFtyDtl" 
                                 icon="sap-icon://exit-full-screen"
-                                press="onTableResize('odFtyDtl','Min')"
+                                press="onTableResize('dtl','Min')"
                                 tooltip="{caption>/EXITFULLSCREEN}"
                                 visible="false" />
                             <Button id="btnTabLayoutODFtyDtl"

@@ -49,7 +49,9 @@ sap.ui.define([
 
             initializeComponent() {
                 this.getView().setModel(new JSONModel({
-                    sbu: "VER" // temporary Sbu
+                    sbu: "VER", // temporary Sbu
+                    rowCountODFtyHdr: 0,
+                    rowCountODFtyDtl: 0
                 }), "ui");
 
                 this.onInitBase(_this, _this.getView().getModel("ui").getData().sbu);
@@ -57,7 +59,7 @@ sap.ui.define([
 
                 _this.showLoadingDialog("Loading...");
 
-                
+                _aTableProp = [];
                 _aTableProp.push({
                     modCode: "ODFTYHDRMOD",
                     tblSrc: "ZDV_ODF_HDR",
@@ -103,6 +105,10 @@ sap.ui.define([
 
                     onAfterRendering: function(oEvent) {
                         _this.onAfterTableRendering(oEvent);
+                    },
+
+                    onclick: function(oEvent) {
+                        _this.onTableClick(oEvent);
                     }
                 };
 
@@ -120,6 +126,7 @@ sap.ui.define([
                     });
                 }
 
+                this._sActiveTable = "odFtyHdrTab";
                 _this.closeLoadingDialog();
             },
 
@@ -206,6 +213,9 @@ sap.ui.define([
                             _this.setRowReadMode("odFtyHdr");
                         }
 
+                        // Set row count
+                        _this.getView().getModel("ui").setProperty("/rowCountODFtyHdr", data.results.length);
+
                         oTable.getColumns().forEach((col, idx) => {   
                             if (col._oSorter) {
                                 oTable.sort(col, col.mProperties.sortOrder === "Ascending" ? SortOrder.Ascending : SortOrder.Descending, true);
@@ -242,12 +252,15 @@ sap.ui.define([
                         console.log("DetailSet", data)
                         if (data.results.length > 0) {
 
-                            data.results.forEach(item => {
+                            data.results.forEach((item, idx) => {
                                 if (item.CREATEDDT !== null)
                                     item.CREATEDDT = _this.formatDatePH(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
 
                                 if (item.UPDATEDDT !== null)
                                     item.UPDATEDDT = _this.formatDatePH(item.UPDATEDDT) + " " + _this.formatTime(item.UPDATEDTM);
+
+                                if (idx == 0) item.ACTIVE = "X";
+                                else item.ACTIVE = "";
                             })
 
                             var aFilterTab = [];
@@ -274,6 +287,9 @@ sap.ui.define([
                                 results: []
                             }), "odFtyDtl");
                         }
+
+                        // Set row count
+                        _this.getView().getModel("ui").setProperty("/rowCountODFtyDtl", data.results.length);
 
                         var oTable = _this.getView().byId("odFtyDtlTab");
                         oTable.getColumns().forEach((col, idx) => {   
@@ -326,53 +342,53 @@ sap.ui.define([
                     var sDlvNo = this.getView().getModel("ui").getData().dlvNo;
                     var bAppChange = _this.getView().getModel("base").getProperty("/appChange");
                     
-                    _this._router.navTo("RouteDeliveryInfo", {
-                        sbu: _this.getView().getModel("ui").getData().sbu,
-                        dlvNo: sDlvNo
-                    });
+                    // _this._router.navTo("RouteDeliveryInfo", {
+                    //     sbu: _this.getView().getModel("ui").getData().sbu,
+                    //     dlvNo: sDlvNo
+                    // });
                     
-                    // if (bAppChange) {
+                    if (bAppChange) {
 
-                    //     _this.showLoadingDialog("Loading...");
-                    //     var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
+                        _this.showLoadingDialog("Loading...");
+                        var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
 
-                    //     var oParamLock = {
-                    //         Dlvno: sDlvNo,
-                    //         Lock_Unlock_Ind: "X",
-                    //         IV_Count: 600,
-                    //         N_LOCK_UNLOCK_DLVHDR_RET: [],
-                    //         N_LOCK_UNLOCK_DLVHDR_MSG: []
-                    //     }
+                        var oParamLock = {
+                            Dlvno: sDlvNo,
+                            Lock_Unlock_Ind: "X",
+                            IV_Count: 600,
+                            N_LOCK_UNLOCK_DLVHDR_RET: [],
+                            N_LOCK_UNLOCK_DLVHDR_MSG: []
+                        }
 
-                    //     console.log("Lock_Unlock_DlvHdrSet param", oParamLock)
-                    //     oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
-                    //         method: "POST",
-                    //         success: function(data, oResponse) {
-                    //             console.log("Lock_Unlock_DlvHdrSet", data);
-                    //             _this.closeLoadingDialog();
+                        console.log("Lock_Unlock_DlvHdrSet param", oParamLock)
+                        oModelLock.create("/Lock_Unlock_DlvHdrSet", oParamLock, {
+                            method: "POST",
+                            success: function(data, oResponse) {
+                                console.log("Lock_Unlock_DlvHdrSet", data);
+                                _this.closeLoadingDialog();
 
-                    //             if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
-                    //                 _this._router.navTo("RouteDeliveryInfo", {
-                    //                     sbu: _this.getView().getModel("ui").getData().sbu,
-                    //                     dlvNo: sDlvNo
-                    //                 });
-                    //             } else {
-                    //                 var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
-                    //                 MessageBox.warning(oFilter.Message);
+                                if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
+                                    _this._router.navTo("RouteDeliveryInfo", {
+                                        sbu: _this.getView().getModel("ui").getData().sbu,
+                                        dlvNo: sDlvNo
+                                    });
+                                } else {
+                                    var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
+                                    MessageBox.warning(oFilter.Message);
                                     
-                    //             }
-                    //         },
-                    //         error: function(err) {
-                    //             MessageBox.error(err);
-                    //             _this.closeLoadingDialog();
-                    //         }
-                    //     });     
-                    // } else {
-                    //     _this._router.navTo("RouteDeliveryInfo", {
-                    //         sbu: _this.getView().getModel("ui").getData().sbu,
-                    //         dlvNo: sDlvNo
-                    //     });
-                    // }
+                                }
+                            },
+                            error: function(err) {
+                                MessageBox.error(err);
+                                _this.closeLoadingDialog();
+                            }
+                        });     
+                    } else {
+                        _this._router.navTo("RouteDeliveryInfo", {
+                            sbu: _this.getView().getModel("ui").getData().sbu,
+                            dlvNo: sDlvNo
+                        });
+                    }
                 } else {
                     MessageBox.information(_oCaption.INFO_NO_SELECTED);
                 }
@@ -461,16 +477,23 @@ sap.ui.define([
                 this.clearSortFilter("odFtyDtlTab");
             },
 
-            onAddHotKey() {
-                if (_this.byId("btnAddODFtyHdr").getVisible()) _this.onAddODFtyHdr();
+            onAddHK() {
+                if (_this.getView().getModel("base").getData().dataMode == "READ" && _this.getView().getModel("base").getData().appChange) {
+                    if (this._sActiveTable === "odFtyHdrTab") this.onAddODFtyHdr();
+                }
             },
 
-            onEditHotKey() {
-                if (_this.byId("btnEditODFtyHdr").getVisible()) _this.onEditODFtyHdr();
+            onEditHK() {
+                if (_this.getView().getModel("base").getData().dataMode == "READ") {
+                    if (this._sActiveTable === "odFtyHdrTab") this.onEditODFtyHdr();
+                }
             },
 
-            onRefreshHotKey() {
-                if (_this.byId("btnRefreshODFtyHdr").getVisible()) _this.onRefreshODFtyHdr();
+            onRefreshHK() {
+                if (_this.getView().getModel("base").getData().dataMode == "READ") {
+                    if (this._sActiveTable === "odFtyHdrTab") this.onRefreshODFtyHdr();
+                    else if (this._sActiveTable === "odFtyDtlTab") this.onRefreshODFtyDtl();
+                }
             },
 
             onNavBack() {
@@ -514,8 +537,8 @@ sap.ui.define([
                 }
             },
 
-            onTableResize(pModel, pType) {
-                if (pModel === "odFtyHdr") {
+            onTableResize(pGroup, pType) {
+                if (pGroup === "hdr") {
                     if (pType === "Max") {
                         this.byId("btnFullScreenODFtyHdr").setVisible(false);
                         this.byId("btnExitFullScreenODFtyHdr").setVisible(true);
@@ -531,7 +554,7 @@ sap.ui.define([
                         this.getView().byId("odFtyDtlTab").setVisible(true);
                     }
                 }
-                else if (pModel === "odFtyDtl") {
+                else if (pGroup === "dtl") {
                     if (pType === "Max") {
                         this.byId("btnFullScreenODFtyDtl").setVisible(false);
                         this.byId("btnExitFullScreenODFtyDtl").setVisible(true);
@@ -634,6 +657,7 @@ sap.ui.define([
 
                 // Label
                 oCaptionParam.push({CODE: "ROWS"});
+                oCaptionParam.push({CODE: "ITEM(S)"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

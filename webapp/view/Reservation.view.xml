@@ -57,6 +57,7 @@
                     rowSelectionChange="onRowSelectionChange">
                     <uiT:extension>
                         <Toolbar>
+                            <Text text="{ui>/rowCountRsv} {caption>/ITEM(S)}" />
                             <ToolbarSpacer/>
                             <SearchField
                                 id="sfSearch"
@@ -67,13 +68,13 @@
                             <Button id="btnAdd" 
                                 icon="sap-icon://add"
                                 press="onAdd"
-                                text="{caption>/ADD}"
+                                text=""
                                 tooltip="{caption>/ADD}"
                                 visible="true"/>
                             <Button id="btnCancel" 
                                 icon="sap-icon://sys-cancel"
                                 press="onCancel" 
-                                text="{caption>/CLOSE}"
+                                text=""
                                 tooltip="{caption>/CLOSE}"
                                 visible="true" />
                             <Button id="btnTabLayout"
