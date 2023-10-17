@@ -132,6 +132,10 @@ sap.ui.define([
 
                     onAfterRendering: function(oEvent) {
                         _this.onAfterTableRendering(oEvent);
+                    },
+
+                    onclick: function(oEvent) {
+                        _this.onTableClick(oEvent);
                     }
                 };
 
@@ -142,10 +146,21 @@ sap.ui.define([
                 this.byId("matDocTab").addEventDelegate(oTableEventDelegate);
                 //this.byId("othInfoTab").addEventDelegate(oTableEventDelegate);
 
-                _this.getHdr();
+                var oFormEventDelegate = {
+                    onclick: function(oEvent) {
+                        _this._sActiveTable = "frmHeader";
+                    }
+                };
+
+                this.byId("frmHeader").addEventDelegate(oFormEventDelegate);
+
+                setTimeout(() => {
+                    _this.getHdr();
+                }, 1000);
 
                 _this.byId("itbDetails").setSelectedKey("dtl");
                
+                _this._sActiveTable = "frmHeader";
                 _this.closeLoadingDialog();
             },
 
@@ -236,6 +251,7 @@ sap.ui.define([
                 }
 
                 _this.setControlEditMode("hdr", true);
+                _this.getView().getModel("base").setProperty("/dataMode", "EDIT");
             },
 
             onDeleteHdr() {
@@ -693,7 +709,7 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
 
                 var param = {};
-                param.TOMETHOD = _this.byId("cmbToMethod").getSelectedKey();
+                param.TOMETHOD = _this.byId("iptToMethod").getSelectedKey();
 
                 if (_this.byId("dpDocDt").getValue()) 
                     param.DOCDT = _this.formatDate(new Date(_this.byId("dpDocDt").getValue())) + "T00:00:00";
@@ -721,6 +737,7 @@ sap.ui.define([
                         MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                         _this.setControlEditMode("hdr", false);
                         _this.onRefreshHdr();
+                        _this.getView().getModel("base").setProperty("/dataMode", "READ");
                     },
                     error: function(err) {
                         console.log("error", err)
@@ -736,6 +753,7 @@ sap.ui.define([
                         if (sAction == "Yes") {
                             _this.setControlEditMode("hdr", false);
                             _this.setHeaderValue();
+                            _this.getView().getModel("base").setProperty("/dataMode", "READ");
                         }
                     }
                 });
@@ -1781,75 +1799,57 @@ sap.ui.define([
                 })
             },
 
-            onAddHotKey() {
-                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
-                
-                if (sActiveTab == "dtl") {
-                    if (_this.byId("btnAddDtl").getVisible()) _this.onAddDtl();
+            onAddHK() {
+                if (_this.getView().getModel("base").getData().dataMode == "READ" && _this.getView().getModel("base").getData().appChange) {
+                    if (this._sActiveTable === "dtlTab") this.onAddDtl();
                 }
             },
 
-            onEditHotKey() {
-                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
-                
-                if (sActiveTab == "hu") {
-                    if (_this.byId("btnEditHu").getVisible()) _this.onEditHu();
-                }
-                else if (sActiveTab == "ship") {
-                    if (_this.byId("btnEditShip").getVisible()) _this.onEditShip();
+            onEditHK() {
+                if (_this.getView().getModel("base").getData().dataMode == "READ"  && _this.getView().getModel("base").getData().appChange) {
+                    if (this._sActiveTable === "frmHeader") this.onEditHdr();
+                    else if (this._sActiveTable === "huTab") this.onEditHu();
+                    else if (this._sActiveTable === "shipTab") this.onEditShip();
                 }
             },
 
-            onDeleteHotKey() {
-                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
-                
-                if (sActiveTab == "dtl") {
-                    if (_this.byId("btnDeleteDtl").getVisible()) _this.onDeleteDtl();
-                }
-                else if (sActiveTab == "hu") {
-                    if (_this.byId("btnDeleteHu").getVisible()) _this.onDeleteHu();
+            onDeleteHK() {
+                if (_this.getView().getModel("base").getData().dataMode == "READ"  && _this.getView().getModel("base").getData().appChange) {
+                    if (this._sActiveTable === "frmHeader") this.onDeleteHdr();
+                    else if (this._sActiveTable === "dtlTab") this.onDeleteDtl();
+                    else if (this._sActiveTable === "huTab") this.onDeleteHu();
                 }
             },
 
-            onRefreshHotKey() {
-                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
-                
-                if (sActiveTab == "dtl") {
-                    if (_this.byId("btnRefreshDtl").getVisible()) _this.onRefreshDtl();
-                }
-                else if (sActiveTab == "hu") {
-                    if (_this.byId("btnRefreshHu").getVisible()) _this.onRefreshHu();
-                }
-                else if (sActiveTab == "ship") {
-                    if (_this.byId("btnRefreshShip").getVisible()) _this.onRefreshShip();
-                }
-                else if (sActiveTab == "stat") {
-                    if (_this.byId("btnRefreshStat").getVisible()) _this.onRefreshStat();
-                }
-                else if (sActiveTab == "matDoc") {
-                    if (_this.byId("btnRefreshMatDoc").getVisible()) _this.onRefreshMatDoc();
+            onSaveHK() {
+                if ((_this.getView().getModel("base").getData().dataMode == "NEW" || 
+                    _this.getView().getModel("base").getData().dataMode == "EDIT")  && 
+                    _this.getView().getModel("base").getData().appChange) {
+                    if (this._sActiveTable === "frmHeader") this.onSaveHdr();
+                    else if (this._sActiveTable === "huTab") this.onSaveHu();
+                    else if (this._sActiveTable === "shipTab") this.onSaveShip();
                 }
             },
 
-            onSaveHotKey() {
-                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
-                
-                if (sActiveTab == "hu") {
-                    if (_this.byId("btnSaveHu").getVisible()) _this.onSaveHu();
-                }
-                else if (sActiveTab == "ship") {
-                    if (_this.byId("btnSaveShip").getVisible()) _this.onSaveShip();
+            onCancelHK() {
+                console.log(_this.getView().getModel("base").getData(), this._sActiveTable)
+                if ((_this.getView().getModel("base").getData().dataMode == "NEW" || 
+                    _this.getView().getModel("base").getData().dataMode == "EDIT")  && 
+                    _this.getView().getModel("base").getData().appChange) {
+                    if (this._sActiveTable === "frmHeader") this.onCancelHdr();
+                    else if (this._sActiveTable === "huTab") this.onCancelHu();
+                    else if (this._sActiveTable === "shipTab") this.onCancelShip();
                 }
             },
 
-            onCancelHotKey() {
-                var sActiveTab = _this.byId("itbDetails").getSelectedKey();
-                
-                if (sActiveTab == "hu") {
-                    if (_this.byId("btnCancelHu").getVisible()) _this.onCancelHu();
-                }
-                else if (sActiveTab == "ship") {
-                    if (_this.byId("btnCancelShip").getVisible()) _this.onCancelShip();
+            onRefreshHK() {
+                if (_this.getView().getModel("base").getData().dataMode == "READ") {
+                    if (this._sActiveTable === "frmHeader") this.onRefreshHdr();
+                    else if (this._sActiveTable === "dtlTab") this.onRefreshDtl();
+                    else if (this._sActiveTable === "huTab") this.onRefreshHu();
+                    else if (this._sActiveTable === "shipTab") this.onRefreshShip();
+                    else if (this._sActiveTable === "statTab") this.onRefreshStat();
+                    else if (this._sActiveTable === "matDocTab") this.onRefreshMatDoc();
                 }
             },
 
@@ -1919,7 +1919,7 @@ sap.ui.define([
 
                 _this.byId("iptDlvNo").setValue(oHeader.DLVNO);
                 _this.byId("iptMvtType").setValue(oHeader.MVTTYPEDESC);
-                _this.byId("cmbToMethod").setSelectedKey(oHeader.TOMETHOD);
+                _this.byId("iptToMethod").setSelectedKey(oHeader.TOMETHOD);
                 _this.byId("dpDocDt").setValue(oHeader.DOCDT);
                 _this.byId("iptReqDt").setValue(oHeader.REQDT);
 
@@ -2018,6 +2018,14 @@ sap.ui.define([
                         _this.byId("btnCancelHu").setVisible(pEditable);
                         _this.byId("btnTabLayoutHu").setVisible(!pEditable);
 
+                        // Header
+                        this.byId("btnEditHdr").setEnabled(!pEditable);
+                        this.byId("btnDeleteHdr").setEnabled(!pEditable);
+                        this.byId("btnSetStatusHdr").setEnabled(!pEditable);
+                        this.byId("btnRefreshHdr").setEnabled(!pEditable);
+                        this.byId("btnPrintHdr").setEnabled(!pEditable);
+                        this.byId("btnCloseHdr").setEnabled(!pEditable);
+                        
                         if (_this.byId("btnEditHu").getVisible() == false) {
                             _this.byId("btnFullScreenHu").setVisible(false);
                             _this.byId("btnExitFullScreenHu").setVisible(false);
@@ -2037,6 +2045,14 @@ sap.ui.define([
                         _this.byId("btnCancelShip").setVisible(pEditable);
                         _this.byId("btnFullScreenShip").setVisible(!pEditable);
                         _this.byId("btnTabLayoutShip").setVisible(!pEditable);
+
+                        // Header
+                        this.byId("btnEditHdr").setEnabled(!pEditable);
+                        this.byId("btnDeleteHdr").setEnabled(!pEditable);
+                        this.byId("btnSetStatusHdr").setEnabled(!pEditable);
+                        this.byId("btnRefreshHdr").setEnabled(!pEditable);
+                        this.byId("btnPrintHdr").setEnabled(!pEditable);
+                        this.byId("btnCloseHdr").setEnabled(!pEditable);
 
                         if (_this.byId("btnEditShip").getVisible() == false) {
                             _this.byId("btnFullScreenShip").setVisible(false);
@@ -2072,6 +2088,15 @@ sap.ui.define([
                     //         this.byId("btnRefreshOthInfo").setVisible(!pEditable);
                     //     }
                     // }
+
+                    // Icon Tab Bar
+                    var oIconTabBar = this.byId("itbDetails");
+                    if (pEditable) {
+                        oIconTabBar.getItems().filter(item => item.getProperty("key") !== oIconTabBar.getSelectedKey())
+                            .forEach(item => item.setProperty("enabled", false));
+                    } else {
+                        oIconTabBar.getItems().forEach(item => item.setProperty("enabled", true));
+                    }
                 }
             },
 
@@ -2207,6 +2232,16 @@ sap.ui.define([
                 //         })
                 //     }
                 // } 
+            },
+
+            onFormValueHelpInputChange(oEvent) {
+                var oSource = oEvent.getSource();
+                var sId = oSource.getId();
+                var sKey = oSource.mProperties.selectedKey;
+
+                if (sId.includes("iptToMethod")) {
+                    //this.getResources("SLocSet", "issSloc", "PLANTCD eq '" + sKey + "'");
+                }
             },
 
             onTableResize(pGroup, pType) {

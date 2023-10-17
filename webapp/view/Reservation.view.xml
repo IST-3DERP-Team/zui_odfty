@@ -10,8 +10,7 @@
     height="100%">
     <Page id="page" enableScrolling="false" class="sapUiNoContentPadding" showHeader="false" showNavButton="true" navButtonPress="onNavBack">
         <dependents>
-            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute=".onAdd" />
-            <core:CommandExecution id="CE_CANCEL" command="Cancel" enabled="true" execute=".onCancel" />
+            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute="onAddHK" />
         </dependents>
         <content>
             <VBox id="vbODFty" fitContainer="true">

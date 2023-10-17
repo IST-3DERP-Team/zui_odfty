@@ -725,6 +725,10 @@ sap.ui.define([
             }
         },
 
+        handleFormValueHelp: function (oEvent) {
+            TableValueHelp.handleFormValueHelp(oEvent, this);
+        },
+
         onValueHelpRequest: async function(oEvent) {
             TableValueHelp.handleTableValueHelp(oEvent);
         },

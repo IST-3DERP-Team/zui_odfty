@@ -1,4 +1,12 @@
 {
+    "form": [
+        {"ColumnName": "TOMETHOD", "TextFormatMode": "KeyValue",
+            "ValueHelp": {"show": true, "items": {"path": "toMethod", "value": "TOMETHOD", "text": "DESCRIP"},
+                "SuggestionItems": {"path": "toMethod>/", "text": "{toMethod>TOMETHOD}", "additionalText": "{toMethod>DESCRIP}", "maxSuggestionWidth": "200px"},
+                "columns": "tvh_tomethod"
+            }
+        }
+    ],
     "hu": [
         {"name": "DESTHUID", "position": 1, "type": "Edm.String", "visible": true, "required": true, "width": "160px", "hideOnChange": false, "showable": true, "sort": "Ascending",
         "valueHelp": {"show": true, "items": {"path": "/InfoHUDestSet", "value": "HUID", "text": "HUID"},
@@ -20,6 +28,12 @@
             "valueHelp": {"show": true, "items": {"path": "/AttribTypeDtlSet", "value": "ATTRIBCD", "text": "DESC1"},
             "suggestionItems": {"path": "/AttribTypeDtlSet", "text": "{ATTRIBCD}", "additionalText": "{DESC1}", "maxSuggestionWidth": "350px"},
             "filter": "", "entitySet": ""}}
+    ],
+
+    "tvh_tomethod": [
+        {"ColumnName": "TOMETHOD", "DataType": "STRING", "ColumnWidth": "100px", "Visible": true, "Key": true, "Value": false},
+        {"ColumnName": "DESCRIP", "DataType": "STRING", "ColumnWidth": "300px", "Visible": true, "Key": false, "Value": true},
+        {"ColumnName": "DLVTYPE", "DataType": "STRING", "ColumnWidth": "300px", "Visible": false, "Key": false, "Value": true}
     ],
 
     "tvh_desthuid": [

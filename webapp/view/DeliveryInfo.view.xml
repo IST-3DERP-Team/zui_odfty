@@ -12,12 +12,12 @@
 
     <Page id="page" enableScrolling="false" class="sapUiNoContentPadding" showHeader="false" showNavButton="true" navButtonPress="onNavBack">
         <dependents>
-            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute="onAddHotKey()" />
-            <core:CommandExecution id="CE_EDIT" command="Edit" enabled="true" execute="onEditHotKey()" />
-            <core:CommandExecution id="CE_DELETE" command="Delete" enabled="true" execute="onDeleteHotKey()" />
-            <core:CommandExecution id="CE_SAVE" command="Save" enabled="true" execute="onSaveHotKey()" />
-            <core:CommandExecution id="CE_CANCEL" command="Cancel" enabled="true" execute="onCancelHotKey()" />
-            <core:CommandExecution id="CE_REFRESH" command="Refresh" enabled="true" execute="onRefreshHotKey()" />
+            <core:CommandExecution id="CE_NEW" command="New" enabled="true" execute="onAddHK()" />
+            <core:CommandExecution id="CE_EDIT" command="Edit" enabled="true" execute="onEditHK()" />
+            <core:CommandExecution id="CE_DELETE" command="Delete" enabled="true" execute="onDeleteHK()" />
+            <core:CommandExecution id="CE_SAVE" command="Save" enabled="true" execute="onSaveHK()" />
+            <core:CommandExecution id="CE_CANCEL" command="Cancel" enabled="true" execute="onCancelHK()" />
+            <core:CommandExecution id="CE_REFRESH" command="Refresh" enabled="true" execute="onRefreshHK()" />
         </dependents>
         <content>
             <VBox id="vbMain" fitContainer="true">
@@ -42,563 +42,579 @@
                     <Button id="btnSaveHdr" type="Ghost" icon="sap-icon://save" press="onSaveHdr" text="" tooltip="{caption>/SAVE}" visible="false"/> 
                     <Button id="btnCancelHdr" type="Ghost" icon="sap-icon://decline" press="onCancelHdr" text="" tooltip="{caption>/CANCEL}" visible="false"/> 
                 </Toolbar>
-                    <f:Form id="frmHeader" editable="true" class="sapUiNoContentPadding" width="100%">
-                        <f:layout>
-                            <f:ResponsiveGridLayout columnsL="4" singleContainerFullSize="false" />
-                        </f:layout>
-                        <f:formContainers>
-                            <f:FormContainer ariaLabelledBy="Grp1" class="sapUiNoContentPadding" >
-                                <f:formElements>
-                                    <f:FormElement label="{caption>/DLVNO}">  
-                                        <f:fields>
-                                            <Input id="iptDlvNo" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/MVTTYPE}">  
-                                        <f:fields>
-                                            <Input id="iptMvtType" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/TOMETHOD}">  
-                                        <f:fields>
-                                            <ComboBox
-                                                id="cmbToMethod"
-                                                showSecondaryValues= "true"
-                                                items="{
-                                                    path: 'toMethod>/results',
-                                                    sorter: { path: 'TOMETHOD' }
-                                                }"
-                                                editable="{ui>/editModeHdrTo}"
-                                                selectionChange="onDropdownSelectionChange">
-                                                <core:ListItem id="liToMethod" key="{toMethod>TOMETHOD}" text="{toMethod>TOMETHOD} - ({toMethod>DESCRIP})"/>
-                                            </ComboBox>
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement id="feDocDt" label="{caption>/DOCDT}">  
-                                        <f:fields>
-                                            <DatePicker
-                                                id="dpDocDt"
-                                                editable="{ui>/editModeHdr}"
-                                                valueFormat="MM/dd/yyyy" 
-                                                displayFormat="MM/dd/yyyy" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement id="feReqDt" label="{caption>/REQDT}">  
-                                        <f:fields>
-                                            <Input id="iptReqDt" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                </f:formElements>
-                            </f:FormContainer>
-                            <f:FormContainer ariaLabelledBy="Grp2" class="sapUiNoContentPadding" >
-                                <f:formElements>
-                                    <f:FormElement label="{caption>/WAREHOUSE}">  
-                                        <f:fields>
-                                            <Input id="iptWarehouse" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/ISSPLANT}">  
-                                        <f:fields>
-                                            <Input id="iptIssPlant" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/ISSSLOC}">  
-                                        <f:fields>
-                                            <Input id="iptIssSloc" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/RCVPLANT}">  
-                                        <f:fields>
-                                            <Input id="iptRcvPlant" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/RCVSLOC}">  
-                                        <f:fields>
-                                            <Input id="iptRcvSloc" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                </f:formElements>
-                            </f:FormContainer>
-                            <f:FormContainer ariaLabelledBy="Grp3" class="sapUiNoContentPadding" >
-                                <f:formElements>
-                                    <f:FormElement label="{caption>/POSTDT}">  
-                                        <f:fields>
-                                            <DatePicker
-                                                id="dpPostDt"
-                                                editable="{ui>/editModeHdr}"
-                                                valueFormat="MM/dd/yyyy" 
-                                                displayFormat="MM/dd/yyyy" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/ACTISSDT}">  
-                                        <f:fields>
-                                            <DatePicker
-                                                id="dpActIssDt"
-                                                editable="{ui>/editModeHdr}"
-                                                valueFormat="MM/dd/yyyy" 
-                                                displayFormat="MM/dd/yyyy" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/REFDOCNO}">  
-                                        <f:fields>
-                                            <Input id="iptRefDocNo" editable="{ui>/editModeHdr}" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/REFDOCDT}">  
-                                        <f:fields>
-                                            <DatePicker
-                                                id="dpRefDocDt"
-                                                editable="{ui>/editModeHdr}"
-                                                valueFormat="MM/dd/yyyy" 
-                                                displayFormat="MM/dd/yyyy" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/HDRTEXT}">  
-                                        <f:fields>
-                                            <Input id="iptHdrText" editable="{ui>/editModeHdr}" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                </f:formElements>
-                            </f:FormContainer>
-                            <f:FormContainer ariaLabelledBy="Grp4" class="sapUiNoContentPadding" >
-                                <f:formElements>
-                                    <f:FormElement label="{caption>/STATUS}">  
-                                        <f:fields>
-                                            <Input id="iptStatus" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/CREATEDBY}">  
-                                        <f:fields>
-                                            <Input id="iptCreatedBy" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/CREATEDDT}">  
-                                        <f:fields>
-                                            <Input id="iptCreatedDt" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/UPDATEDBY}">  
-                                        <f:fields>
-                                            <Input id="iptUpdatedBy" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/UPDATEDDT}">  
-                                        <f:fields>
-                                            <Input id="iptUpdatedDt" editable="false" />
-                                        </f:fields>
-                                    </f:FormElement>
-                                    <f:FormElement label="{caption>/DELETED}">  
-                                        <f:fields>
-                                            <CheckBox 
-                                                id="chkDeleted"
-                                                editable="false"/>
-                                        </f:fields>
-                                    </f:FormElement>
-                                </f:formElements>
-                            </f:FormContainer>
+                <f:Form id="frmHeader" editable="true" class="sapUiNoContentPadding" width="100%">
+                    <f:layout>
+                        <f:ResponsiveGridLayout columnsL="4" singleContainerFullSize="false" />
+                    </f:layout>
+                    <f:formContainers>
+                        <f:FormContainer ariaLabelledBy="Grp1" class="sapUiNoContentPadding" >
+                            <f:formElements>
+                                <f:FormElement label="{caption>/DLVNO}">  
+                                    <f:fields>
+                                        <Input id="iptDlvNo" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/MVTTYPE}">  
+                                    <f:fields>
+                                        <Input id="iptMvtType" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/TOMETHOD}">  
+                                    <f:fields>
+                                        <Input
+                                            id="iptToMethod"
+                                            type="Text"
+                                            textFormatMode="KeyValue"
+                                            showSuggestion="true"
+                                            showValueHelp="true"
+                                            editable="{ui>/editModeHdrTo}"
+                                            valueHelpRequest="handleFormValueHelp"
+                                            suggestionItems="{path: 'toMethod>/results', length: 10000, templateShareable: false}"
+                                            change="onFormValueHelpInputChange"
+                                        >
+                                            <suggestionItems>
+                                                <core:ListItem key="{toMethod>TOMETHOD}" text="{toMethod>DESCRIP}" additionalText="{toMethod>TOMETHOD}" />
+                                            </suggestionItems>
+                                        </Input>
 
-                        </f:formContainers>
-                    </f:Form>
-                        
-                    <IconTabBar id="itbDetails" 
-                        headerMode="Inline"
-                        expanded="{device>/isNoPhone}" 
-                        expandable="false" 
-                        class="sapUiNoContentPadding" 
-                        stretchContentHeight="true" 
-                        applyContentPadding="false"
-                        select="onSelectTab">
-                        <items>
-                            <IconTabFilter id="itfDtl" text="DELIVERY DETAILS" key="dtl">
-                                <uiT:Table id="dtlTab"
-                                    rows="{dtl>/results}"
-                                    visibleRowCountMode="Auto"
-                                    showColumnVisibilityMenu="true"
-                                    enableColumnFreeze="true"
-                                    enableCellFilter="true"
-                                    selectionMode="MultiToggle"
-                                    firstVisibleRowChanged="onFirstVisibleRowChanged"
-                                    cellClick="onCellClick"
-                                    sort="onSorted"
-                                    filter="onFilter"
-                                    columnFreeze="onColumnUpdated"
-                                    columnMove="onColumnUpdated"
-                                    columnResize="onColumnUpdated"
-                                    columnSelect="onColumnUpdated"
-                                    columnVisibility="onColumnUpdated"
-                                    rowSelectionChange="onRowSelectionChange">
-                                    <uiT:extension>
-                                        <Toolbar>
-                                            <Text text="{ui>/rowCountDtl} {caption>/ITEM(S)}" />
-                                            <ToolbarSpacer/>
-                                            <Button id="btnAddDtl" 
-                                                icon="sap-icon://add"
-                                                press="onAddDtl"
-                                                text=""
-                                                tooltip="{caption>/ADD}"
-                                                visible="true"/>
-                                            <MenuButton id="btnPickDtl" type="Ghost" icon="sap-icon://flag" text="{caption>/PICK}" tooltip="{caption>/PICK}" visible="true">
-                                                <menu>
-                                                    <Menu id="menuPickDtl">
-                                                        <MenuItem id="menuPickDtlAuto" icon="sap-icon://sys-enter" text="{caption>/AUTOPICK}" tooltip="{caption>/AUTOPICK}" press="onPickDtlAuto" />
-                                                        <MenuItem id="menuPickDtlManual" icon="sap-icon://sys-minus" text="{caption>/MANUALPICK}" tooltip="{caption>/MANUALPICK}" press="onPickDtlManual" />
-                                                    </Menu>
-                                                </menu>
-                                            </MenuButton>
-                                            <!-- <Button id="btnPickDtl" 
-                                                icon="sap-icon://flag"
-                                                press="onPickDtl" 
-                                                tooltip="{caption>/PICK}"
-                                                visible="true" /> -->
-                                            <Button id="btnDeleteDtl" 
-                                                icon="sap-icon://delete"
-                                                press="onDeleteDtl" 
-                                                text=""
-                                                tooltip="{caption>/DELETE}"
-                                                visible="true" />
-                                            <Button id="btnRefreshDtl" 
-                                                icon="sap-icon://refresh"
-                                                press="onRefreshDtl" 
-                                                text=""
-                                                tooltip="{caption>/REFRESH}"
-                                                visible="true" />
-                                            <Button id="btnFullScreenDtl" 
-                                                icon="sap-icon://full-screen"
-                                                press="onTableResize('dtl','Max')"
-                                                tooltip="{caption>/FULLSCREEN}"
-                                                visible="true" />
-                                            <Button id="btnExitFullScreenDtl" 
-                                                icon="sap-icon://exit-full-screen"
-                                                press="onTableResize('dtl','Min')"
-                                                tooltip="{caption>/EXITFULLSCREEN}"
-                                                visible="false" />
-                                            <Button id="btnTabLayoutDtl"
-                                                icon="sap-icon://grid" 
-                                                press="onSaveTableLayout"
-                                                tooltip="{caption>/SAVELAYOUT}" 
-                                                visible="true" />
-                                        </Toolbar>
-                                    </uiT:extension>
-                                    <uiT:layoutData>
-                                        <FlexItemData growFactor="1" baseSize="0%"/>
-                                    </uiT:layoutData>
-                                </uiT:Table>
-                            </IconTabFilter>
-                            <IconTabFilter id="itfHU" text="DELIVERY DETAILS (HU)" key="hu" visible="{ui>/useTo}">
-                                <uiT:Table id="huTab"
-                                    rows="{hu>/results}"
-                                    visibleRowCountMode="Auto"
-                                    showColumnVisibilityMenu="true"
-                                    enableColumnFreeze="true"
-                                    enableCellFilter="true"
-                                    selectionMode="MultiToggle"
-                                    firstVisibleRowChanged="onFirstVisibleRowChanged"
-                                    cellClick="onCellClick"
-                                    sort="onSorted"
-                                    filter="onFilter"
-                                    columnFreeze="onColumnUpdated"
-                                    columnMove="onColumnUpdated"
-                                    columnResize="onColumnUpdated"
-                                    columnSelect="onColumnUpdated"
-                                    columnVisibility="onColumnUpdated"
-                                    rowSelectionChange="onRowSelectionChange">
-                                    <uiT:extension>
-                                        <Toolbar>
-                                            <Text text="{ui>/rowCountHu} {caption>/ITEM(S)}" />
-                                            <ToolbarSpacer/>
-                                            <Button id="btnEditHu" 
-                                                icon="sap-icon://edit"
-                                                press="onEditHu"
-                                                text=""
-                                                tooltip="{caption>/EDIT}"
-                                                visible="true"/>
-                                            <Button id="btnDeleteHu" 
-                                                icon="sap-icon://delete"
-                                                press="onDeleteHu" 
-                                                text=""
-                                                tooltip="{caption>/DELETE}"
-                                                visible="true" />
-                                            <Button id="btnRefreshHu" 
-                                                icon="sap-icon://refresh"
-                                                press="onRefreshHu"
-                                                text="" 
-                                                tooltip="{caption>/REFRESH}"
-                                                visible="true" />
-                                            <Button id="btnSaveHu" 
-                                                icon="sap-icon://save"
-                                                press="onSaveHu" 
-                                                text=""
-                                                tooltip="{caption>/SAVE}"
-                                                visible="false" />
-                                            <Button id="btnCancelHu" 
-                                                icon="sap-icon://decline"
-                                                press="onCancelHu" 
-                                                text=""
-                                                tooltip="{caption>/CANCEL}"
-                                                visible="false" />
-                                            <Button id="btnFullScreenHu" 
-                                                icon="sap-icon://full-screen"
-                                                press="onTableResize('dtl','Max')"
-                                                tooltip="{caption>/FULLSCREEN}"
-                                                visible="true" />
-                                            <Button id="btnExitFullScreenHu" 
-                                                icon="sap-icon://exit-full-screen"
-                                                press="onTableResize('dtl','Min')"
-                                                tooltip="{caption>/EXITFULLSCREEN}"
-                                                visible="false" />
-                                            <Button id="btnTabLayoutHu"
-                                                icon="sap-icon://grid" 
-                                                press="onSaveTableLayout"
-                                                tooltip="{caption>/SAVELAYOUT}" 
-                                                visible="true" />
-                                        </Toolbar>
-                                    </uiT:extension>
-                                    <uiT:layoutData>
-                                        <FlexItemData growFactor="1" baseSize="0%"/>
-                                    </uiT:layoutData>
-                                </uiT:Table>
-                            </IconTabFilter>
-                            <IconTabFilter id="itfShip" text="SHIPMENT INFO" key="ship">
-                                <uiT:Table id="shipTab"
-                                    rows="{ship>/results}"
-                                    visibleRowCountMode="Auto"
-                                    showColumnVisibilityMenu="true"
-                                    enableColumnFreeze="true"
-                                    enableCellFilter="true"
-                                    selectionMode="Single"
-                                    firstVisibleRowChanged="onFirstVisibleRowChanged"
-                                    cellClick="onCellClick"
-                                    sort="onSorted"
-                                    filter="onFilter"
-                                    columnFreeze="onColumnUpdated"
-                                    columnMove="onColumnUpdated"
-                                    columnResize="onColumnUpdated"
-                                    columnSelect="onColumnUpdated"
-                                    columnVisibility="onColumnUpdated"
-                                    rowSelectionChange="onRowSelectionChange">
-                                    <uiT:extension>
-                                        <Toolbar>
-                                            <Text text="{ui>/rowCountShip} {caption>/ITEM(S)}" />
-                                            <ToolbarSpacer/>
-                                            <Button id="btnEditShip" 
-                                                icon="sap-icon://edit"
-                                                press="onEditShip"
-                                                text=""
-                                                tooltip="{caption>/EDIT}"
-                                                visible="true"/>
-                                            <Button id="btnRefreshShip" 
-                                                icon="sap-icon://refresh"
-                                                press="onRefreshShip" 
-                                                text=""
-                                                tooltip="{caption>/REFRESH}"
-                                                visible="true" />
-                                            <Button id="btnSaveShip" 
-                                                icon="sap-icon://save"
-                                                press="onSaveShip" 
-                                                text=""
-                                                tooltip="{caption>/SAVE}"
-                                                visible="false" />
-                                            <Button id="btnCancelShip" 
-                                                icon="sap-icon://decline"
-                                                press="onCancelShip" 
-                                                text=""
-                                                tooltip="{caption>/CANCEL}"
-                                                visible="false" />
-                                            <Button id="btnFullScreenShip" 
-                                                icon="sap-icon://full-screen"
-                                                press="onTableResize('dtl','Max')"
-                                                tooltip="{caption>/FULLSCREEN}"
-                                                visible="true" />
-                                            <Button id="btnExitFullScreenShip" 
-                                                icon="sap-icon://exit-full-screen"
-                                                press="onTableResize('dtl','Min')"
-                                                tooltip="{caption>/EXITFULLSCREEN}"
-                                                visible="false" />
-                                            <Button id="btnTabLayoutShip"
-                                                icon="sap-icon://grid" 
-                                                press="onSaveTableLayout"
-                                                tooltip="{caption>/SAVELAYOUT}" 
-                                                visible="true" />
-                                        </Toolbar>
-                                    </uiT:extension>
-                                    <uiT:layoutData>
-                                        <FlexItemData growFactor="1" baseSize="0%"/>
-                                    </uiT:layoutData>
-                                </uiT:Table>
-                            </IconTabFilter>
-                            <IconTabFilter id="itfStat" text="STATUS OVERVIEW" key="stat">
-                                <uiT:Table id="statTab"
-                                    rows="{stat>/results}"
-                                    visibleRowCountMode="Auto"
-                                    showColumnVisibilityMenu="true"
-                                    enableColumnFreeze="true"
-                                    enableCellFilter="true"
-                                    selectionMode="Single"
-                                    firstVisibleRowChanged="onFirstVisibleRowChanged"
-                                    cellClick="onCellClick"
-                                    sort="onSorted"
-                                    filter="onFilter"
-                                    columnFreeze="onColumnUpdated"
-                                    columnMove="onColumnUpdated"
-                                    columnResize="onColumnUpdated"
-                                    columnSelect="onColumnUpdated"
-                                    columnVisibility="onColumnUpdated"
-                                    rowSelectionChange="onRowSelectionChange">
-                                    <uiT:extension>
-                                        <Toolbar>
-                                            <Text text="{ui>/rowCountStat} {caption>/ITEM(S)}" />
-                                            <ToolbarSpacer/>
-                                            <Button id="btnRefreshStat" 
-                                                icon="sap-icon://refresh"
-                                                press="onRefreshStat" 
-                                                text=""
-                                                tooltip="{caption>/REFRESH}"
-                                                visible="true" />
-                                            <Button id="btnFullScreenStat" 
-                                                icon="sap-icon://full-screen"
-                                                press="onTableResize('dtl','Max')"
-                                                tooltip="{caption>/FULLSCREEN}"
-                                                visible="true" />
-                                            <Button id="btnExitFullScreenStat" 
-                                                icon="sap-icon://exit-full-screen"
-                                                press="onTableResize('dtl','Min')"
-                                                tooltip="{caption>/EXITFULLSCREEN}"
-                                                visible="false" />
-                                            <Button id="btnTabLayoutStat"
-                                                icon="sap-icon://grid" 
-                                                press="onSaveTableLayout"
-                                                tooltip="{caption>/SAVELAYOUT}" 
-                                                visible="true" />
-                                        </Toolbar>
-                                    </uiT:extension>
-                                    <uiT:layoutData>
-                                        <FlexItemData growFactor="1" baseSize="0%"/>
-                                    </uiT:layoutData>
-                                </uiT:Table>
-                            </IconTabFilter>
-                            <IconTabFilter id="itfMatDoc" text="MATERIAL DOCUMENTS" key="matDoc">
-                                <uiT:Table id="matDocTab"
-                                    rows="{matDoc>/results}"
-                                    visibleRowCountMode="Auto"
-                                    showColumnVisibilityMenu="true"
-                                    enableColumnFreeze="true"
-                                    enableCellFilter="true"
-                                    selectionMode="Single"
-                                    firstVisibleRowChanged="onFirstVisibleRowChanged"
-                                    cellClick="onCellClick"
-                                    sort="onSorted"
-                                    filter="onFilter"
-                                    columnFreeze="onColumnUpdated"
-                                    columnMove="onColumnUpdated"
-                                    columnResize="onColumnUpdated"
-                                    columnSelect="onColumnUpdated"
-                                    columnVisibility="onColumnUpdated"
-                                    rowSelectionChange="onRowSelectionChange">
-                                    <uiT:extension>
-                                        <Toolbar>
-                                            <Text text="{ui>/rowCountMatDoc} {caption>/ITEM(S)}" />
-                                            <ToolbarSpacer/>
-                                            <Button id="btnRefreshMatDoc" 
-                                                icon="sap-icon://refresh"
-                                                press="onRefreshMatDoc" 
-                                                text=""
-                                                tooltip="{caption>/REFRESH}"
-                                                visible="true" />
-                                            <Button id="btnFullScreenMatDoc" 
-                                                icon="sap-icon://full-screen"
-                                                press="onTableResize('dtl','Max')"
-                                                tooltip="{caption>/FULLSCREEN}"
-                                                visible="true" />
-                                            <Button id="btnExitFullScreenMatDoc" 
-                                                icon="sap-icon://exit-full-screen"
-                                                press="onTableResize('dtl','Min')"
-                                                tooltip="{caption>/EXITFULLSCREEN}"
-                                                visible="false" />
-                                            <Button id="btnTabLayoutMatDoc"
-                                                icon="sap-icon://grid" 
-                                                press="onSaveTableLayout"
-                                                tooltip="{caption>/SAVELAYOUT}" 
-                                                visible="true" />
-                                        </Toolbar>
-                                    </uiT:extension>
-                                    <uiT:layoutData>
-                                        <FlexItemData growFactor="1" baseSize="0%"/>
-                                    </uiT:layoutData>
-                                </uiT:Table>
-                            </IconTabFilter>
-                            <!-- <IconTabFilter id="itfOthInfo" text="OTHER INFO" key="othInfo">
-                                <uiT:Table id="othInfoTab"
-                                    rows="{othInfo>/results}"
-                                    visibleRowCountMode="Auto"
-                                    showColumnVisibilityMenu="true"
-                                    enableColumnFreeze="true"
-                                    enableCellFilter="true"
-                                    selectionMode="Single"
-                                    firstVisibleRowChanged="onFirstVisibleRowChanged"
-                                    cellClick="onCellClick"
-                                    sort="onSorted"
-                                    filter="onFilter"
-                                    columnFreeze="onColumnUpdated"
-                                    columnMove="onColumnUpdated"
-                                    columnResize="onColumnUpdated"
-                                    columnSelect="onColumnUpdated"
-                                    columnVisibility="onColumnUpdated"
-                                    rowSelectionChange="onRowSelectionChange">
-                                    <uiT:extension>
-                                        <Toolbar>
-                                            <ToolbarSpacer/>
-                                            <Button id="btnAddOthInfo" 
-                                                icon="sap-icon://add"
-                                                press="onAddOthInfo"
-                                                tooltip="{caption>/ADD}"
-                                                visible="true"/>
-                                            <Button id="btnEditOthInfo" 
-                                                icon="sap-icon://edit"
-                                                press="onEditOthInfo"
-                                                tooltip="{caption>/EDIT}"
-                                                visible="true"/>
-                                            <Button id="btnAddRowOthInfo" 
-                                                icon="sap-icon://add"
-                                                press="onAddRowOthInfo"
-                                                tooltip="{caption>/ADD}"
-                                                visible="false" />
-                                            <Button id="btnRemoveRowOthInfo" 
-                                                icon="sap-icon://less"
-                                                press="onRemoveRowOthInfo"
-                                                tooltip="{caption>/REMOVE}"
-                                                visible="false" />
-                                            <Button id="btnSaveOthInfo" 
-                                                icon="sap-icon://save"
-                                                press="onSave('othInfo')"
-                                                tooltip="{caption>/SAVE}"
-                                                visible="false" />
-                                            <Button id="btnCancelOthInfo" 
-                                                icon="sap-icon://decline"
-                                                press="onCancelOthInfo" 
-                                                tooltip="{caption>/CANCEL}"
-                                                visible="false" />                                        
-                                            <Button id="btnDeleteOthInfo" 
-                                                icon="sap-icon://delete"
-                                                press="onDeleteOthInfo"
-                                                tooltip="{caption>/DELETE}"
-                                                visible="true"/>
-                                            <Button id="btnRefreshOthInfo" 
-                                                icon="sap-icon://refresh"
-                                                press="onRefreshOthInfo"
-                                                tooltip="{caption>/REFRESH}"
-                                                visible="true"/> 
-                                        </Toolbar>
-                                    </uiT:extension>
-                                    <uiT:layoutData>
-                                        <FlexItemData growFactor="1" baseSize="0%"/>
-                                    </uiT:layoutData>
-                                </uiT:Table>
-                            </IconTabFilter> -->
-                        </items>
-                        <layoutData>
-                            <FlexItemData growFactor="1" baseSize="0%"/>
-                        </layoutData>
-                    </IconTabBar>
+                                        <!-- <ComboBox
+                                            id="cmbToMethod"
+                                            showSecondaryValues= "true"
+                                            items="{
+                                                path: 'toMethod>/results',
+                                                sorter: { path: 'TOMETHOD' }
+                                            }"
+                                            editable="{ui>/editModeHdrTo}"
+                                            selectionChange="onDropdownSelectionChange">
+                                            <core:ListItem id="liToMethod" key="{toMethod>TOMETHOD}" text="{toMethod>TOMETHOD} - ({toMethod>DESCRIP})"/>
+                                        </ComboBox> -->
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="feDocDt" label="{caption>/DOCDT}">  
+                                    <f:fields>
+                                        <DatePicker
+                                            id="dpDocDt"
+                                            editable="{ui>/editModeHdr}"
+                                            valueFormat="MM/dd/yyyy" 
+                                            displayFormat="MM/dd/yyyy" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="feReqDt" label="{caption>/REQDT}">  
+                                    <f:fields>
+                                        <Input id="iptReqDt" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                            </f:formElements>
+                        </f:FormContainer>
+                        <f:FormContainer ariaLabelledBy="Grp2" class="sapUiNoContentPadding" >
+                            <f:formElements>
+                                <f:FormElement label="{caption>/WAREHOUSE}">  
+                                    <f:fields>
+                                        <Input id="iptWarehouse" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/ISSPLANT}">  
+                                    <f:fields>
+                                        <Input id="iptIssPlant" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/ISSSLOC}">  
+                                    <f:fields>
+                                        <Input id="iptIssSloc" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/RCVPLANT}">  
+                                    <f:fields>
+                                        <Input id="iptRcvPlant" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/RCVSLOC}">  
+                                    <f:fields>
+                                        <Input id="iptRcvSloc" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                            </f:formElements>
+                        </f:FormContainer>
+                        <f:FormContainer ariaLabelledBy="Grp3" class="sapUiNoContentPadding" >
+                            <f:formElements>
+                                <f:FormElement label="{caption>/POSTDT}">  
+                                    <f:fields>
+                                        <DatePicker
+                                            id="dpPostDt"
+                                            editable="{ui>/editModeHdr}"
+                                            valueFormat="MM/dd/yyyy" 
+                                            displayFormat="MM/dd/yyyy" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/ACTISSDT}">  
+                                    <f:fields>
+                                        <DatePicker
+                                            id="dpActIssDt"
+                                            editable="{ui>/editModeHdr}"
+                                            valueFormat="MM/dd/yyyy" 
+                                            displayFormat="MM/dd/yyyy" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/REFDOCNO}">  
+                                    <f:fields>
+                                        <Input id="iptRefDocNo" editable="{ui>/editModeHdr}" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/REFDOCDT}">  
+                                    <f:fields>
+                                        <DatePicker
+                                            id="dpRefDocDt"
+                                            editable="{ui>/editModeHdr}"
+                                            valueFormat="MM/dd/yyyy" 
+                                            displayFormat="MM/dd/yyyy" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/HDRTEXT}">  
+                                    <f:fields>
+                                        <Input id="iptHdrText" editable="{ui>/editModeHdr}" />
+                                    </f:fields>
+                                </f:FormElement>
+                            </f:formElements>
+                        </f:FormContainer>
+                        <f:FormContainer ariaLabelledBy="Grp4" class="sapUiNoContentPadding" >
+                            <f:formElements>
+                                <f:FormElement label="{caption>/STATUS}">  
+                                    <f:fields>
+                                        <Input id="iptStatus" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/CREATEDBY}">  
+                                    <f:fields>
+                                        <Input id="iptCreatedBy" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/CREATEDDT}">  
+                                    <f:fields>
+                                        <Input id="iptCreatedDt" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/UPDATEDBY}">  
+                                    <f:fields>
+                                        <Input id="iptUpdatedBy" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/UPDATEDDT}">  
+                                    <f:fields>
+                                        <Input id="iptUpdatedDt" editable="false" />
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement label="{caption>/DELETED}">  
+                                    <f:fields>
+                                        <CheckBox 
+                                            id="chkDeleted"
+                                            editable="false"/>
+                                    </f:fields>
+                                </f:FormElement>
+                            </f:formElements>
+                        </f:FormContainer>
+
+                    </f:formContainers>
+                </f:Form>
+                    
+                <IconTabBar id="itbDetails" 
+                    headerMode="Inline"
+                    expanded="{device>/isNoPhone}" 
+                    expandable="false" 
+                    class="sapUiNoContentPadding" 
+                    stretchContentHeight="true" 
+                    applyContentPadding="false"
+                    select="onSelectTab">
+                    <items>
+                        <IconTabFilter id="itfDtl" text="DELIVERY DETAILS" key="dtl">
+                            <uiT:Table id="dtlTab"
+                                rows="{dtl>/results}"
+                                visibleRowCountMode="Auto"
+                                showColumnVisibilityMenu="true"
+                                enableColumnFreeze="true"
+                                enableCellFilter="true"
+                                selectionMode="MultiToggle"
+                                firstVisibleRowChanged="onFirstVisibleRowChanged"
+                                cellClick="onCellClick"
+                                sort="onSorted"
+                                filter="onFilter"
+                                columnFreeze="onColumnUpdated"
+                                columnMove="onColumnUpdated"
+                                columnResize="onColumnUpdated"
+                                columnSelect="onColumnUpdated"
+                                columnVisibility="onColumnUpdated"
+                                rowSelectionChange="onRowSelectionChange">
+                                <uiT:extension>
+                                    <Toolbar>
+                                        <Text text="{ui>/rowCountDtl} {caption>/ITEM(S)}" />
+                                        <ToolbarSpacer/>
+                                        <Button id="btnAddDtl" 
+                                            icon="sap-icon://add"
+                                            press="onAddDtl"
+                                            text=""
+                                            tooltip="{caption>/ADD}"
+                                            visible="true"/>
+                                        <MenuButton id="btnPickDtl" type="Ghost" icon="sap-icon://flag" text="{caption>/PICK}" tooltip="{caption>/PICK}" visible="true">
+                                            <menu>
+                                                <Menu id="menuPickDtl">
+                                                    <MenuItem id="menuPickDtlAuto" icon="sap-icon://sys-enter" text="{caption>/AUTOPICK}" tooltip="{caption>/AUTOPICK}" press="onPickDtlAuto" />
+                                                    <MenuItem id="menuPickDtlManual" icon="sap-icon://sys-minus" text="{caption>/MANUALPICK}" tooltip="{caption>/MANUALPICK}" press="onPickDtlManual" />
+                                                </Menu>
+                                            </menu>
+                                        </MenuButton>
+                                        <!-- <Button id="btnPickDtl" 
+                                            icon="sap-icon://flag"
+                                            press="onPickDtl" 
+                                            tooltip="{caption>/PICK}"
+                                            visible="true" /> -->
+                                        <Button id="btnDeleteDtl" 
+                                            icon="sap-icon://delete"
+                                            press="onDeleteDtl" 
+                                            text=""
+                                            tooltip="{caption>/DELETE}"
+                                            visible="true" />
+                                        <Button id="btnRefreshDtl" 
+                                            icon="sap-icon://refresh"
+                                            press="onRefreshDtl" 
+                                            text=""
+                                            tooltip="{caption>/REFRESH}"
+                                            visible="true" />
+                                        <Button id="btnFullScreenDtl" 
+                                            icon="sap-icon://full-screen"
+                                            press="onTableResize('dtl','Max')"
+                                            tooltip="{caption>/FULLSCREEN}"
+                                            visible="true" />
+                                        <Button id="btnExitFullScreenDtl" 
+                                            icon="sap-icon://exit-full-screen"
+                                            press="onTableResize('dtl','Min')"
+                                            tooltip="{caption>/EXITFULLSCREEN}"
+                                            visible="false" />
+                                        <Button id="btnTabLayoutDtl"
+                                            icon="sap-icon://grid" 
+                                            press="onSaveTableLayout"
+                                            tooltip="{caption>/SAVELAYOUT}" 
+                                            visible="true" />
+                                    </Toolbar>
+                                </uiT:extension>
+                                <uiT:layoutData>
+                                    <FlexItemData growFactor="1" baseSize="0%"/>
+                                </uiT:layoutData>
+                            </uiT:Table>
+                        </IconTabFilter>
+                        <IconTabFilter id="itfHU" text="DELIVERY DETAILS (HU)" key="hu" visible="{ui>/useTo}">
+                            <uiT:Table id="huTab"
+                                rows="{hu>/results}"
+                                visibleRowCountMode="Auto"
+                                showColumnVisibilityMenu="true"
+                                enableColumnFreeze="true"
+                                enableCellFilter="true"
+                                selectionMode="MultiToggle"
+                                firstVisibleRowChanged="onFirstVisibleRowChanged"
+                                cellClick="onCellClick"
+                                sort="onSorted"
+                                filter="onFilter"
+                                columnFreeze="onColumnUpdated"
+                                columnMove="onColumnUpdated"
+                                columnResize="onColumnUpdated"
+                                columnSelect="onColumnUpdated"
+                                columnVisibility="onColumnUpdated"
+                                rowSelectionChange="onRowSelectionChange">
+                                <uiT:extension>
+                                    <Toolbar>
+                                        <Text text="{ui>/rowCountHu} {caption>/ITEM(S)}" />
+                                        <ToolbarSpacer/>
+                                        <Button id="btnEditHu" 
+                                            icon="sap-icon://edit"
+                                            press="onEditHu"
+                                            text=""
+                                            tooltip="{caption>/EDIT}"
+                                            visible="true"/>
+                                        <Button id="btnDeleteHu" 
+                                            icon="sap-icon://delete"
+                                            press="onDeleteHu" 
+                                            text=""
+                                            tooltip="{caption>/DELETE}"
+                                            visible="true" />
+                                        <Button id="btnRefreshHu" 
+                                            icon="sap-icon://refresh"
+                                            press="onRefreshHu"
+                                            text="" 
+                                            tooltip="{caption>/REFRESH}"
+                                            visible="true" />
+                                        <Button id="btnSaveHu" 
+                                            icon="sap-icon://save"
+                                            press="onSaveHu" 
+                                            text=""
+                                            tooltip="{caption>/SAVE}"
+                                            visible="false" />
+                                        <Button id="btnCancelHu" 
+                                            icon="sap-icon://decline"
+                                            press="onCancelHu" 
+                                            text=""
+                                            tooltip="{caption>/CANCEL}"
+                                            visible="false" />
+                                        <Button id="btnFullScreenHu" 
+                                            icon="sap-icon://full-screen"
+                                            press="onTableResize('dtl','Max')"
+                                            tooltip="{caption>/FULLSCREEN}"
+                                            visible="true" />
+                                        <Button id="btnExitFullScreenHu" 
+                                            icon="sap-icon://exit-full-screen"
+                                            press="onTableResize('dtl','Min')"
+                                            tooltip="{caption>/EXITFULLSCREEN}"
+                                            visible="false" />
+                                        <Button id="btnTabLayoutHu"
+                                            icon="sap-icon://grid" 
+                                            press="onSaveTableLayout"
+                                            tooltip="{caption>/SAVELAYOUT}" 
+                                            visible="true" />
+                                    </Toolbar>
+                                </uiT:extension>
+                                <uiT:layoutData>
+                                    <FlexItemData growFactor="1" baseSize="0%"/>
+                                </uiT:layoutData>
+                            </uiT:Table>
+                        </IconTabFilter>
+                        <IconTabFilter id="itfShip" text="SHIPMENT INFO" key="ship">
+                            <uiT:Table id="shipTab"
+                                rows="{ship>/results}"
+                                visibleRowCountMode="Auto"
+                                showColumnVisibilityMenu="true"
+                                enableColumnFreeze="true"
+                                enableCellFilter="true"
+                                selectionMode="Single"
+                                firstVisibleRowChanged="onFirstVisibleRowChanged"
+                                cellClick="onCellClick"
+                                sort="onSorted"
+                                filter="onFilter"
+                                columnFreeze="onColumnUpdated"
+                                columnMove="onColumnUpdated"
+                                columnResize="onColumnUpdated"
+                                columnSelect="onColumnUpdated"
+                                columnVisibility="onColumnUpdated"
+                                rowSelectionChange="onRowSelectionChange">
+                                <uiT:extension>
+                                    <Toolbar>
+                                        <Text text="{ui>/rowCountShip} {caption>/ITEM(S)}" />
+                                        <ToolbarSpacer/>
+                                        <Button id="btnEditShip" 
+                                            icon="sap-icon://edit"
+                                            press="onEditShip"
+                                            text=""
+                                            tooltip="{caption>/EDIT}"
+                                            visible="true"/>
+                                        <Button id="btnRefreshShip" 
+                                            icon="sap-icon://refresh"
+                                            press="onRefreshShip" 
+                                            text=""
+                                            tooltip="{caption>/REFRESH}"
+                                            visible="true" />
+                                        <Button id="btnSaveShip" 
+                                            icon="sap-icon://save"
+                                            press="onSaveShip" 
+                                            text=""
+                                            tooltip="{caption>/SAVE}"
+                                            visible="false" />
+                                        <Button id="btnCancelShip" 
+                                            icon="sap-icon://decline"
+                                            press="onCancelShip" 
+                                            text=""
+                                            tooltip="{caption>/CANCEL}"
+                                            visible="false" />
+                                        <Button id="btnFullScreenShip" 
+                                            icon="sap-icon://full-screen"
+                                            press="onTableResize('dtl','Max')"
+                                            tooltip="{caption>/FULLSCREEN}"
+                                            visible="true" />
+                                        <Button id="btnExitFullScreenShip" 
+                                            icon="sap-icon://exit-full-screen"
+                                            press="onTableResize('dtl','Min')"
+                                            tooltip="{caption>/EXITFULLSCREEN}"
+                                            visible="false" />
+                                        <Button id="btnTabLayoutShip"
+                                            icon="sap-icon://grid" 
+                                            press="onSaveTableLayout"
+                                            tooltip="{caption>/SAVELAYOUT}" 
+                                            visible="true" />
+                                    </Toolbar>
+                                </uiT:extension>
+                                <uiT:layoutData>
+                                    <FlexItemData growFactor="1" baseSize="0%"/>
+                                </uiT:layoutData>
+                            </uiT:Table>
+                        </IconTabFilter>
+                        <IconTabFilter id="itfStat" text="STATUS OVERVIEW" key="stat">
+                            <uiT:Table id="statTab"
+                                rows="{stat>/results}"
+                                visibleRowCountMode="Auto"
+                                showColumnVisibilityMenu="true"
+                                enableColumnFreeze="true"
+                                enableCellFilter="true"
+                                selectionMode="Single"
+                                firstVisibleRowChanged="onFirstVisibleRowChanged"
+                                cellClick="onCellClick"
+                                sort="onSorted"
+                                filter="onFilter"
+                                columnFreeze="onColumnUpdated"
+                                columnMove="onColumnUpdated"
+                                columnResize="onColumnUpdated"
+                                columnSelect="onColumnUpdated"
+                                columnVisibility="onColumnUpdated"
+                                rowSelectionChange="onRowSelectionChange">
+                                <uiT:extension>
+                                    <Toolbar>
+                                        <Text text="{ui>/rowCountStat} {caption>/ITEM(S)}" />
+                                        <ToolbarSpacer/>
+                                        <Button id="btnRefreshStat" 
+                                            icon="sap-icon://refresh"
+                                            press="onRefreshStat" 
+                                            text=""
+                                            tooltip="{caption>/REFRESH}"
+                                            visible="true" />
+                                        <Button id="btnFullScreenStat" 
+                                            icon="sap-icon://full-screen"
+                                            press="onTableResize('dtl','Max')"
+                                            tooltip="{caption>/FULLSCREEN}"
+                                            visible="true" />
+                                        <Button id="btnExitFullScreenStat" 
+                                            icon="sap-icon://exit-full-screen"
+                                            press="onTableResize('dtl','Min')"
+                                            tooltip="{caption>/EXITFULLSCREEN}"
+                                            visible="false" />
+                                        <Button id="btnTabLayoutStat"
+                                            icon="sap-icon://grid" 
+                                            press="onSaveTableLayout"
+                                            tooltip="{caption>/SAVELAYOUT}" 
+                                            visible="true" />
+                                    </Toolbar>
+                                </uiT:extension>
+                                <uiT:layoutData>
+                                    <FlexItemData growFactor="1" baseSize="0%"/>
+                                </uiT:layoutData>
+                            </uiT:Table>
+                        </IconTabFilter>
+                        <IconTabFilter id="itfMatDoc" text="MATERIAL DOCUMENTS" key="matDoc">
+                            <uiT:Table id="matDocTab"
+                                rows="{matDoc>/results}"
+                                visibleRowCountMode="Auto"
+                                showColumnVisibilityMenu="true"
+                                enableColumnFreeze="true"
+                                enableCellFilter="true"
+                                selectionMode="Single"
+                                firstVisibleRowChanged="onFirstVisibleRowChanged"
+                                cellClick="onCellClick"
+                                sort="onSorted"
+                                filter="onFilter"
+                                columnFreeze="onColumnUpdated"
+                                columnMove="onColumnUpdated"
+                                columnResize="onColumnUpdated"
+                                columnSelect="onColumnUpdated"
+                                columnVisibility="onColumnUpdated"
+                                rowSelectionChange="onRowSelectionChange">
+                                <uiT:extension>
+                                    <Toolbar>
+                                        <Text text="{ui>/rowCountMatDoc} {caption>/ITEM(S)}" />
+                                        <ToolbarSpacer/>
+                                        <Button id="btnRefreshMatDoc" 
+                                            icon="sap-icon://refresh"
+                                            press="onRefreshMatDoc" 
+                                            text=""
+                                            tooltip="{caption>/REFRESH}"
+                                            visible="true" />
+                                        <Button id="btnFullScreenMatDoc" 
+                                            icon="sap-icon://full-screen"
+                                            press="onTableResize('dtl','Max')"
+                                            tooltip="{caption>/FULLSCREEN}"
+                                            visible="true" />
+                                        <Button id="btnExitFullScreenMatDoc" 
+                                            icon="sap-icon://exit-full-screen"
+                                            press="onTableResize('dtl','Min')"
+                                            tooltip="{caption>/EXITFULLSCREEN}"
+                                            visible="false" />
+                                        <Button id="btnTabLayoutMatDoc"
+                                            icon="sap-icon://grid" 
+                                            press="onSaveTableLayout"
+                                            tooltip="{caption>/SAVELAYOUT}" 
+                                            visible="true" />
+                                    </Toolbar>
+                                </uiT:extension>
+                                <uiT:layoutData>
+                                    <FlexItemData growFactor="1" baseSize="0%"/>
+                                </uiT:layoutData>
+                            </uiT:Table>
+                        </IconTabFilter>
+                        <!-- <IconTabFilter id="itfOthInfo" text="OTHER INFO" key="othInfo">
+                            <uiT:Table id="othInfoTab"
+                                rows="{othInfo>/results}"
+                                visibleRowCountMode="Auto"
+                                showColumnVisibilityMenu="true"
+                                enableColumnFreeze="true"
+                                enableCellFilter="true"
+                                selectionMode="Single"
+                                firstVisibleRowChanged="onFirstVisibleRowChanged"
+                                cellClick="onCellClick"
+                                sort="onSorted"
+                                filter="onFilter"
+                                columnFreeze="onColumnUpdated"
+                                columnMove="onColumnUpdated"
+                                columnResize="onColumnUpdated"
+                                columnSelect="onColumnUpdated"
+                                columnVisibility="onColumnUpdated"
+                                rowSelectionChange="onRowSelectionChange">
+                                <uiT:extension>
+                                    <Toolbar>
+                                        <ToolbarSpacer/>
+                                        <Button id="btnAddOthInfo" 
+                                            icon="sap-icon://add"
+                                            press="onAddOthInfo"
+                                            tooltip="{caption>/ADD}"
+                                            visible="true"/>
+                                        <Button id="btnEditOthInfo" 
+                                            icon="sap-icon://edit"
+                                            press="onEditOthInfo"
+                                            tooltip="{caption>/EDIT}"
+                                            visible="true"/>
+                                        <Button id="btnAddRowOthInfo" 
+                                            icon="sap-icon://add"
+                                            press="onAddRowOthInfo"
+                                            tooltip="{caption>/ADD}"
+                                            visible="false" />
+                                        <Button id="btnRemoveRowOthInfo" 
+                                            icon="sap-icon://less"
+                                            press="onRemoveRowOthInfo"
+                                            tooltip="{caption>/REMOVE}"
+                                            visible="false" />
+                                        <Button id="btnSaveOthInfo" 
+                                            icon="sap-icon://save"
+                                            press="onSave('othInfo')"
+                                            tooltip="{caption>/SAVE}"
+                                            visible="false" />
+                                        <Button id="btnCancelOthInfo" 
+                                            icon="sap-icon://decline"
+                                            press="onCancelOthInfo" 
+                                            tooltip="{caption>/CANCEL}"
+                                            visible="false" />                                        
+                                        <Button id="btnDeleteOthInfo" 
+                                            icon="sap-icon://delete"
+                                            press="onDeleteOthInfo"
+                                            tooltip="{caption>/DELETE}"
+                                            visible="true"/>
+                                        <Button id="btnRefreshOthInfo" 
+                                            icon="sap-icon://refresh"
+                                            press="onRefreshOthInfo"
+                                            tooltip="{caption>/REFRESH}"
+                                            visible="true"/> 
+                                    </Toolbar>
+                                </uiT:extension>
+                                <uiT:layoutData>
+                                    <FlexItemData growFactor="1" baseSize="0%"/>
+                                </uiT:layoutData>
+                            </uiT:Table>
+                        </IconTabFilter> -->
+                    </items>
+                    <layoutData>
+                        <FlexItemData growFactor="1" baseSize="0%"/>
+                    </layoutData>
+                </IconTabBar>
             </VBox>
         </content>
     </Page>

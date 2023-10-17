@@ -86,6 +86,10 @@ sap.ui.define([
 
                     onAfterRendering: function(oEvent) {
                         _this.onAfterTableRendering(oEvent);
+                    },
+
+                    onclick: function(oEvent) {
+                        _this.onTableClick(oEvent);
                     }
                 };
 
@@ -107,6 +111,7 @@ sap.ui.define([
                     _this.getPickHdr();
                 }, 300);
 
+                _this._sActiveTable = "pickHdrTab";
                 _this.closeLoadingDialog();
             },
 
@@ -751,6 +756,40 @@ sap.ui.define([
                 _this.getView().getModel("ui").setProperty("/dlvItem", sDlvItem);
 
                 _this.setPickDtl();
+            },
+
+            onAddHK() {
+                if (_this.getView().getModel("base").getData().dataMode == "READ") {
+                    if (this._sActiveTable === "pickHdrTab") this.onAddPickHdr();
+                }
+            },
+
+            onEditHK() {
+                if (_this.getView().getModel("base").getData().dataMode == "READ") {
+                    if (this._sActiveTable === "pickDtlTab") this.onEditPickDtl();
+                }
+            },
+
+            onSaveHK() {
+                if ((_this.getView().getModel("base").getData().dataMode == "NEW" || 
+                    _this.getView().getModel("base").getData().dataMode == "EDIT")) {
+                    if (this._sActiveTable === "pickDtlTab") this.onSavePickDtl();
+                }
+            },
+
+            onCancelHK() {
+                console.log(_this.getView().getModel("base").getData(), this._sActiveTable)
+                if ((_this.getView().getModel("base").getData().dataMode == "NEW" || 
+                    _this.getView().getModel("base").getData().dataMode == "EDIT")) {
+                    if (this._sActiveTable === "pickDtlTab") this.onCancelPickDtl();
+                }
+            },
+
+            onRefreshHK() {
+                if (_this.getView().getModel("base").getData().dataMode == "READ") {
+                    if (this._sActiveTable === "pickHdrTab") this.onRefreshPickHdr();
+                    else if (this._sActiveTable === "pickDtlTab") this.onRefreshPickDtl();
+                }
             },
 
             onNavBack() {

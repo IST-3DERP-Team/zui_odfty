@@ -96,6 +96,9 @@ sap.ui.define([
                     this.byId("btnExitFullScreenODFtyDtl").setEnabled(false);
                     this.byId("btnTabLayoutODFtyDtl").setEnabled(false);
                 }
+                else {
+                    this.onRefreshODFtyHdr();
+                }
 
                 this._tableRendered = "";
                 var oTableEventDelegate = {
@@ -126,7 +129,7 @@ sap.ui.define([
                     });
                 }
 
-                this._sActiveTable = "odFtyHdrTab";
+                _this._sActiveTable = "odFtyHdrTab";
                 _this.closeLoadingDialog();
             },
 
