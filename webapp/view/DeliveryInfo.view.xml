@@ -225,7 +225,7 @@
                     applyContentPadding="false"
                     select="onSelectTab">
                     <items>
-                        <IconTabFilter id="itfDtl" text="DELIVERY DETAILS" key="dtl">
+                        <IconTabFilter id="itfDtl" text="Delivery Details" key="dtl">
                             <uiT:Table id="dtlTab"
                                 rows="{dtl>/results}"
                                 visibleRowCountMode="Auto"
@@ -300,7 +300,7 @@
                                 </uiT:layoutData>
                             </uiT:Table>
                         </IconTabFilter>
-                        <IconTabFilter id="itfHU" text="DELIVERY DETAILS (HU)" key="hu" visible="{ui>/useTo}">
+                        <IconTabFilter id="itfHU" text="Delivery Details (HU)" key="hu" visible="{ui>/useTo}">
                             <uiT:Table id="huTab"
                                 rows="{hu>/results}"
                                 visibleRowCountMode="Auto"
@@ -374,7 +374,7 @@
                                 </uiT:layoutData>
                             </uiT:Table>
                         </IconTabFilter>
-                        <IconTabFilter id="itfShip" text="SHIPMENT INFO" key="ship">
+                        <IconTabFilter id="itfShip" text="Shipment Info" key="ship">
                             <uiT:Table id="shipTab"
                                 rows="{ship>/results}"
                                 visibleRowCountMode="Auto"
@@ -442,7 +442,7 @@
                                 </uiT:layoutData>
                             </uiT:Table>
                         </IconTabFilter>
-                        <IconTabFilter id="itfStat" text="STATUS OVERVIEW" key="stat">
+                        <IconTabFilter id="itfStat" text="Status Overview" key="stat">
                             <uiT:Table id="statTab"
                                 rows="{stat>/results}"
                                 visibleRowCountMode="Auto"
@@ -492,7 +492,7 @@
                                 </uiT:layoutData>
                             </uiT:Table>
                         </IconTabFilter>
-                        <IconTabFilter id="itfMatDoc" text="MATERIAL DOCUMENTS" key="matDoc">
+                        <IconTabFilter id="itfMatDoc" text="Material Documents" key="matDoc">
                             <uiT:Table id="matDocTab"
                                 rows="{matDoc>/results}"
                                 visibleRowCountMode="Auto"
