@@ -2420,6 +2420,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_IS_NOT_VALID"});
                 oCaptionParam.push({CODE: "INFO_NO_VALID_DLVHU"});
                 oCaptionParam.push({CODE: "INFO_OD_FORPICK_COMPLETE"});
+                oCaptionParam.push({CODE: "INFO_SEL_POST_DATE"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",
