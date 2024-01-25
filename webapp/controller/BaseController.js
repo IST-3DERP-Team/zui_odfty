@@ -125,7 +125,7 @@ sap.ui.define([
             var tblSrc = pTable.tblSrc;
             var tblId = pTable.tblId;
             var tblModel = pTable.tblModel;
-
+            
             var oJSONColumnsModel = new JSONModel();
             var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
             oModel.setHeaders({

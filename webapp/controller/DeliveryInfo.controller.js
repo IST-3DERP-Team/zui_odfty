@@ -2282,6 +2282,8 @@ sap.ui.define([
                         this.getView().byId("tbHeader").setVisible(true);
                         this.getView().byId("frmHeader").setVisible(true);
                         this.getView().byId("itbDetails").setVisible(true);
+
+                        this.onRefreshHdr();
                     }
                 }
             },
