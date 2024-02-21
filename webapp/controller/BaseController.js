@@ -338,15 +338,52 @@ sap.ui.define([
 
                 _this._aColumns[pModel].filter(item => item.ColumnName === sColName)
                     .forEach(ci => {
-                        if (ci.DataType === "STRING" || ci.DataType === "DATETIME" || ci.DataType === "NUMBER") {
+                        if (ci.DataType === "STRING" || ci.DataType === "DATETIME") {
                             col.setTemplate(new sap.m.Text({
                                 text: "{" + pModel + ">" + sColName + "}",
                                 wrapping: false
                             }));
                         }
+                        else if (ci.DataType === "NUMBER") {
+                            if (pModel == "matDoc" && ci.ColumnName == "QTY") {
+                                col.setTemplate(new sap.m.Text({
+                                    text: {
+                                        path: pModel + ">" + sColName,
+                                        formatter: function(col){
+                                            var colVal = col;
+                                            if(col !== undefined && col !== null && col !== ""){
+                                                var sDrCrInd = col.split("=")[0];
+                                                
+                                                if (sDrCrInd === "S") this.addStyleClass("qtyGreen");
+                                                else this.removeStyleClass("qtyGreen");
+
+                                                if (sDrCrInd === "H") this.addStyleClass("qtyRed");
+                                                else this.removeStyleClass("qtyRed");
+
+                                                colVal = col.split("=")[1]
+
+                                                if (sDrCrInd === "H") colVal = colVal * -1;
+                                                else colVal = Math.abs(colVal);
+
+                                                return parseFloat(colVal).toFixed(3);
+                                            }
+                                        },
+                                    },
+                                    textAlign: sap.ui.core.TextAlign.Right,
+                                    wrapping: false
+                                }));
+                            }
+                            else {
+                                col.setTemplate(new sap.m.Text({
+                                    text: "{" + pModel + ">" + sColName + "}",
+                                    wrapping: false
+                                }));
+                            }
+                        }
                         else if (ci.DataType === "BOOLEAN") {
                             col.setTemplate(new sap.m.CheckBox({
                                 selected: "{" + pModel + ">" + sColName + "}",
+                                editable: false
                             }));
                         }
                     })

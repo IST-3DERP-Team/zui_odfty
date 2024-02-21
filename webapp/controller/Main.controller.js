@@ -166,11 +166,12 @@ sap.ui.define([
 
             getHeader(pFilters, pFilterGlobal) {
                 _this.showLoadingDialog("Loading...");
-
+console.log("getheader", pFilters)
                 var oModel = this.getOwnerComponent().getModel();
                 var oTable = _this.getView().byId("odFtyHdrTab");
 
                 oModel.read('/HeaderSet', {
+                    filters: pFilters,
                     success: function (data, response) {
                         console.log("HeaderSet", data)
                         if (data.results.length > 0) {
@@ -211,7 +212,7 @@ sap.ui.define([
                             _this.getView().setModel(oJSONModel, "odFtyHdr");
                             _this._tableRendered = "odFtyHdrTab";
 
-                            _this.onFilterBySmart("odFtyHdr", pFilters, pFilterGlobal, aFilterTab);
+                            // _this.onFilterBySmart("odFtyHdr", pFilters, pFilterGlobal, aFilterTab);
 
                             _this.setRowReadMode("odFtyHdr");
                         }
@@ -635,6 +636,9 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "ISSPLANT"});
                 oCaptionParam.push({CODE: "RCVPLANT"});
                 oCaptionParam.push({CODE: "REFDLVNO"});
+                oCaptionParam.push({CODE: "RSVNO"});
+                oCaptionParam.push({CODE: "MATNO"});
+                oCaptionParam.push({CODE: "IONO"});
 
                 // Dialog
                 oCaptionParam.push({CODE: "SEL_DLVTYPE"});

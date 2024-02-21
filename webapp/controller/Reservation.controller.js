@@ -339,7 +339,8 @@ sap.ui.define([
                         BASEUOM: item.UOM,
                         RSVNO: item.RSVNO,
                         RSNUM: item.RSVNO,
-                        RSPOS: item.RSVITEM
+                        RSPOS: item.RSVITEM,
+                        COSTCTR: item.KOSTL
                     };
 
                     setTimeout(() => {
@@ -411,7 +412,7 @@ sap.ui.define([
             },
 
             onCancel() {
-                MessageBox.confirm(_oCaption.CONFIRM_PROCEED_CLOSE, {
+                MessageBox.confirm(_oCaption.CONFIRM_EXIT_PAGE, {
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
                         if (sAction == "Yes") {
@@ -533,6 +534,7 @@ sap.ui.define([
                 oCaptionParam.push({CODE: "INFO_SHOULD_BE_SAME"});
                 oCaptionParam.push({CODE: "INFO_SHOULD_BE_UNIQUE"});
                 oCaptionParam.push({CODE: "INFO_LAYOUT_SAVE"});
+                oCaptionParam.push({CODE: "CONFIRM_EXIT_PAGE"});
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oCaptionParam  }, {
                     method: "POST",

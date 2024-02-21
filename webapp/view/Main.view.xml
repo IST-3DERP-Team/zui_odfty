@@ -48,6 +48,21 @@
                             preventInitialDataFetchInValueHelpDialog="false" displayBehaviour="idOnly" mandatory="notMandatory" index="5">
                         </sfb:ControlConfiguration>
                     </sfb:controlConfiguration>
+                    <sfb:controlConfiguration>
+                        <sfb:ControlConfiguration id="filterRsvNo" key="RSVNO" groupId="_BASIC" label="{caption>/RSVNO}"
+                            preventInitialDataFetchInValueHelpDialog="false" displayBehaviour="idOnly" mandatory="notMandatory" index="6">
+                        </sfb:ControlConfiguration>
+                    </sfb:controlConfiguration>
+                    <sfb:controlConfiguration>
+                        <sfb:ControlConfiguration id="filterMatNo" key="MATNO" groupId="_BASIC" label="{caption>/MATNO}"
+                            preventInitialDataFetchInValueHelpDialog="false" displayBehaviour="idOnly" mandatory="notMandatory" index="7">
+                        </sfb:ControlConfiguration>
+                    </sfb:controlConfiguration>
+                    <sfb:controlConfiguration>
+                        <sfb:ControlConfiguration id="filterIONo" key="IONO" groupId="_BASIC" label="{caption>/IONO}"
+                            preventInitialDataFetchInValueHelpDialog="false" displayBehaviour="idOnly" mandatory="notMandatory" index="7">
+                        </sfb:ControlConfiguration>
+                    </sfb:controlConfiguration>
                     <sfb:layoutData>
                         <FlexItemData shrinkFactor="0"/>
                     </sfb:layoutData>

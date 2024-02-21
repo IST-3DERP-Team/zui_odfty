@@ -15,3 +15,20 @@
 .sapMDialogScroll {
     height: 98%;
 }
+
+.qtyGreen {
+    background-color: #98f778;
+    border-radius: 0.5rem;
+    width: 99%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    color: white;
+}
+.qtyRed {
+    background-color: #ff8c66;
+    border-radius: 0.5rem;
+    width: 99%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    color: white;
+}

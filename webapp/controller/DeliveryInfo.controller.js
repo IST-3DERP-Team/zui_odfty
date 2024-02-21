@@ -1559,12 +1559,23 @@ sap.ui.define([
                     success: function (data, response) {
                         console.log("InfoMatDocSet", data)
 
+                        data.results.sort(function(a,b) {
+                            return new Date(_this.formatDatePH(a.CREATEDDT) + " " + _this.formatTime(a.CREATEDTM)) - 
+                                   new Date(_this.formatDatePH(b.CREATEDDT) + " " + _this.formatTime(b.CREATEDTM));
+                        });
+
                         data.results.forEach((item, idx) => {
                             if (item.DOCDT !== null)
                                 item.DOCDT = _this.formatDatePH(item.DOCDT);
 
                             if (item.POSTDT !== null)
                                 item.POSTDT = _this.formatDatePH(item.POSTDT);
+
+                            if (item.CREATEDDT !== null)
+                                item.CREATEDDT = _this.formatDatePH(item.CREATEDDT) + " " + _this.formatTime(item.CREATEDTM);
+
+                            // DR/CR Indicator logic
+                            item.QTY = item.DEBITCREDITIND + "=" + item.QTY;
 
                             if (idx == 0) item.ACTIVE = "X";
                             else item.ACTIVE = "";
