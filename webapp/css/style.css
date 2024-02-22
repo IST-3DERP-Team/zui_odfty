@@ -32,3 +32,30 @@
     padding-right: 0.5rem;
     color: white;
 }
+
+.vboxHeight > .sapMFlexItem {
+    height: 100%;
+}
+/* .sapMFlexItem{
+    height: 100%;
+} */
+.vboxHeight {
+    height: 76%;
+    padding-left: 0rem;
+    padding-right: 0rem;
+}
+
+.onAddVboxHeight {
+    height: 76%;
+    padding-left: 0rem;
+    padding-right: 0rem;
+}
+
+.detailSection {
+    position: relative;
+}
+
+.addDetailSection {
+    position: absolute;
+    height: 100%;
+}

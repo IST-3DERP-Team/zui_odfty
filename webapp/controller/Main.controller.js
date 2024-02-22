@@ -166,7 +166,7 @@ sap.ui.define([
 
             getHeader(pFilters, pFilterGlobal) {
                 _this.showLoadingDialog("Loading...");
-console.log("getheader", pFilters)
+
                 var oModel = this.getOwnerComponent().getModel();
                 var oTable = _this.getView().byId("odFtyHdrTab");
 
@@ -547,15 +547,23 @@ console.log("getheader", pFilters)
                         this.byId("btnFullScreenODFtyHdr").setVisible(false);
                         this.byId("btnExitFullScreenODFtyHdr").setVisible(true);
 
-                        this.getView().byId("odFtyHdrTab").setVisible(true);
-                        this.getView().byId("odFtyDtlTab").setVisible(false);
+                        // this.getView().byId("odFtyHdrTab").setVisible(true);
+                        // this.getView().byId("odFtyDtlTab").setVisible(false);
+
+                        var oSplitter = new sap.ui.layout.SplitterLayoutData({size: "100%"});
+                        var oCont = this.byId("odFtyHdrTab");
+                        oCont.setLayoutData(oSplitter);
                     }
                     else {
                         this.byId("btnFullScreenODFtyHdr").setVisible(true);
                         this.byId("btnExitFullScreenODFtyHdr").setVisible(false);
 
-                        this.getView().byId("odFtyHdrTab").setVisible(true);
-                        this.getView().byId("odFtyDtlTab").setVisible(true);
+                        // this.getView().byId("odFtyHdrTab").setVisible(true);
+                        // this.getView().byId("odFtyDtlTab").setVisible(true);
+
+                        var oSplitter = new sap.ui.layout.SplitterLayoutData({size: "50%"});
+                        var oCont = this.byId("odFtyHdrTab");
+                        oCont.setLayoutData(oSplitter);
                     }
                 }
                 else if (pGroup === "dtl") {
@@ -563,15 +571,31 @@ console.log("getheader", pFilters)
                         this.byId("btnFullScreenODFtyDtl").setVisible(false);
                         this.byId("btnExitFullScreenODFtyDtl").setVisible(true);
 
-                        this.getView().byId("odFtyHdrTab").setVisible(false);
-                        this.getView().byId("odFtyDtlTab").setVisible(true);
+                        // this.getView().byId("odFtyHdrTab").setVisible(false);
+                        // this.getView().byId("odFtyDtlTab").setVisible(true);
+
+                        var oSplitter1 = new sap.ui.layout.SplitterLayoutData({size: "0%"});
+                        var oCont1 = this.byId("odFtyHdrTab");
+                        oCont1.setLayoutData(oSplitter1);
+
+                        var oSplitter2 = new sap.ui.layout.SplitterLayoutData({size: "100%"});
+                        var oCont2 = this.byId("odFtyDtlTab");
+                        oCont2.setLayoutData(oSplitter2);
                     }
                     else {
                         this.byId("btnFullScreenODFtyDtl").setVisible(true);
                         this.byId("btnExitFullScreenODFtyDtl").setVisible(false);
 
-                        this.getView().byId("odFtyHdrTab").setVisible(true);
-                        this.getView().byId("odFtyDtlTab").setVisible(true);
+                        // this.getView().byId("odFtyHdrTab").setVisible(true);
+                        // this.getView().byId("odFtyDtlTab").setVisible(true);
+
+                        var oSplitter1 = new sap.ui.layout.SplitterLayoutData({size: "50%"});
+                        var oCont1 = this.byId("odFtyHdrTab");
+                        oCont1.setLayoutData(oSplitter1);
+
+                        var oSplitter2 = new sap.ui.layout.SplitterLayoutData({size: "50%"});
+                        var oCont2 = this.byId("odFtyDtlTab");
+                        oCont2.setLayoutData(oSplitter2);
                     }
                 }
             },
