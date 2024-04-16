@@ -6,10 +6,11 @@ sap.ui.define([
     "sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
     "sap/ui/model/Sorter",
+    "sap/ui/core/SortOrder",
     "sap/ui/core/routing/HashChanger",
     "../js/TableFilter",
     "../js/TableValueHelp"
-  ], function (Controller, JSONModel, MessageBox, Filter, FilterOperator, Sorter, HashChanger, TableFilter, TableValueHelp) {
+  ], function (Controller, JSONModel, MessageBox, Filter, FilterOperator, Sorter, SortOrder, HashChanger, TableFilter, TableValueHelp) {
   
     "use strict";
 
@@ -398,6 +399,7 @@ sap.ui.define([
             }
             
             TableFilter.applyColFilters(_this);
+            _this.onColSort(oTable);
 
             _this.getView().getModel("base").setProperty("/dataMode", "READ");
         },
@@ -1189,6 +1191,18 @@ sap.ui.define([
                     else row.removeStyleClass("activeRow");
                 })
             }
+        },
+
+        //******************************************* */
+        // Column Sorting
+        //******************************************* */
+
+        onColSort(pTable) {
+            pTable.getColumns().forEach((col, idx) => {   
+                if (col.mProperties.sorted) {
+                    pTable.sort(col, col.mProperties.sortOrder === "Ascending" ? SortOrder.Ascending: SortOrder.Descending, true);
+                }
+            });
         },
 
         //******************************************* */
